@@ -1,4 +1,4 @@
-package org.eclipse.aether.internal.impl;
+package org.eclipse.aether.internal.impl.collect;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,10 +19,10 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.eclipse.aether.internal.impl.DependencyCollectionUtils.addDependencyNode;
-import static org.eclipse.aether.internal.impl.DependencyCollectionUtils.createArtifactDescriptorRequest;
-import static org.eclipse.aether.internal.impl.DependencyCollectionUtils.createDependencyNode;
-import static org.eclipse.aether.internal.impl.DependencyCollectionUtils.createVersionRangeRequest;
+import static org.eclipse.aether.internal.impl.collect.DependencyCollectionUtils.addDependencyNode;
+import static org.eclipse.aether.internal.impl.collect.DependencyCollectionUtils.createArtifactDescriptorRequest;
+import static org.eclipse.aether.internal.impl.collect.DependencyCollectionUtils.createDependencyNode;
+import static org.eclipse.aether.internal.impl.collect.DependencyCollectionUtils.createVersionRangeRequest;
 
 import java.util.ArrayList;
 import java.util.Collection;

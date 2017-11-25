@@ -1,4 +1,4 @@
-package org.eclipse.aether.internal.impl;
+package org.eclipse.aether.internal.impl.collect;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -53,7 +53,7 @@ public class DataPoolTest
         result.addManagedDependency( new Dependency( new DefaultArtifact( "gid:mdep:3" ), "runtime" ) );
         result.addRepository( new RemoteRepository.Builder( "test", "default", "http://localhost" ).build() );
         result.addAlias( new DefaultArtifact( "gid:alias:4" ) );
-        Future<ArtifactDescriptorResult> futureResult = new FutureResult<ArtifactDescriptorResult>( result ); 
+        Future<ArtifactDescriptorResult> futureResult = new FutureResult<>( result );
 
         DataPool pool = newDataPool();
         Object key = pool.toKey( request );
