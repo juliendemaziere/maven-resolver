@@ -19,9 +19,9 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,13 +40,13 @@ public class PrioritizedComponentsTest
         String[] keys =
             { ConfigurationProperties.PREFIX_PRIORITY + "java.lang.String",
                 ConfigurationProperties.PREFIX_PRIORITY + "String" };
-        assertArrayEquals( keys, PrioritizedComponents.getConfigKeys( String.class ) );
+        assertThat( PrioritizedComponents.getConfigKeys( String.class ) ).isEqualTo( keys );
 
         keys =
             new String[] { ConfigurationProperties.PREFIX_PRIORITY + "java.util.concurrent.ThreadFactory",
                 ConfigurationProperties.PREFIX_PRIORITY + "ThreadFactory",
                 ConfigurationProperties.PREFIX_PRIORITY + "Thread" };
-        assertArrayEquals( keys, PrioritizedComponents.getConfigKeys( ThreadFactory.class ) );
+        assertThat( PrioritizedComponents.getConfigKeys( ThreadFactory.class ) ).isEqualTo( keys );
     }
 
     @Test
@@ -61,11 +61,11 @@ public class PrioritizedComponentsTest
         components.add( comp1, 1 );
         components.add( comp2, 0 );
         List<PrioritizedComponent<Exception>> sorted = components.getEnabled();
-        assertEquals( 2, sorted.size() );
-        assertSame( comp2, sorted.get( 0 ).getComponent() );
-        assertEquals( 7, sorted.get( 0 ).getPriority(), 0.1f );
-        assertSame( comp1, sorted.get( 1 ).getComponent() );
-        assertEquals( 6, sorted.get( 1 ).getPriority(), 0.1f );
+        assertThat(sorted.size() ).isEqualTo(2);
+        assertThat(sorted.get( 0 ).getComponent() ).isSameAs(comp2);
+        assertThat(sorted.get( 0 ).getPriority()).isEqualTo( 7, within(0.1f));
+        assertThat(sorted.get( 1 ).getComponent() ).isSameAs(comp1);
+        assertThat(sorted.get( 1 ).getPriority()).isCloseTo(6, within(0.1f ));
     }
 
     @Test
@@ -79,9 +79,9 @@ public class PrioritizedComponentsTest
         components.add( comp1, 1 );
         components.add( comp2, 2 );
         List<PrioritizedComponent<Exception>> sorted = components.getEnabled();
-        assertEquals( 2, sorted.size() );
-        assertSame( comp1, sorted.get( 0 ).getComponent() );
-        assertSame( comp2, sorted.get( 1 ).getComponent() );
+        assertThat(sorted.size() ).isEqualTo(2);
+        assertThat(sorted.get( 0 ).getComponent() ).isSameAs(comp1);
+        assertThat(sorted.get( 1 ).getComponent() ).isSameAs(comp2);
     }
 
     @Test
@@ -94,22 +94,22 @@ public class PrioritizedComponentsTest
 
         components.add( new UnsupportedOperationException(), Float.NaN );
         List<PrioritizedComponent<Exception>> sorted = components.getEnabled();
-        assertEquals( 0, sorted.size() );
+        assertThat(sorted.size() ).isEqualTo(0);
 
         components.add( comp1, 1 );
         sorted = components.getEnabled();
-        assertEquals( 1, sorted.size() );
-        assertSame( comp1, sorted.get( 0 ).getComponent() );
+        assertThat(sorted.size() ).isEqualTo(1);
+        assertThat(sorted.get( 0 ).getComponent() ).isSameAs(comp1);
 
         components.add( new Exception(), Float.NaN );
         sorted = components.getEnabled();
-        assertEquals( 1, sorted.size() );
-        assertSame( comp1, sorted.get( 0 ).getComponent() );
+        assertThat(sorted.size() ).isEqualTo(1);
+        assertThat(sorted.get( 0 ).getComponent() ).isSameAs(comp1);
 
         components.add( comp2, 0 );
         sorted = components.getEnabled();
-        assertEquals( 2, sorted.size() );
-        assertSame( comp1, sorted.get( 0 ).getComponent() );
-        assertSame( comp2, sorted.get( 1 ).getComponent() );
+        assertThat( sorted ).hasSize( 2 );
+        assertThat( sorted.get( 0 ).getComponent() ).isSameAs( comp1 );
+        assertThat( sorted.get( 1 ).getComponent() ).isSameAs( comp2 );
     }
 }

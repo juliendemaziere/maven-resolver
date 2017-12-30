@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.transformer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.collection.DependencyGraphTransformer;
 import org.eclipse.aether.graph.DependencyNode;
@@ -53,7 +53,7 @@ public class JavaDependencyContextRefinerTest
         node.setRequestContext( "otherContext" );
 
         DependencyNode refinedNode = transform( node );
-        assertEquals( node, refinedNode );
+        assertThat(refinedNode ).isEqualTo(node);
     }
 
     @Test
@@ -65,17 +65,17 @@ public class JavaDependencyContextRefinerTest
         DependencyNode node = parseLiteral( "gid:aid:ver compile" );
         node.setRequestContext( "project" );
         DependencyNode refinedNode = transform( node );
-        assertEquals( expected, refinedNode.getRequestContext() );
+        assertThat(refinedNode.getRequestContext() ).isEqualTo(expected);
 
         node = parseLiteral( "gid:aid:ver system" );
         node.setRequestContext( "project" );
         refinedNode = transform( node );
-        assertEquals( expected, refinedNode.getRequestContext() );
+        assertThat(refinedNode.getRequestContext() ).isEqualTo(expected);
 
         node = parseLiteral( "gid:aid:ver provided" );
         node.setRequestContext( "project" );
         refinedNode = transform( node );
-        assertEquals( expected, refinedNode.getRequestContext() );
+        assertThat(refinedNode.getRequestContext() ).isEqualTo(expected);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class JavaDependencyContextRefinerTest
         DependencyNode node = parseLiteral( "gid:aid:ver test" );
         node.setRequestContext( "project" );
         DependencyNode refinedNode = transform( node );
-        assertEquals( expected, refinedNode.getRequestContext() );
+        assertThat(refinedNode.getRequestContext() ).isEqualTo(expected);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class JavaDependencyContextRefinerTest
         DependencyNode node = parseLiteral( "gid:aid:ver runtime" );
         node.setRequestContext( "project" );
         DependencyNode refinedNode = transform( node );
-        assertEquals( expected, refinedNode.getRequestContext() );
+        assertThat(refinedNode.getRequestContext() ).isEqualTo(expected);
     }
 
     @Test
@@ -111,7 +111,7 @@ public class JavaDependencyContextRefinerTest
         DependencyNode node = parseLiteral( "gid:aid:ver unknownScope" );
         node.setRequestContext( "project" );
         DependencyNode refinedNode = transform( node );
-        assertEquals( expected, refinedNode.getRequestContext() );
+        assertThat(refinedNode.getRequestContext() ).isEqualTo(expected);
     }
 
 }

@@ -19,8 +19,6 @@ package org.eclipse.aether.util.graph.traverser;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.Collections;
 import java.util.Map;
 
@@ -30,6 +28,8 @@ import org.eclipse.aether.collection.DependencyTraverser;
 import org.eclipse.aether.graph.Dependency;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class FatArtifactTraverserTest
 {
 
@@ -38,20 +38,20 @@ public class FatArtifactTraverserTest
     {
         DependencyTraverser traverser = new FatArtifactTraverser();
         Map<String, String> props = null;
-        assertTrue( traverser.traverseDependency( new Dependency( new DefaultArtifact( "g:a:v:1", props ), "test" ) ) );
+        assertThat( traverser.traverseDependency( new Dependency( new DefaultArtifact( "g:a:v:1", props ), "test" ) ) ).isTrue();
         props = Collections.singletonMap( ArtifactProperties.INCLUDES_DEPENDENCIES, "false" );
-        assertTrue( traverser.traverseDependency( new Dependency( new DefaultArtifact( "g:a:v:1", props ), "test" ) ) );
+        assertThat( traverser.traverseDependency( new Dependency( new DefaultArtifact( "g:a:v:1", props ), "test" ) ) ).isTrue();
         props = Collections.singletonMap( ArtifactProperties.INCLUDES_DEPENDENCIES, "unrecognized" );
-        assertTrue( traverser.traverseDependency( new Dependency( new DefaultArtifact( "g:a:v:1", props ), "test" ) ) );
+        assertThat( traverser.traverseDependency( new Dependency( new DefaultArtifact( "g:a:v:1", props ), "test" ) ) ).isTrue();
         props = Collections.singletonMap( ArtifactProperties.INCLUDES_DEPENDENCIES, "true" );
-        assertFalse( traverser.traverseDependency( new Dependency( new DefaultArtifact( "g:a:v:1", props ), "test" ) ) );
+        assertThat( traverser.traverseDependency( new Dependency( new DefaultArtifact( "g:a:v:1", props ), "test" ) ) ).isFalse();
     }
 
     @Test
     public void testDeriveChildTraverser()
     {
         DependencyTraverser traverser = new FatArtifactTraverser();
-        assertSame( traverser, traverser.deriveChildTraverser( null ) );
+        assertThat( traverser.deriveChildTraverser( null ) ).isSameAs( traverser );
     }
 
     @Test
@@ -59,10 +59,10 @@ public class FatArtifactTraverserTest
     {
         DependencyTraverser traverser1 = new FatArtifactTraverser();
         DependencyTraverser traverser2 = new FatArtifactTraverser();
-        assertEquals( traverser1, traverser1 );
-        assertEquals( traverser1, traverser2 );
-        assertNotEquals( traverser1, this );
-        assertNotEquals( traverser1, null );
+        assertThat( traverser1 ).isEqualTo( traverser1 );
+        assertThat( traverser2 ).isEqualTo( traverser1 );
+        assertThat( traverser1 ).isNotEqualTo( this );
+        assertThat( traverser1 ).isNotEqualTo( null );
     }
 
     @Test
@@ -70,7 +70,7 @@ public class FatArtifactTraverserTest
     {
         DependencyTraverser traverser1 = new FatArtifactTraverser();
         DependencyTraverser traverser2 = new FatArtifactTraverser();
-        assertEquals( traverser1.hashCode(), traverser2.hashCode() );
+        assertThat( traverser2.hashCode() ).isEqualTo( traverser1.hashCode() );
     }
 
 }

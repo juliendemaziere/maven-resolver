@@ -19,7 +19,7 @@ package org.eclipse.aether.util.version;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.util.version.GenericVersion;
 import org.eclipse.aether.util.version.GenericVersionRange;
@@ -60,18 +60,18 @@ public class GenericVersionRangeTest
         }
         catch ( InvalidVersionSpecificationException e )
         {
-            assertTrue( true );
+            assertThat(true ).isTrue();
         }
     }
 
     private void assertContains( VersionRange range, String version )
     {
-        assertTrue( range + " should contain " + version, range.containsVersion( newVersion( version ) ) );
+        assertThat( range.containsVersion( newVersion( version ) ) ).as( range + " should contain " + version ).isTrue();
     }
 
     private void assertNotContains( VersionRange range, String version )
     {
-        assertFalse( range + " should not contain " + version, range.containsVersion( newVersion( version ) ) );
+        assertThat( range.containsVersion( newVersion( version ) ) ).as( range + " should not contain " + version ).isFalse();
     }
 
     @Test
@@ -81,7 +81,7 @@ public class GenericVersionRangeTest
         assertContains( range, "1" );
         assertContains( range, "1.1-SNAPSHOT" );
         assertContains( range, "2" );
-        assertEquals( range, parseValid( range.toString() ) );
+        assertThat(parseValid( range.toString() ) ).isEqualTo(range);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class GenericVersionRangeTest
         VersionRange range = parseValid( "[1.2.3.4.5,1.2.3.4.6)" );
         assertContains( range, "1.2.3.4.5" );
         assertNotContains( range, "1.2.3.4.6" );
-        assertEquals( range, parseValid( range.toString() ) );
+        assertThat(parseValid( range.toString() ) ).isEqualTo(range);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class GenericVersionRangeTest
         VersionRange range = parseValid( "(1a,1b]" );
         assertNotContains( range, "1a" );
         assertContains( range, "1b" );
-        assertEquals( range, parseValid( range.toString() ) );
+        assertThat(parseValid( range.toString() ) ).isEqualTo(range);
     }
 
     @Test
@@ -109,7 +109,7 @@ public class GenericVersionRangeTest
         assertNotContains( range, "1" );
         assertContains( range, "2-SNAPSHOT" );
         assertNotContains( range, "3" );
-        assertEquals( range, parseValid( range.toString() ) );
+        assertThat(parseValid( range.toString() ) ).isEqualTo(range);
     }
 
     @Test
@@ -117,11 +117,11 @@ public class GenericVersionRangeTest
     {
         VersionRange range = parseValid( "[1]" );
         assertContains( range, "1" );
-        assertEquals( range, parseValid( range.toString() ) );
+        assertThat(parseValid( range.toString() ) ).isEqualTo(range);
 
         range = parseValid( "[1,1]" );
         assertContains( range, "1" );
-        assertEquals( range, parseValid( range.toString() ) );
+        assertThat(parseValid( range.toString() ) ).isEqualTo(range);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class GenericVersionRangeTest
         assertContains( range, "1.2" );
         assertContains( range, "1.2.9999999" );
         assertNotContains( range, "1.3-rc-1" );
-        assertEquals( range, parseValid( range.toString() ) );
+        assertThat(parseValid( range.toString() ) ).isEqualTo(range);
     }
 
     @Test

@@ -19,11 +19,15 @@ package org.eclipse.aether.util.artifact;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.aether.util.artifact.ArtifactIdUtils.equalsBaseId;
+import static org.eclipse.aether.util.artifact.ArtifactIdUtils.equalsId;
+import static org.eclipse.aether.util.artifact.ArtifactIdUtils.toBaseId;
+import static org.eclipse.aether.util.artifact.ArtifactIdUtils.toId;
 
 /**
  */
@@ -33,60 +37,57 @@ public class ArtifactIdUtilsTest
     @Test
     public void testToIdArtifact()
     {
-        Artifact artifact = null;
-        assertSame( null, ArtifactIdUtils.toId( artifact ) );
+        assertThat( toId( null ) ).isSameAs( null );
 
-        artifact = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( "gid:aid:ext:1.0-20110205.132618-23", ArtifactIdUtils.toId( artifact ) );
+        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
+        assertThat( toId( artifact ) ).isEqualTo( "gid:aid:ext:1.0-20110205.132618-23" );
 
         artifact = new DefaultArtifact( "gid", "aid", "cls", "ext", "1.0-20110205.132618-23" );
-        assertEquals( "gid:aid:ext:cls:1.0-20110205.132618-23", ArtifactIdUtils.toId( artifact ) );
+        assertThat( toId( artifact ) ).isEqualTo( "gid:aid:ext:cls:1.0-20110205.132618-23" );
     }
 
     @Test
     public void testToIdStrings()
     {
-        assertEquals( ":::", ArtifactIdUtils.toId( null, null, null, null, null ) );
+        assertThat( toId( null, null, null, null, null )).isEqualTo( ":::" );
 
-        assertEquals( "gid:aid:ext:1", ArtifactIdUtils.toId( "gid", "aid", "ext", "", "1" ) );
+        assertThat( toId( "gid", "aid", "ext", "", "1" ) ).isEqualTo( "gid:aid:ext:1" );
 
-        assertEquals( "gid:aid:ext:cls:1", ArtifactIdUtils.toId( "gid", "aid", "ext", "cls", "1" ) );
+        assertThat( toId( "gid", "aid", "ext", "cls", "1" ) ).isEqualTo( "gid:aid:ext:cls:1" );
     }
 
     @Test
     public void testToBaseIdArtifact()
     {
-        Artifact artifact = null;
-        assertSame( null, ArtifactIdUtils.toBaseId( artifact ) );
+        assertThat( toBaseId( null ) ).isNull();
 
-        artifact = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( "gid:aid:ext:1.0-SNAPSHOT", ArtifactIdUtils.toBaseId( artifact ) );
+        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
+        assertThat( toBaseId( artifact ) ).isEqualTo( "gid:aid:ext:1.0-SNAPSHOT" );
 
         artifact = new DefaultArtifact( "gid", "aid", "cls", "ext", "1.0-20110205.132618-23" );
-        assertEquals( "gid:aid:ext:cls:1.0-SNAPSHOT", ArtifactIdUtils.toBaseId( artifact ) );
+        assertThat( toBaseId( artifact ) ).isEqualTo( "gid:aid:ext:cls:1.0-SNAPSHOT" );
     }
 
     @Test
     public void testToVersionlessIdArtifact()
     {
-        Artifact artifact = null;
-        assertSame( null, ArtifactIdUtils.toId( artifact ) );
+        assertThat(toId( null ) ).isNull();
 
-        artifact = new DefaultArtifact( "gid", "aid", "ext", "1" );
-        assertEquals( "gid:aid:ext", ArtifactIdUtils.toVersionlessId( artifact ) );
+        Artifact artifact = new DefaultArtifact( "gid", "aid", "ext", "1" );
+        assertThat( "gid:aid:ext" ).isEqualTo( ArtifactIdUtils.toVersionlessId( artifact ) );
 
         artifact = new DefaultArtifact( "gid", "aid", "cls", "ext", "1" );
-        assertEquals( "gid:aid:ext:cls", ArtifactIdUtils.toVersionlessId( artifact ) );
+        assertThat( "gid:aid:ext:cls" ).isEqualTo( ArtifactIdUtils.toVersionlessId( artifact ) );
     }
 
     @Test
     public void testToVersionlessIdStrings()
     {
-        assertEquals( "::", ArtifactIdUtils.toVersionlessId( null, null, null, null ) );
+        assertThat( "::" ).isEqualTo( ArtifactIdUtils.toVersionlessId( null, null, null, null ) );
 
-        assertEquals( "gid:aid:ext", ArtifactIdUtils.toVersionlessId( "gid", "aid", "ext", "" ) );
+        assertThat( "gid:aid:ext" ).isEqualTo( ArtifactIdUtils.toVersionlessId( "gid", "aid", "ext", "" ) );
 
-        assertEquals( "gid:aid:ext:cls", ArtifactIdUtils.toVersionlessId( "gid", "aid", "ext", "cls" ) );
+        assertThat( "gid:aid:ext:cls" ).isEqualTo( ArtifactIdUtils.toVersionlessId( "gid", "aid", "ext", "cls" ) );
     }
 
     @Test
@@ -94,34 +95,34 @@ public class ArtifactIdUtilsTest
     {
         Artifact artifact1 = null;
         Artifact artifact2 = null;
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact2, artifact1 ) );
+        assertThat( equalsId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsId( artifact2, artifact1 ) ).isFalse();
 
         artifact1 = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact2, artifact1 ) );
+        assertThat( equalsId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gidX", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact2, artifact1 ) );
+        assertThat( equalsId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aidX", "ext", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact2, artifact1 ) );
+        assertThat( equalsId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "extX", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact2, artifact1 ) );
+        assertThat( equalsId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-24" );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsId( artifact2, artifact1 ) );
+        assertThat( equalsId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( true, ArtifactIdUtils.equalsId( artifact1, artifact2 ) );
-        assertEquals( true, ArtifactIdUtils.equalsId( artifact2, artifact1 ) );
+        assertThat( equalsId( artifact1, artifact2 ) ).isTrue();
+        assertThat( equalsId( artifact2, artifact1 ) ).isTrue();
 
-        assertEquals( true, ArtifactIdUtils.equalsId( artifact1, artifact1 ) );
+        assertThat( equalsId( artifact1, artifact1 ) ).isTrue();
     }
 
     @Test
@@ -129,38 +130,38 @@ public class ArtifactIdUtilsTest
     {
         Artifact artifact1 = null;
         Artifact artifact2 = null;
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact2, artifact1 ) );
+        assertThat( equalsBaseId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsBaseId( artifact2, artifact1 ) ).isFalse();
 
         artifact1 = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact2, artifact1 ) );
+        assertThat( equalsBaseId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsBaseId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gidX", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact2, artifact1 ) );
+        assertThat( equalsBaseId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsBaseId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aidX", "ext", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact2, artifact1 ) );
+        assertThat( equalsBaseId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsBaseId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "extX", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact2, artifact1 ) );
+        assertThat( equalsBaseId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsBaseId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "ext", "X.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsBaseId( artifact2, artifact1 ) );
+        assertThat( equalsBaseId( artifact1, artifact2 ) ).isFalse();
+        assertThat( equalsBaseId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-24" );
-        assertEquals( true, ArtifactIdUtils.equalsBaseId( artifact1, artifact2 ) );
-        assertEquals( true, ArtifactIdUtils.equalsBaseId( artifact2, artifact1 ) );
+        assertThat( equalsBaseId( artifact1, artifact2 ) ).isTrue();
+        assertThat( equalsBaseId( artifact2, artifact1 ) ).isTrue();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( true, ArtifactIdUtils.equalsBaseId( artifact1, artifact2 ) );
-        assertEquals( true, ArtifactIdUtils.equalsBaseId( artifact2, artifact1 ) );
+        assertThat( equalsBaseId( artifact1, artifact2 ) ).isTrue();
+        assertThat( equalsBaseId( artifact2, artifact1 ) ).isTrue();
 
-        assertEquals( true, ArtifactIdUtils.equalsBaseId( artifact1, artifact1 ) );
+        assertThat( equalsBaseId( artifact1, artifact1 ) ).isTrue();
     }
 
     @Test
@@ -168,34 +169,34 @@ public class ArtifactIdUtilsTest
     {
         Artifact artifact1 = null;
         Artifact artifact2 = null;
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) );
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) ).isFalse();
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) ).isFalse();
 
         artifact1 = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) );
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) ).isFalse();
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gidX", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) );
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) ).isFalse();
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aidX", "ext", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) );
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) ).isFalse();
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "extX", "1.0-20110205.132618-23" );
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) );
-        assertEquals( false, ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) );
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) ).isFalse();
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) ).isFalse();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-24" );
-        assertEquals( true, ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) );
-        assertEquals( true, ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) );
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) ).isTrue();
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) ).isTrue();
 
         artifact2 = new DefaultArtifact( "gid", "aid", "ext", "1.0-20110205.132618-23" );
-        assertEquals( true, ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) );
-        assertEquals( true, ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) );
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact1, artifact2 ) ).isTrue();
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact2, artifact1 ) ).isTrue();
 
-        assertEquals( true, ArtifactIdUtils.equalsVersionlessId( artifact1, artifact1 ) );
+        assertThat( ArtifactIdUtils.equalsVersionlessId( artifact1, artifact1 ) ).isTrue();
     }
 
 }

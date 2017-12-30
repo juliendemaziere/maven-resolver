@@ -19,7 +19,7 @@ package org.eclipse.aether.util.filter;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +27,6 @@ import java.util.List;
 import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.internal.test.util.NodeBuilder;
-import org.eclipse.aether.util.filter.DependencyFilterUtils;
 import org.junit.Test;
 
 /**
@@ -43,11 +42,11 @@ public class DependencyFilterUtilsTest
         NodeBuilder builder = new NodeBuilder().artifactId( "aid" );
         DependencyFilter filter = DependencyFilterUtils.classpathFilter( "compile" );
 
-        assertTrue( filter.accept( builder.scope( "compile" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "system" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "provided" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "test" ).build(), PARENTS ) );
+        assertThat( filter.accept( builder.scope( "compile" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "system" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "provided" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) ).isFalse();
+        assertThat( filter.accept( builder.scope( "test" ).build(), PARENTS ) ).isFalse();
     }
 
     @Test
@@ -56,11 +55,11 @@ public class DependencyFilterUtilsTest
         NodeBuilder builder = new NodeBuilder().artifactId( "aid" );
         DependencyFilter filter = DependencyFilterUtils.classpathFilter( "runtime" );
 
-        assertTrue( filter.accept( builder.scope( "compile" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "system" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "provided" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "test" ).build(), PARENTS ) );
+        assertThat( filter.accept( builder.scope( "compile" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "system" ).build(), PARENTS ) ).isFalse();
+        assertThat( filter.accept( builder.scope( "provided" ).build(), PARENTS ) ).isFalse();
+        assertThat( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "test" ).build(), PARENTS ) ).isFalse();
     }
 
     @Test
@@ -69,11 +68,11 @@ public class DependencyFilterUtilsTest
         NodeBuilder builder = new NodeBuilder().artifactId( "aid" );
         DependencyFilter filter = DependencyFilterUtils.classpathFilter( "test" );
 
-        assertTrue( filter.accept( builder.scope( "compile" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "system" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "provided" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "test" ).build(), PARENTS ) );
+        assertThat( filter.accept( builder.scope( "compile" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "system" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "provided" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "test" ).build(), PARENTS ) ).isTrue();
     }
 
     @Test
@@ -82,11 +81,11 @@ public class DependencyFilterUtilsTest
         NodeBuilder builder = new NodeBuilder().artifactId( "aid" );
         DependencyFilter filter = DependencyFilterUtils.classpathFilter( "compile", "runtime" );
 
-        assertTrue( filter.accept( builder.scope( "compile" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "system" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "provided" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "test" ).build(), PARENTS ) );
+        assertThat( filter.accept( builder.scope( "compile" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "system" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "provided" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "test" ).build(), PARENTS ) ).isFalse();
     }
 
     @Test
@@ -95,11 +94,11 @@ public class DependencyFilterUtilsTest
         NodeBuilder builder = new NodeBuilder().artifactId( "aid" );
         DependencyFilter filter = DependencyFilterUtils.classpathFilter( "compile+runtime" );
 
-        assertTrue( filter.accept( builder.scope( "compile" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "system" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "provided" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "test" ).build(), PARENTS ) );
+        assertThat( filter.accept( builder.scope( "compile" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "system" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "provided" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "test" ).build(), PARENTS ) ).isFalse();
     }
 
     @Test
@@ -108,11 +107,11 @@ public class DependencyFilterUtilsTest
         NodeBuilder builder = new NodeBuilder().artifactId( "aid" );
         DependencyFilter filter = DependencyFilterUtils.classpathFilter( "runtime,system" );
 
-        assertTrue( filter.accept( builder.scope( "compile" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "system" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "provided" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "test" ).build(), PARENTS ) );
+        assertThat( filter.accept( builder.scope( "compile" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "system" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "provided" ).build(), PARENTS ) ).isFalse();
+        assertThat( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "test" ).build(), PARENTS ) ).isFalse();
     }
 
     @Test
@@ -121,11 +120,11 @@ public class DependencyFilterUtilsTest
         NodeBuilder builder = new NodeBuilder().artifactId( "aid" );
         DependencyFilter filter = DependencyFilterUtils.classpathFilter( (String[]) null );
 
-        assertFalse( filter.accept( builder.scope( "compile" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "system" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "provided" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) );
-        assertFalse( filter.accept( builder.scope( "test" ).build(), PARENTS ) );
+        assertThat( filter.accept( builder.scope( "compile" ).build(), PARENTS ) ).isFalse();
+        assertThat( filter.accept( builder.scope( "system" ).build(), PARENTS ) ).isFalse();
+        assertThat( filter.accept( builder.scope( "provided" ).build(), PARENTS ) ).isFalse();
+        assertThat( filter.accept( builder.scope( "runtime" ).build(), PARENTS ) ).isFalse();
+        assertThat( filter.accept( builder.scope( "test" ).build(), PARENTS ) ).isFalse();
     }
 
     @Test
@@ -134,8 +133,8 @@ public class DependencyFilterUtilsTest
         NodeBuilder builder = new NodeBuilder().artifactId( "aid" );
         DependencyFilter filter = DependencyFilterUtils.classpathFilter( "compile" );
 
-        assertTrue( filter.accept( builder.scope( "" ).build(), PARENTS ) );
-        assertTrue( filter.accept( builder.scope( "unknown" ).build(), PARENTS ) );
+        assertThat( filter.accept( builder.scope( "" ).build(), PARENTS ) ).isTrue();
+        assertThat( filter.accept( builder.scope( "unknown" ).build(), PARENTS ) ).isTrue();
     }
 
 }

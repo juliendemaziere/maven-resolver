@@ -19,7 +19,7 @@ package org.eclipse.aether;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -59,13 +59,13 @@ public class DefaultRepositoryCacheTest
     public void testGetPut()
     {
         Object key = "key";
-        assertNull( get( key ) );
+        assertThat(get( key ) ).isNull();
         put( key, "value" );
-        assertEquals( "value", get( key ) );
+        assertThat(get( key ) ).isEqualTo("value");
         put( key, "changed" );
-        assertEquals( "changed", get( key ) );
+        assertThat(get( key ) ).isEqualTo("changed");
         put( key, null );
-        assertNull( get( key ) );
+        assertThat(get( key ) ).isNull();
     }
 
     @Test( timeout = 10000L )
@@ -87,7 +87,7 @@ public class DefaultRepositoryCacheTest
                         try
                         {
                             put( key, Boolean.TRUE );
-                            assertEquals( Boolean.TRUE, get( key ) );
+                            assertThat(get( key ) ).isEqualTo(Boolean.TRUE);
                         }
                         catch ( Throwable t )
                         {
@@ -106,7 +106,7 @@ public class DefaultRepositoryCacheTest
         {
             thread.join();
         }
-        assertNull( String.valueOf( error.get() ), error.get() );
+        assertThat( error.get() ).isNull();
     }
 
 }

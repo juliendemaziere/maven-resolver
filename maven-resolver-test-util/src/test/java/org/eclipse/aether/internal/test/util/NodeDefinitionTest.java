@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.test.util;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,11 +35,11 @@ public class NodeDefinitionTest
     {
         Pattern pattern = Pattern.compile( regex );
         Matcher matcher = pattern.matcher( text );
-        assertEquals( true, matcher.matches() );
-        assertTrue( groups.length + " vs " + matcher.groupCount(), groups.length <= matcher.groupCount() );
+        assertThat(matcher.matches() ).isEqualTo(true);
+        assertThat(groups.length ).as( groups.length + " vs " + matcher.groupCount()).isLessThanOrEqualTo( matcher.groupCount());
         for ( int i = 1; i <= groups.length; i++ )
         {
-            assertEquals( "Mismatch for group " + i, groups[i - 1], matcher.group( i ) );
+            assertThat( matcher.group( i ) ).as( "Mismatch for group %s" , i).isEqualTo(groups[i - 1]);
         }
     }
 
@@ -47,7 +47,7 @@ public class NodeDefinitionTest
     {
         Pattern pattern = Pattern.compile( regex );
         Matcher matcher = pattern.matcher( text );
-        assertEquals( false, matcher.matches() );
+        assertThat(matcher.matches() ).isEqualTo(false);
     }
 
     @Test
@@ -96,61 +96,61 @@ public class NodeDefinitionTest
     public void testParsing_Reference()
     {
         NodeDefinition desc = new NodeDefinition( "^id" );
-        assertEquals( "id", desc.reference );
+        assertThat(desc.reference ).isEqualTo("id");
     }
 
     @Test
     public void testParsing_Node()
     {
         NodeDefinition desc = new NodeDefinition( "g:a:1" );
-        assertEquals( null, desc.reference );
-        assertEquals( "g:a:1", desc.coords );
-        assertEquals( null, desc.range );
-        assertEquals( null, desc.premanagedVersion );
-        assertEquals( null, desc.scope );
-        assertEquals( null, desc.premanagedScope );
-        assertEquals( false, desc.optional );
-        assertEquals( null, desc.properties );
-        assertEquals( null, desc.relocations );
-        assertEquals( null, desc.id );
+        assertThat(desc.reference ).isEqualTo(null);
+        assertThat(desc.coords ).isEqualTo("g:a:1");
+        assertThat(desc.range ).isEqualTo(null);
+        assertThat(desc.premanagedVersion ).isEqualTo(null);
+        assertThat(desc.scope ).isEqualTo(null);
+        assertThat(desc.premanagedScope ).isEqualTo(null);
+        assertThat(desc.optional ).isEqualTo(false);
+        assertThat(desc.properties ).isEqualTo(null);
+        assertThat(desc.relocations ).isEqualTo(null);
+        assertThat(desc.id ).isEqualTo(null);
 
         desc = new NodeDefinition( "gid1:aid1:ext1:ver1 scope1 !optional" );
-        assertEquals( null, desc.reference );
-        assertEquals( "gid1:aid1:ext1:ver1", desc.coords );
-        assertEquals( null, desc.range );
-        assertEquals( null, desc.premanagedVersion );
-        assertEquals( "scope1", desc.scope );
-        assertEquals( null, desc.premanagedScope );
-        assertEquals( false, desc.optional );
-        assertEquals( null, desc.properties );
-        assertEquals( null, desc.relocations );
-        assertEquals( null, desc.id );
+        assertThat(desc.reference ).isEqualTo(null);
+        assertThat(desc.coords ).isEqualTo("gid1:aid1:ext1:ver1");
+        assertThat(desc.range ).isEqualTo(null);
+        assertThat(desc.premanagedVersion ).isEqualTo(null);
+        assertThat(desc.scope ).isEqualTo("scope1");
+        assertThat(desc.premanagedScope ).isEqualTo(null);
+        assertThat(desc.optional ).isEqualTo(false);
+        assertThat(desc.properties ).isEqualTo(null);
+        assertThat(desc.relocations ).isEqualTo(null);
+        assertThat(desc.id ).isEqualTo(null);
 
         desc = new NodeDefinition( "g:a:1 optional" );
-        assertEquals( null, desc.reference );
-        assertEquals( "g:a:1", desc.coords );
-        assertEquals( null, desc.range );
-        assertEquals( null, desc.premanagedVersion );
-        assertEquals( null, desc.scope );
-        assertEquals( null, desc.premanagedScope );
-        assertEquals( true, desc.optional );
-        assertEquals( null, desc.properties );
-        assertEquals( null, desc.relocations );
-        assertEquals( null, desc.id );
+        assertThat(desc.reference ).isEqualTo(null);
+        assertThat(desc.coords ).isEqualTo("g:a:1");
+        assertThat(desc.range ).isEqualTo(null);
+        assertThat(desc.premanagedVersion ).isEqualTo(null);
+        assertThat(desc.scope ).isEqualTo(null);
+        assertThat(desc.premanagedScope ).isEqualTo(null);
+        assertThat(desc.optional ).isEqualTo(true);
+        assertThat(desc.properties ).isEqualTo(null);
+        assertThat(desc.relocations ).isEqualTo(null);
+        assertThat(desc.id ).isEqualTo(null);
 
         desc =
             new NodeDefinition( "gid:aid:1(, 2)<[1, 3]" + " props = k:v" + " scope=c<r" + " optional"
                 + " relocations = g:a:v , g:a:1" + " (id)" );
-        assertEquals( null, desc.reference );
-        assertEquals( "gid:aid:1", desc.coords );
-        assertEquals( "(, 2)", desc.range );
-        assertEquals( "[1, 3]", desc.premanagedVersion );
-        assertEquals( "c", desc.scope );
-        assertEquals( "r", desc.premanagedScope );
-        assertEquals( true, desc.optional );
-        assertEquals( Collections.singletonMap( "k", "v" ), desc.properties );
-        assertEquals( Arrays.asList( "g:a:v", "g:a:1" ), desc.relocations );
-        assertEquals( "id", desc.id );
+        assertThat(desc.reference ).isEqualTo(null);
+        assertThat(desc.coords ).isEqualTo("gid:aid:1");
+        assertThat(desc.range ).isEqualTo("(, 2)");
+        assertThat(desc.premanagedVersion ).isEqualTo("[1, 3]");
+        assertThat(desc.scope ).isEqualTo("c");
+        assertThat(desc.premanagedScope ).isEqualTo("r");
+        assertThat(desc.optional ).isEqualTo(true);
+        assertThat(desc.properties ).isEqualTo(Collections.singletonMap( "k", "v" ));
+        assertThat(desc.relocations ).isEqualTo(Arrays.asList( "g:a:v", "g:a:1" ));
+        assertThat(desc.id ).isEqualTo("id");
     }
 
 }

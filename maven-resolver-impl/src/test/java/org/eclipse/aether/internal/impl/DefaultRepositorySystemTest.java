@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,18 +74,18 @@ public class DefaultRepositorySystemTest
         RemoteRepository rawRepo2 = new RemoteRepository.Builder( "test-2", "default", "http://null" ).build();
         List<RemoteRepository> resolveRepos =
             system.newResolutionRepositories( session, Arrays.asList( rawRepo1, rawRepo2 ) );
-        assertNotNull( resolveRepos );
-        assertEquals( 2, resolveRepos.size() );
+        assertThat(resolveRepos ).isNotNull();
+        assertThat(resolveRepos.size() ).isEqualTo(2);
         RemoteRepository resolveRepo = resolveRepos.get( 0 );
-        assertNotNull( resolveRepo );
-        assertEquals( "mirror", resolveRepo.getId() );
-        assertSame( proxy, resolveRepo.getProxy() );
-        assertSame( auth, resolveRepo.getAuthentication() );
+        assertThat(resolveRepo ).isNotNull();
+        assertThat(resolveRepo.getId() ).isEqualTo("mirror");
+        assertThat(resolveRepo.getProxy() ).isSameAs(proxy);
+        assertThat(resolveRepo.getAuthentication() ).isSameAs(auth);
         resolveRepo = resolveRepos.get( 1 );
-        assertNotNull( resolveRepo );
-        assertEquals( "test-2", resolveRepo.getId() );
-        assertSame( proxy, resolveRepo.getProxy() );
-        assertSame( auth, resolveRepo.getAuthentication() );
+        assertThat(resolveRepo ).isNotNull();
+        assertThat(resolveRepo.getId() ).isEqualTo("test-2");
+        assertThat(resolveRepo.getProxy() ).isSameAs(proxy);
+        assertThat(resolveRepo.getAuthentication() ).isSameAs(auth);
     }
 
     @Test
@@ -107,9 +107,9 @@ public class DefaultRepositorySystemTest
 
         RemoteRepository rawRepo = new RemoteRepository.Builder( "test", "default", "http://void" ).build();
         RemoteRepository deployRepo = system.newDeploymentRepository( session, rawRepo );
-        assertNotNull( deployRepo );
-        assertSame( proxy, deployRepo.getProxy() );
-        assertSame( auth, deployRepo.getAuthentication() );
+        assertThat(deployRepo ).isNotNull();
+        assertThat(deployRepo.getProxy() ).isSameAs(proxy);
+        assertThat(deployRepo.getAuthentication() ).isSameAs(auth);
     }
 
 }

@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.test.util;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -54,20 +54,20 @@ public class DependencyGraphParserTest
 
         DependencyNode node = parser.parseLiteral( def );
 
-        assertNotNull( node );
-        assertEquals( 0, node.getChildren().size() );
+        assertThat(node ).isNotNull();
+        assertThat(node.getChildren().size() ).isEqualTo(0);
 
         Dependency dependency = node.getDependency();
-        assertNotNull( dependency );
-        assertEquals( "scope", dependency.getScope() );
+        assertThat(dependency ).isNotNull();
+        assertThat(dependency.getScope() ).isEqualTo("scope");
 
         Artifact artifact = dependency.getArtifact();
-        assertNotNull( artifact );
+        assertThat(artifact ).isNotNull();
 
-        assertEquals( "gid", artifact.getGroupId() );
-        assertEquals( "aid", artifact.getArtifactId() );
-        assertEquals( "jar", artifact.getExtension() );
-        assertEquals( "1", artifact.getVersion() );
+        assertThat(artifact.getGroupId() ).isEqualTo("gid");
+        assertThat(artifact.getArtifactId() ).isEqualTo("aid");
+        assertThat(artifact.getExtension() ).isEqualTo("jar");
+        assertThat(artifact.getVersion() ).isEqualTo("1");
     }
 
     @Test
@@ -78,12 +78,12 @@ public class DependencyGraphParserTest
 
         DependencyNode node = parser.parseLiteral( def );
 
-        assertNotNull( node );
-        assertEquals( 0, node.getChildren().size() );
+        assertThat(node ).isNotNull();
+        assertThat(node.getChildren().size() ).isEqualTo(0);
 
         Dependency dependency = node.getDependency();
-        assertNotNull( dependency );
-        assertEquals( "", dependency.getScope() );
+        assertThat(dependency ).isNotNull();
+        assertThat(dependency.getScope() ).isEqualTo("");
     }
 
     @Test
@@ -94,14 +94,14 @@ public class DependencyGraphParserTest
             "gid1:aid1:ext1:ver1 scope1\n" + "+- gid2:aid2:ext2:ver2 scope2\n" + "\\- gid3:aid3:ext3:ver3 scope3\n";
 
         DependencyNode node = parser.parseLiteral( def );
-        assertNotNull( node );
+        assertThat(node ).isNotNull();
 
         int idx = 1;
 
         assertNodeProperties( node, idx++ );
 
         List<DependencyNode> children = node.getChildren();
-        assertEquals( 2, children.size() );
+        assertThat(children.size() ).isEqualTo(2);
 
         for ( DependencyNode child : children )
         {
@@ -121,12 +121,12 @@ public class DependencyGraphParserTest
         DependencyNode node = parser.parseLiteral( def );
         assertNodeProperties( node, 1 );
 
-        assertEquals( 2, node.getChildren().size() );
+        assertThat(node.getChildren().size() ).isEqualTo(2);
         assertNodeProperties( node.getChildren().get( 1 ), 4 );
         DependencyNode lvl1Node = node.getChildren().get( 0 );
         assertNodeProperties( lvl1Node, 2 );
 
-        assertEquals( 1, lvl1Node.getChildren().size() );
+        assertThat(lvl1Node.getChildren().size() ).isEqualTo(1);
         assertNodeProperties( lvl1Node.getChildren().get( 0 ), 3 );
     }
 
@@ -137,21 +137,21 @@ public class DependencyGraphParserTest
 
     private void assertNodeProperties( DependencyNode node, String suffix )
     {
-        assertNotNull( node );
+        assertThat(node ).isNotNull();
         Dependency dependency = node.getDependency();
-        assertNotNull( dependency );
+        assertThat(dependency ).isNotNull();
         if ( !"".equals( dependency.getScope() ) )
         {
-            assertEquals( "scope" + suffix, dependency.getScope() );
+            assertThat(dependency.getScope() ).isEqualTo("scope" + suffix);
         }
 
         Artifact artifact = dependency.getArtifact();
-        assertNotNull( artifact );
+        assertThat(artifact ).isNotNull();
 
-        assertEquals( "gid" + suffix, artifact.getGroupId() );
-        assertEquals( "aid" + suffix, artifact.getArtifactId() );
-        assertEquals( "ext" + suffix, artifact.getExtension() );
-        assertEquals( "ver" + suffix, artifact.getVersion() );
+        assertThat(artifact.getGroupId() ).isEqualTo("gid" + suffix);
+        assertThat(artifact.getArtifactId() ).isEqualTo("aid" + suffix);
+        assertThat(artifact.getExtension() ).isEqualTo("ext" + suffix);
+        assertThat(artifact.getVersion() ).isEqualTo("ver" + suffix);
     }
 
     @Test
@@ -173,10 +173,10 @@ public class DependencyGraphParserTest
         DependencyNode node = parser.parseLiteral( def );
         assertNodeProperties( node, "" );
 
-        assertNotNull( node.getChildren() );
-        assertEquals( 1, node.getChildren().size() );
+        assertThat(node.getChildren() ).isNotNull();
+        assertThat(node.getChildren().size() ).isEqualTo(1);
 
-        assertSame( node, node.getChildren().get( 0 ) );
+        assertThat(node.getChildren().get( 0 ) ).isSameAs(node);
     }
 
     @Test
@@ -187,7 +187,7 @@ public class DependencyGraphParserTest
         String name = "testResourceLoading.txt";
 
         DependencyNode node = parser.parseResource( prefix + name );
-        assertEquals( 0, node.getChildren().size() );
+        assertThat(node.getChildren().size() ).isEqualTo(0);
         assertNodeProperties( node, "" );
     }
 
@@ -201,7 +201,7 @@ public class DependencyGraphParserTest
         String name = "testResourceLoading.txt";
 
         DependencyNode node = parser.parseResource( name );
-        assertEquals( 0, node.getChildren().size() );
+        assertThat(node.getChildren().size() ).isEqualTo(0);
         assertNodeProperties( node, "" );
     }
 
@@ -215,13 +215,13 @@ public class DependencyGraphParserTest
         assertNodeProperties( node, "" );
 
         Map<String, String> properties = node.getDependency().getArtifact().getProperties();
-        assertNotNull( properties );
-        assertEquals( 2, properties.size() );
+        assertThat(properties ).isNotNull();
+        assertThat(properties.size() ).isEqualTo(2);
 
-        assertTrue( properties.containsKey( "test" ) );
-        assertEquals( "foo", properties.get( "test" ) );
-        assertTrue( properties.containsKey( "test2" ) );
-        assertEquals( "fizzle", properties.get( "test2" ) );
+        assertThat(properties.containsKey( "test" ) ).isTrue();
+        assertThat(properties.get( "test" ) ).isEqualTo("foo");
+        assertThat(properties.containsKey( "test2" ) ).isTrue();
+        assertThat(properties.get( "test2" ) ).isEqualTo("fizzle");
     }
 
     @Test
@@ -232,14 +232,14 @@ public class DependencyGraphParserTest
         String def = "%s:%s:ext:ver";
         DependencyNode root = parser.parseLiteral( def );
         Artifact artifact = root.getDependency().getArtifact();
-        assertEquals( "subst2", artifact.getArtifactId() );
-        assertEquals( "subst1", artifact.getGroupId() );
+        assertThat(artifact.getArtifactId() ).isEqualTo("subst2");
+        assertThat(artifact.getGroupId() ).isEqualTo("subst1");
 
         def = "%s:aid:ext:ver\n\\- %s:aid:ext:ver";
         root = parser.parseLiteral( def );
 
-        assertEquals( "subst1", root.getDependency().getArtifact().getGroupId() );
-        assertEquals( "subst2", root.getChildren().get( 0 ).getDependency().getArtifact().getGroupId() );
+        assertThat(root.getDependency().getArtifact().getGroupId() ).isEqualTo("subst1");
+        assertThat(root.getChildren().get( 0 ).getDependency().getArtifact().getGroupId() ).isEqualTo("subst2");
     }
 
     @Test
@@ -251,9 +251,9 @@ public class DependencyGraphParserTest
 
         List<DependencyNode> nodes = parser.parseMultiResource( prefix + name );
 
-        assertEquals( 2, nodes.size() );
-        assertEquals( "aid", nodes.get( 0 ).getDependency().getArtifact().getArtifactId() );
-        assertEquals( "aid2", nodes.get( 1 ).getDependency().getArtifact().getArtifactId() );
+        assertThat(nodes.size() ).isEqualTo(2);
+        assertThat(nodes.get( 0 ).getDependency().getArtifact().getArtifactId() ).isEqualTo("aid");
+        assertThat(nodes.get( 1 ).getDependency().getArtifact().getArtifactId() ).isEqualTo("aid2");
     }
 
     @Test
@@ -263,8 +263,8 @@ public class DependencyGraphParserTest
         String literal = "(null)\n+- gid:aid:ext:ver";
         DependencyNode root = parser.parseLiteral( literal );
 
-        assertNull( root.getDependency() );
-        assertEquals( 1, root.getChildren().size() );
+        assertThat(root.getDependency() ).isNull();
+        assertThat(root.getChildren().size() ).isEqualTo(1);
     }
 
     @Test
@@ -274,9 +274,9 @@ public class DependencyGraphParserTest
         String literal = "gid:aid:ext:ver\n+- (null)";
         DependencyNode root = parser.parseLiteral( literal );
 
-        assertNotNull( root.getDependency() );
-        assertEquals( 1, root.getChildren().size() );
-        assertNull( root.getChildren().get( 0 ).getDependency() );
+        assertThat(root.getDependency() ).isNotNull();
+        assertThat(root.getChildren().size() ).isEqualTo(1);
+        assertThat(root.getChildren().get( 0 ).getDependency() ).isNull();
     }
 
     @Test
@@ -287,13 +287,13 @@ public class DependencyGraphParserTest
 
         DependencyNode node = parser.parseLiteral( def );
 
-        assertNotNull( node );
-        assertEquals( 0, node.getChildren().size() );
+        assertThat(node ).isNotNull();
+        assertThat(node.getChildren().size() ).isEqualTo(0);
 
         Dependency dependency = node.getDependency();
-        assertNotNull( dependency );
-        assertEquals( "compile", dependency.getScope() );
-        assertEquals( true, dependency.isOptional() );
+        assertThat(dependency ).isNotNull();
+        assertThat(dependency.getScope() ).isEqualTo("compile");
+        assertThat(dependency.isOptional() ).isEqualTo(true);
     }
 
 }

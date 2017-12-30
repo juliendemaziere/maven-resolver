@@ -23,6 +23,8 @@ import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.PlexusTestCase;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  */
 public class PlexusSupportTest
@@ -39,8 +41,8 @@ public class PlexusSupportTest
         throws Exception
     {
         TransporterFactory factory = lookup( TransporterFactory.class, "wagon" );
-        assertNotNull( factory );
-        assertEquals( WagonTransporterFactory.class, factory.getClass() );
+        assertThat( factory ).isNotNull();
+        assertThat( factory ).isInstanceOf( WagonTransporterFactory.class );
     }
 
 }

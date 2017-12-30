@@ -19,8 +19,6 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -29,9 +27,10 @@ import java.util.Locale;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositoryEvent;
 import org.eclipse.aether.RepositoryListener;
-import org.eclipse.aether.internal.impl.DefaultRepositoryEventDispatcher;
 import org.eclipse.aether.internal.test.util.TestUtils;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
@@ -40,7 +39,6 @@ public class DefaultRepositoryEventDispatcherTest
 
     @Test
     public void testDispatchHandlesAllEventTypes()
-        throws Exception
     {
         DefaultRepositoryEventDispatcher dispatcher = new DefaultRepositoryEventDispatcher();
 
@@ -61,10 +59,11 @@ public class DefaultRepositoryEventDispatcherTest
 
             dispatcher.dispatch( event );
 
-            assertNotNull( "not handled: " + type, handler.methodName );
+            assertThat( handler.methodName ).as( "not handled: " + type).isNotNull();
 
-            assertEquals( "badly handled: " + type, type.name().replace( "_", "" ).toLowerCase( Locale.ENGLISH ),
-                          handler.methodName.toLowerCase( Locale.ENGLISH ) );
+            assertThat(type.name().replace( "_", "" ).toLowerCase( Locale.ENGLISH ))
+                    .as("badly handled: " + type)
+                    .isEqualTo(handler.methodName.toLowerCase( Locale.ENGLISH ) );
         }
     }
 
@@ -75,7 +74,6 @@ public class DefaultRepositoryEventDispatcherTest
         public String methodName;
 
         public Object invoke( Object proxy, Method method, Object[] args )
-            throws Throwable
         {
             if ( args.length == 1 && args[0] instanceof RepositoryEvent )
             {

@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.transformer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Map;
 
@@ -54,16 +54,16 @@ public class ConflictMarkerTest
     {
         DependencyNode root = parseResource( "simple.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         Map<?, ?> ids = (Map<?, ?>) context.get( TransformationContextKeys.CONFLICT_IDS );
-        assertNotNull( ids );
+        assertThat(ids ).isNotNull();
 
-        assertNull( ids.get( root ) );
-        assertNotNull( ids.get( root.getChildren().get( 0 ) ) );
-        assertNotNull( ids.get( root.getChildren().get( 1 ) ) );
-        assertNotSame( ids.get( root.getChildren().get( 0 ) ), ids.get( root.getChildren().get( 1 ) ) );
-        assertFalse( ids.get( root.getChildren().get( 0 ) ).equals( ids.get( root.getChildren().get( 1 ) ) ) );
+        assertThat(ids.get( root ) ).isNull();
+        assertThat(ids.get( root.getChildren().get( 0 ) ) ).isNotNull();
+        assertThat(ids.get( root.getChildren().get( 1 ) ) ).isNotNull();
+        assertThat(ids.get( root.getChildren().get( 1 ) ) ).isNotSameAs(ids.get( root.getChildren().get( 0 ) ));
+        assertThat(ids.get( root.getChildren().get( 0 ) ).equals( ids.get( root.getChildren().get( 1 ) ) ) ).isFalse();
     }
 
     @Test
@@ -72,15 +72,15 @@ public class ConflictMarkerTest
     {
         DependencyNode root = parseResource( "relocation1.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         Map<?, ?> ids = (Map<?, ?>) context.get( TransformationContextKeys.CONFLICT_IDS );
-        assertNotNull( ids );
+        assertThat(ids ).isNotNull();
 
-        assertNull( ids.get( root ) );
-        assertNotNull( ids.get( root.getChildren().get( 0 ) ) );
-        assertNotNull( ids.get( root.getChildren().get( 1 ) ) );
-        assertSame( ids.get( root.getChildren().get( 0 ) ), ids.get( root.getChildren().get( 1 ) ) );
+        assertThat(ids.get( root ) ).isNull();
+        assertThat(ids.get( root.getChildren().get( 0 ) ) ).isNotNull();
+        assertThat(ids.get( root.getChildren().get( 1 ) ) ).isNotNull();
+        assertThat(ids.get( root.getChildren().get( 1 ) ) ).isSameAs(ids.get( root.getChildren().get( 0 ) ));
     }
 
     @Test
@@ -89,15 +89,15 @@ public class ConflictMarkerTest
     {
         DependencyNode root = parseResource( "relocation2.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         Map<?, ?> ids = (Map<?, ?>) context.get( TransformationContextKeys.CONFLICT_IDS );
-        assertNotNull( ids );
+        assertThat(ids ).isNotNull();
 
-        assertNull( ids.get( root ) );
-        assertNotNull( ids.get( root.getChildren().get( 0 ) ) );
-        assertNotNull( ids.get( root.getChildren().get( 1 ) ) );
-        assertSame( ids.get( root.getChildren().get( 0 ) ), ids.get( root.getChildren().get( 1 ) ) );
+        assertThat(ids.get( root ) ).isNull();
+        assertThat(ids.get( root.getChildren().get( 0 ) ) ).isNotNull();
+        assertThat(ids.get( root.getChildren().get( 1 ) ) ).isNotNull();
+        assertThat(ids.get( root.getChildren().get( 1 ) ) ).isSameAs(ids.get( root.getChildren().get( 0 ) ));
     }
 
     @Test
@@ -106,17 +106,17 @@ public class ConflictMarkerTest
     {
         DependencyNode root = parseResource( "relocation3.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         Map<?, ?> ids = (Map<?, ?>) context.get( TransformationContextKeys.CONFLICT_IDS );
-        assertNotNull( ids );
+        assertThat(ids ).isNotNull();
 
-        assertNull( ids.get( root ) );
-        assertNotNull( ids.get( root.getChildren().get( 0 ) ) );
-        assertNotNull( ids.get( root.getChildren().get( 1 ) ) );
-        assertNotNull( ids.get( root.getChildren().get( 2 ) ) );
-        assertSame( ids.get( root.getChildren().get( 0 ) ), ids.get( root.getChildren().get( 1 ) ) );
-        assertSame( ids.get( root.getChildren().get( 1 ) ), ids.get( root.getChildren().get( 2 ) ) );
+        assertThat(ids.get( root ) ).isNull();
+        assertThat(ids.get( root.getChildren().get( 0 ) ) ).isNotNull();
+        assertThat(ids.get( root.getChildren().get( 1 ) ) ).isNotNull();
+        assertThat(ids.get( root.getChildren().get( 2 ) ) ).isNotNull();
+        assertThat(ids.get( root.getChildren().get( 1 ) ) ).isSameAs(ids.get( root.getChildren().get( 0 ) ));
+        assertThat(ids.get( root.getChildren().get( 2 ) ) ).isSameAs(ids.get( root.getChildren().get( 1 ) ));
     }
 
 }

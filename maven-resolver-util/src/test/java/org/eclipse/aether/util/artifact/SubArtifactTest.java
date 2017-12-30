@@ -19,8 +19,6 @@ package org.eclipse.aether.util.artifact;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,8 +26,9 @@ import java.util.Map;
 
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.util.artifact.SubArtifact;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
@@ -45,19 +44,19 @@ public class SubArtifactTest
     public void testMainArtifactFileNotRetained()
     {
         Artifact a = newMainArtifact( "gid:aid:ver" ).setFile( new File( "" ) );
-        assertNotNull( a.getFile() );
+        assertThat(a.getFile() ).isNotNull();
         a = new SubArtifact( a, "", "pom" );
-        assertNull( a.getFile() );
+        assertThat(a.getFile() ).isNull();
     }
 
     @Test
     public void testMainArtifactPropertiesNotRetained()
     {
         Artifact a = newMainArtifact( "gid:aid:ver" ).setProperties( Collections.singletonMap( "key", "value" ) );
-        assertEquals( 1, a.getProperties().size() );
+        assertThat(a.getProperties().size() ).isEqualTo(1);
         a = new SubArtifact( a, "", "pom" );
-        assertEquals( 0, a.getProperties().size() );
-        assertSame( null, a.getProperty( "key", null ) );
+        assertThat(a.getProperties().size() ).isEqualTo(0);
+        assertThat(a.getProperty( "key", null )).isNull();
     }
 
     @Test( expected = NullPointerException.class )
@@ -71,9 +70,9 @@ public class SubArtifactTest
     {
         Artifact main = newMainArtifact( "gid:aid:ext:cls:ver" );
         Artifact sub = new SubArtifact( main, "", "pom" );
-        assertEquals( "", sub.getClassifier() );
+        assertThat(sub.getClassifier() ).isEqualTo("");
         sub = new SubArtifact( main, null, "pom" );
-        assertEquals( "", sub.getClassifier() );
+        assertThat(sub.getClassifier() ).isEqualTo("");
     }
 
     @Test
@@ -81,9 +80,9 @@ public class SubArtifactTest
     {
         Artifact main = newMainArtifact( "gid:aid:ext:cls:ver" );
         Artifact sub = new SubArtifact( main, "tests", "" );
-        assertEquals( "", sub.getExtension() );
+        assertThat(sub.getExtension() ).isEqualTo("");
         sub = new SubArtifact( main, "tests", null );
-        assertEquals( "", sub.getExtension() );
+        assertThat(sub.getExtension() ).isEqualTo("");
     }
 
     @Test
@@ -91,7 +90,7 @@ public class SubArtifactTest
     {
         Artifact main = newMainArtifact( "gid:aid:ext:cls:ver" );
         Artifact sub = new SubArtifact( main, "*", "pom" );
-        assertEquals( "cls", sub.getClassifier() );
+        assertThat(sub.getClassifier() ).isEqualTo("cls");
     }
 
     @Test
@@ -99,7 +98,7 @@ public class SubArtifactTest
     {
         Artifact main = newMainArtifact( "gid:aid:ext:cls:ver" );
         Artifact sub = new SubArtifact( main, "tests", "*" );
-        assertEquals( "ext", sub.getExtension() );
+        assertThat(sub.getExtension() ).isEqualTo("ext");
     }
 
     @Test
@@ -107,15 +106,15 @@ public class SubArtifactTest
     {
         Artifact main = newMainArtifact( "gid:aid:ext:cls:ver" );
         Artifact sub = new SubArtifact( main, "*-tests", "pom" );
-        assertEquals( "cls-tests", sub.getClassifier() );
+        assertThat(sub.getClassifier() ).isEqualTo("cls-tests");
         sub = new SubArtifact( main, "tests-*", "pom" );
-        assertEquals( "tests-cls", sub.getClassifier() );
+        assertThat(sub.getClassifier() ).isEqualTo("tests-cls");
 
         main = newMainArtifact( "gid:aid:ext:ver" );
         sub = new SubArtifact( main, "*-tests", "pom" );
-        assertEquals( "tests", sub.getClassifier() );
+        assertThat(sub.getClassifier() ).isEqualTo("tests");
         sub = new SubArtifact( main, "tests-*", "pom" );
-        assertEquals( "tests", sub.getClassifier() );
+        assertThat(sub.getClassifier() ).isEqualTo("tests");
     }
 
     @Test
@@ -123,18 +122,18 @@ public class SubArtifactTest
     {
         Artifact main = newMainArtifact( "gid:aid:ext:cls:ver" );
         Artifact sub = new SubArtifact( main, "", "*.asc" );
-        assertEquals( "ext.asc", sub.getExtension() );
+        assertThat(sub.getExtension() ).isEqualTo("ext.asc");
         sub = new SubArtifact( main, "", "asc.*" );
-        assertEquals( "asc.ext", sub.getExtension() );
+        assertThat(sub.getExtension() ).isEqualTo("asc.ext");
     }
 
     @Test
     public void testImmutability()
     {
         Artifact a = new SubArtifact( newMainArtifact( "gid:aid:ver" ), "", "pom" );
-        assertNotSame( a, a.setFile( new File( "file" ) ) );
-        assertNotSame( a, a.setVersion( "otherVersion" ) );
-        assertNotSame( a, a.setProperties( Collections.singletonMap( "key", "value" ) ) );
+        assertThat( a.setFile( new File( "file" ) ) ).isNotSameAs( a );
+        assertThat( a.setVersion( "otherVersion" ) ).isNotSameAs( a );
+        assertThat( a.setProperties( Collections.singletonMap( "key", "value"))).isNotSameAs( a );;
     }
 
     @Test
@@ -144,15 +143,15 @@ public class SubArtifactTest
         props.put( "key", "value1" );
 
         Artifact a = new SubArtifact( newMainArtifact( "gid:aid:ver" ), "", "pom", props, null );
-        assertEquals( "value1", a.getProperty( "key", null ) );
+        assertThat( a.getProperty( "key", null)).isEqualTo( "value1" );
         props.clear();
-        assertEquals( "value1", a.getProperty( "key", null ) );
+        assertThat( a.getProperty( "key", null)).isEqualTo( "value1" );
 
         props.put( "key", "value2" );
         a = a.setProperties( props );
-        assertEquals( "value2", a.getProperty( "key", null ) );
+        assertThat( a.getProperty( "key", null)).isEqualTo( "value2" );
         props.clear();
-        assertEquals( "value2", a.getProperty( "key", null ) );
+        assertThat( a.getProperty( "key", null)).isEqualTo( "value2" );
     }
 
 }

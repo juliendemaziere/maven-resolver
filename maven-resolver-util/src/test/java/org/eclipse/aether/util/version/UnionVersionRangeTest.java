@@ -19,13 +19,13 @@ package org.eclipse.aether.util.version;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.Collections;
 
 import org.eclipse.aether.version.InvalidVersionSpecificationException;
 import org.eclipse.aether.version.VersionRange;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UnionVersionRangeTest
 {
@@ -46,16 +46,16 @@ public class UnionVersionRangeTest
     {
         if ( version == null )
         {
-            assertNull( bound );
+            assertThat( bound ).isNull();
         }
         else
         {
-            assertNotNull( bound );
-            assertNotNull( bound.getVersion() );
-            assertEquals( inclusive, bound.isInclusive() );
+            assertThat( bound ).isNotNull();
+            assertThat( bound.getVersion() ).isNotNull();
+            assertThat( bound.isInclusive() ).isEqualTo( inclusive );
             try
             {
-                assertEquals( new GenericVersionScheme().parseVersion( version ), bound.getVersion() );
+                assertThat( bound.getVersion() ).isEqualTo( new GenericVersionScheme().parseVersion( version ));
             }
             catch ( InvalidVersionSpecificationException e )
             {

@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -102,15 +102,16 @@ public class DefaultMetadataResolverTest
         MetadataRequest request = new MetadataRequest( metadata, null, "" );
         List<MetadataResult> results = resolver.resolveMetadata( session, Arrays.asList( request ) );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size() ).isEqualTo(1);
 
         MetadataResult result = results.get( 0 );
-        assertSame( request, result.getRequest() );
-        assertNotNull( "" + ( result.getMetadata() != null ? result.getMetadata().getFile() : result.getMetadata() ),
-                       result.getException() );
-        assertEquals( MetadataNotFoundException.class, result.getException().getClass() );
+        assertThat(result.getRequest() ).isSameAs(request);
+        assertThat( result.getException() )
+                .as("" + ( result.getMetadata() != null ? result.getMetadata().getFile() : result.getMetadata() ))
+                        .isNotNull();
+        assertThat(result.getException().getClass() ).isEqualTo(MetadataNotFoundException.class);
 
-        assertNull( result.getMetadata() );
+        assertThat(result.getMetadata() ).isNull();
     }
 
     @Test
@@ -129,22 +130,22 @@ public class DefaultMetadataResolverTest
         MetadataRequest request = new MetadataRequest( metadata, repository, "" );
         List<MetadataResult> results = resolver.resolveMetadata( session, Arrays.asList( request ) );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size() ).isEqualTo(1);
 
         MetadataResult result = results.get( 0 );
-        assertSame( request, result.getRequest() );
-        assertNull( result.getException() );
-        assertNotNull( result.getMetadata() );
-        assertNotNull( result.getMetadata().getFile() );
+        assertThat(result.getRequest() ).isSameAs(request);
+        assertThat(result.getException() ).isNull();
+        assertThat(result.getMetadata() ).isNotNull();
+        assertThat(result.getMetadata().getFile() ).isNotNull();
 
-        assertEquals( file, result.getMetadata().getFile() );
-        assertEquals( metadata, result.getMetadata().setFile( null ) );
+        assertThat(result.getMetadata().getFile() ).isEqualTo(file);
+        assertThat(result.getMetadata().setFile( null ) ).isEqualTo(metadata);
 
         connector.assertSeenExpected();
         Set<Metadata> metadataRegistration =
             ( (TestLocalRepositoryManager) session.getLocalRepositoryManager() ).getMetadataRegistration();
-        assertTrue( metadataRegistration.contains( metadata ) );
-        assertEquals( 1, metadataRegistration.size() );
+        assertThat(metadataRegistration.contains( metadata ) ).isTrue();
+        assertThat(metadataRegistration.size() ).isEqualTo(1);
     }
 
     @Test
@@ -178,11 +179,11 @@ public class DefaultMetadataResolverTest
         request.setDeleteLocalCopyIfMissing( true );
 
         List<MetadataResult> results = resolver.resolveMetadata( session, Arrays.asList( request ) );
-        assertEquals( 1, results.size() );
+        assertThat(results.size() ).isEqualTo(1);
         MetadataResult result = results.get( 0 );
 
-        assertNotNull( result.getException() );
-        assertEquals( false, file.exists() );
+        assertThat(result.getException() ).isNotNull();
+        assertThat(file.exists() ).isEqualTo(false);
     }
 
     @Test
@@ -192,12 +193,12 @@ public class DefaultMetadataResolverTest
         MetadataRequest request = new MetadataRequest( metadata, repository, "" );
         List<MetadataResult> results = resolver.resolveMetadata( session, Arrays.asList( request ) );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size() ).isEqualTo(1);
 
         MetadataResult result = results.get( 0 );
-        assertSame( request, result.getRequest() );
-        assertNotNull( result.getException() );
-        assertNull( result.getMetadata() );
+        assertThat(result.getRequest() ).isSameAs(request);
+        assertThat(result.getException() ).isNotNull();
+        assertThat(result.getMetadata() ).isNull();
 
         connector.assertSeenExpected();
     }
@@ -218,15 +219,15 @@ public class DefaultMetadataResolverTest
         MetadataRequest request = new MetadataRequest( metadata, repository, "" );
         List<MetadataResult> results = resolver.resolveMetadata( session, Arrays.asList( request ) );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size() ).isEqualTo(1);
         MetadataResult result = results.get( 0 );
-        assertSame( request, result.getRequest() );
-        assertNull( String.valueOf( result.getException() ), result.getException() );
-        assertNotNull( result.getMetadata() );
-        assertNotNull( result.getMetadata().getFile() );
+        assertThat( result.getRequest() ).isSameAs(request);
+        assertThat( result.getException() ).isNull();
+        assertThat( result.getMetadata() ).isNotNull();
+        assertThat( result.getMetadata().getFile() ).isNotNull();
 
-        assertEquals( file, result.getMetadata().getFile() );
-        assertEquals( metadata.setFile( null ), result.getMetadata().setFile( null ) );
+        assertThat( result.getMetadata().getFile() ).isEqualTo(file);
+        assertThat( result.getMetadata().setFile( null ) ).isEqualTo(metadata.setFile( null ));
 
         connector.assertSeenExpected();
     }
@@ -246,10 +247,10 @@ public class DefaultMetadataResolverTest
 
         List<MetadataResult> results = resolver.resolveMetadata( session, Arrays.asList( request ) );
 
-        assertEquals( 1, results.size() );
+        assertThat(results.size() ).isEqualTo(1);
         MetadataResult result = results.get( 0 );
-        assertSame( request, result.getRequest() );
-        assertNull( String.valueOf( result.getException() ), result.getException() );
+        assertThat(result.getRequest() ).isSameAs(request);
+         assertThat(result.getException() ).isNull();
 
         connector.assertSeenExpected();
     }

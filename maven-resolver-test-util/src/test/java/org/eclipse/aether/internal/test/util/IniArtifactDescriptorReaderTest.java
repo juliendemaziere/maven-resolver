@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.test.util;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -72,21 +72,21 @@ public class IniArtifactDescriptorReaderTest
         ArtifactDescriptorRequest request = new ArtifactDescriptorRequest( art, null, "" );
         ArtifactDescriptorResult description = reader.readArtifactDescriptor( session, request );
 
-        assertEquals( request, description.getRequest() );
-        assertEquals( art.setVersion( "1" ), description.getArtifact() );
+        assertThat(description.getRequest() ).isEqualTo(request);
+        assertThat(description.getArtifact() ).isEqualTo(art.setVersion( "1" ));
 
-        assertEquals( 1, description.getRelocations().size() );
+        assertThat(description.getRelocations().size() ).isEqualTo(1);
         Artifact artifact = description.getRelocations().get( 0 );
-        assertEquals( "gid", artifact.getGroupId() );
-        assertEquals( "aid", artifact.getArtifactId() );
-        assertEquals( "ver", artifact.getVersion() );
-        assertEquals( "ext", artifact.getExtension() );
+        assertThat(artifact.getGroupId() ).isEqualTo("gid");
+        assertThat(artifact.getArtifactId() ).isEqualTo("aid");
+        assertThat(artifact.getVersion() ).isEqualTo("ver");
+        assertThat(artifact.getExtension() ).isEqualTo("ext");
 
-        assertEquals( 1, description.getRepositories().size() );
+        assertThat(description.getRepositories().size() ).isEqualTo(1);
         RemoteRepository repo = description.getRepositories().get( 0 );
-        assertEquals( "id", repo.getId() );
-        assertEquals( "type", repo.getContentType() );
-        assertEquals( "protocol://some/url?for=testing", repo.getUrl() );
+        assertThat(repo.getId() ).isEqualTo("id");
+        assertThat(repo.getContentType() ).isEqualTo("type");
+        assertThat(repo.getUrl() ).isEqualTo("protocol://some/url?for=testing");
 
         assertDependencies( description.getDependencies() );
         assertDependencies( description.getManagedDependencies() );
@@ -95,58 +95,58 @@ public class IniArtifactDescriptorReaderTest
 
     private void assertDependencies( List<Dependency> deps )
     {
-        assertEquals( 4, deps.size() );
+        assertThat(deps.size() ).isEqualTo(4);
 
         Dependency dep = deps.get( 0 );
-        assertEquals( "scope", dep.getScope() );
-        assertEquals( false, dep.isOptional() );
-        assertEquals( 2, dep.getExclusions().size() );
+        assertThat(dep.getScope() ).isEqualTo("scope");
+        assertThat(dep.isOptional() ).isEqualTo(false);
+        assertThat(dep.getExclusions().size() ).isEqualTo(2);
         Iterator<Exclusion> it = dep.getExclusions().iterator();
         Exclusion excl = it.next();
-        assertEquals( "gid3", excl.getGroupId() );
-        assertEquals( "aid", excl.getArtifactId() );
+        assertThat(excl.getGroupId() ).isEqualTo("gid3");
+        assertThat(excl.getArtifactId() ).isEqualTo("aid");
         excl = it.next();
-        assertEquals( "gid2", excl.getGroupId() );
-        assertEquals( "aid2", excl.getArtifactId() );
+        assertThat(excl.getGroupId() ).isEqualTo("gid2");
+        assertThat(excl.getArtifactId() ).isEqualTo("aid2");
 
         Artifact art = dep.getArtifact();
-        assertEquals( "gid", art.getGroupId() );
-        assertEquals( "aid", art.getArtifactId() );
-        assertEquals( "ver", art.getVersion() );
-        assertEquals( "ext", art.getExtension() );
+        assertThat(art.getGroupId() ).isEqualTo("gid");
+        assertThat(art.getArtifactId() ).isEqualTo("aid");
+        assertThat(art.getVersion() ).isEqualTo("ver");
+        assertThat(art.getExtension() ).isEqualTo("ext");
 
         dep = deps.get( 1 );
-        assertEquals( "scope", dep.getScope() );
-        assertEquals( true, dep.isOptional() );
-        assertEquals( 0, dep.getExclusions().size() );
+        assertThat(dep.getScope() ).isEqualTo("scope");
+        assertThat(dep.isOptional() ).isEqualTo(true);
+        assertThat(dep.getExclusions().size() ).isEqualTo(0);
 
         art = dep.getArtifact();
-        assertEquals( "gid", art.getGroupId() );
-        assertEquals( "aid2", art.getArtifactId() );
-        assertEquals( "ver", art.getVersion() );
-        assertEquals( "ext", art.getExtension() );
+        assertThat(art.getGroupId() ).isEqualTo("gid");
+        assertThat(art.getArtifactId() ).isEqualTo("aid2");
+        assertThat(art.getVersion() ).isEqualTo("ver");
+        assertThat(art.getExtension() ).isEqualTo("ext");
 
         dep = deps.get( 2 );
-        assertEquals( "scope", dep.getScope() );
-        assertEquals( true, dep.isOptional() );
-        assertEquals( 0, dep.getExclusions().size() );
+        assertThat(dep.getScope() ).isEqualTo("scope");
+        assertThat(dep.isOptional() ).isEqualTo(true);
+        assertThat(dep.getExclusions().size() ).isEqualTo(0);
 
         art = dep.getArtifact();
-        assertEquals( "gid", art.getGroupId() );
-        assertEquals( "aid", art.getArtifactId() );
-        assertEquals( "ver3", art.getVersion() );
-        assertEquals( "ext", art.getExtension() );
+        assertThat(art.getGroupId() ).isEqualTo("gid");
+        assertThat(art.getArtifactId() ).isEqualTo("aid");
+        assertThat(art.getVersion() ).isEqualTo("ver3");
+        assertThat(art.getExtension() ).isEqualTo("ext");
 
         dep = deps.get( 3 );
-        assertEquals( "scope5", dep.getScope() );
-        assertEquals( true, dep.isOptional() );
-        assertEquals( 0, dep.getExclusions().size() );
+        assertThat(dep.getScope() ).isEqualTo("scope5");
+        assertThat(dep.isOptional() ).isEqualTo(true);
+        assertThat(dep.getExclusions().size() ).isEqualTo(0);
 
         art = dep.getArtifact();
-        assertEquals( "gid1", art.getGroupId() );
-        assertEquals( "aid", art.getArtifactId() );
-        assertEquals( "ver", art.getVersion() );
-        assertEquals( "ext", art.getExtension() );
+        assertThat(art.getGroupId() ).isEqualTo("gid1");
+        assertThat(art.getArtifactId() ).isEqualTo("aid");
+        assertThat(art.getVersion() ).isEqualTo("ver");
+        assertThat(art.getExtension() ).isEqualTo("ext");
     }
 
 }

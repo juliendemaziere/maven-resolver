@@ -19,7 +19,7 @@ package org.eclipse.aether.util.repository;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.util.repository.DefaultProxySelector;
 import org.junit.Test;
@@ -37,40 +37,40 @@ public class DefaultProxySelectorTest
     @Test
     public void testIsNonProxyHost_Blank()
     {
-        assertFalse( isNonProxyHost( "www.eclipse.org", null ) );
-        assertFalse( isNonProxyHost( "www.eclipse.org", "" ) );
+        assertThat(isNonProxyHost( "www.eclipse.org", null ) ).isFalse();
+        assertThat(isNonProxyHost( "www.eclipse.org", "" ) ).isFalse();
     }
 
     @Test
     public void testIsNonProxyHost_Wildcard()
     {
-        assertTrue( isNonProxyHost( "www.eclipse.org", "*" ) );
-        assertTrue( isNonProxyHost( "www.eclipse.org", "*.org" ) );
-        assertFalse( isNonProxyHost( "www.eclipse.org", "*.com" ) );
-        assertTrue( isNonProxyHost( "www.eclipse.org", "www.*" ) );
-        assertTrue( isNonProxyHost( "www.eclipse.org", "www.*.org" ) );
+        assertThat(isNonProxyHost( "www.eclipse.org", "*" ) ).isTrue();
+        assertThat(isNonProxyHost( "www.eclipse.org", "*.org" ) ).isTrue();
+        assertThat(isNonProxyHost( "www.eclipse.org", "*.com" ) ).isFalse();
+        assertThat(isNonProxyHost( "www.eclipse.org", "www.*" ) ).isTrue();
+        assertThat(isNonProxyHost( "www.eclipse.org", "www.*.org" ) ).isTrue();
     }
 
     @Test
     public void testIsNonProxyHost_Multiple()
     {
-        assertTrue( isNonProxyHost( "eclipse.org", "eclipse.org|host2" ) );
-        assertTrue( isNonProxyHost( "eclipse.org", "host1|eclipse.org" ) );
-        assertTrue( isNonProxyHost( "eclipse.org", "host1|eclipse.org|host2" ) );
+        assertThat(isNonProxyHost( "eclipse.org", "eclipse.org|host2" ) ).isTrue();
+        assertThat(isNonProxyHost( "eclipse.org", "host1|eclipse.org" ) ).isTrue();
+        assertThat(isNonProxyHost( "eclipse.org", "host1|eclipse.org|host2" ) ).isTrue();
     }
 
     @Test
     public void testIsNonProxyHost_Misc()
     {
-        assertFalse( isNonProxyHost( "www.eclipse.org", "www.eclipse.com" ) );
-        assertFalse( isNonProxyHost( "www.eclipse.org", "eclipse.org" ) );
+        assertThat(isNonProxyHost( "www.eclipse.org", "www.eclipse.com" ) ).isFalse();
+        assertThat(isNonProxyHost( "www.eclipse.org", "eclipse.org" ) ).isFalse();
     }
 
     @Test
     public void testIsNonProxyHost_CaseInsensitivity()
     {
-        assertTrue( isNonProxyHost( "www.eclipse.org", "www.ECLIPSE.org" ) );
-        assertTrue( isNonProxyHost( "www.ECLIPSE.org", "www.eclipse.org" ) );
+        assertThat(isNonProxyHost( "www.eclipse.org", "www.ECLIPSE.org" ) ).isTrue();
+        assertThat(isNonProxyHost( "www.ECLIPSE.org", "www.eclipse.org" ) ).isTrue();
     }
 
 }

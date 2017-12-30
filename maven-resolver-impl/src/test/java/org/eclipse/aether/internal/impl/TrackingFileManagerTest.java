@@ -19,8 +19,6 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -30,9 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.eclipse.aether.internal.impl.TrackingFileManager;
 import org.eclipse.aether.internal.test.util.TestFileUtils;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
@@ -48,15 +47,15 @@ public class TrackingFileManagerTest
         File propFile = TestFileUtils.createTempFile( "#COMMENT\nkey1=value1\nkey2 : value2" );
         Properties props = tfm.read( propFile );
 
-        assertNotNull( props );
-        assertEquals( String.valueOf( props ), 2, props.size() );
-        assertEquals( "value1", props.get( "key1" ) );
-        assertEquals( "value2", props.get( "key2" ) );
+        assertThat( props ).isNotNull();
+        assertThat( String.valueOf( props ).length()).isEqualTo( props.size() );
+        assertThat( props.get( "key1" ) ).isEqualTo("value1");
+        assertThat( props.get( "key2" ) ).isEqualTo("value2");
 
-        assertTrue( "Leaked file: " + propFile, propFile.delete() );
+        assertThat( propFile.delete() ).as("Leaked file: %s", propFile).isTrue();
 
         props = tfm.read( propFile );
-        assertNull( String.valueOf( props ), props );
+        assertThat( String.valueOf( props ) ).isNull();
     }
 
     @Test
@@ -68,8 +67,8 @@ public class TrackingFileManagerTest
         for ( int i = 0; i < 1000; i++ )
         {
             File propFile = TestFileUtils.createTempFile( "#COMMENT\nkey1=value1\nkey2 : value2" );
-            assertNotNull( tfm.read( propFile ) );
-            assertTrue( "Leaked file: " + propFile, propFile.delete() );
+            assertThat( tfm.read( propFile ) ).isNotNull();
+            assertThat( propFile.delete() ).as( "Leaked file: %s", propFile).isTrue();
         }
     }
 
@@ -90,10 +89,10 @@ public class TrackingFileManagerTest
 
         Properties props = tfm.read( propFile );
 
-        assertNotNull( props );
-        assertEquals( String.valueOf( props ), 1, props.size() );
-        assertEquals( "v", props.get( "key1" ) );
-        assertNull( String.valueOf( props.get( "key2" ) ), props.get( "key2" ) );
+        assertThat( props ).isNotNull();
+        assertThat( String.valueOf( props )).isEqualTo(props.size());
+        assertThat( props.get( "key1" ) ).isEqualTo("v");
+        assertThat( String.valueOf( props.get( "key2" ) ) ).isNull();
     }
 
     @Test
@@ -108,8 +107,8 @@ public class TrackingFileManagerTest
         for ( int i = 0; i < 1000; i++ )
         {
             File propFile = TestFileUtils.createTempFile( "#COMMENT\nkey1=value1\nkey2 : value2" );
-            assertNotNull( tfm.update( propFile, updates ) );
-            assertTrue( "Leaked file: " + propFile, propFile.delete() );
+            assertThat( tfm.update( propFile, updates ) ).isNotNull();
+            assertThat( propFile.delete() ).as( "Leaked file: %s", propFile).isTrue();
         }
     }
 
@@ -142,7 +141,7 @@ public class TrackingFileManagerTest
                     {
                         for ( int i = 0; i < 1000; i++ )
                         {
-                            assertNotNull( tfm.read( file ) );
+                            assertThat( tfm.read( file ) ).isNotNull();
                         }
                     }
                     catch ( Throwable e )
@@ -163,7 +162,7 @@ public class TrackingFileManagerTest
             thread.join();
         }
 
-        assertEquals( Collections.emptyList(), errors );
+        assertThat( errors ).isEmpty();
     }
 
 }

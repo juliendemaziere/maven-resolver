@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.internal.test.util.TestUtils;
@@ -46,7 +46,6 @@ public class DefaultChecksumPolicyProviderTest
 
     @Before
     public void setup()
-        throws Exception
     {
         session = TestUtils.newSession();
         provider = new DefaultChecksumPolicyProvider();
@@ -56,7 +55,6 @@ public class DefaultChecksumPolicyProviderTest
 
     @After
     public void teardown()
-        throws Exception
     {
         provider = null;
         session = null;
@@ -69,8 +67,8 @@ public class DefaultChecksumPolicyProviderTest
     {
         ChecksumPolicy policy =
             provider.newChecksumPolicy( session, repository, resource, RepositoryPolicy.CHECKSUM_POLICY_FAIL );
-        assertNotNull( policy );
-        assertEquals( FailChecksumPolicy.class, policy.getClass() );
+        assertThat(policy ).isNotNull();
+        assertThat(policy.getClass() ).isEqualTo(FailChecksumPolicy.class);
     }
 
     @Test
@@ -78,8 +76,8 @@ public class DefaultChecksumPolicyProviderTest
     {
         ChecksumPolicy policy =
             provider.newChecksumPolicy( session, repository, resource, RepositoryPolicy.CHECKSUM_POLICY_WARN );
-        assertNotNull( policy );
-        assertEquals( WarnChecksumPolicy.class, policy.getClass() );
+        assertThat(policy ).isNotNull();
+        assertThat(policy.getClass() ).isEqualTo(WarnChecksumPolicy.class);
     }
 
     @Test
@@ -87,15 +85,15 @@ public class DefaultChecksumPolicyProviderTest
     {
         ChecksumPolicy policy =
             provider.newChecksumPolicy( session, repository, resource, RepositoryPolicy.CHECKSUM_POLICY_IGNORE );
-        assertNull( policy );
+        assertThat( policy ).isNull();
     }
 
     @Test
     public void testNewChecksumPolicy_Unknown()
     {
         ChecksumPolicy policy = provider.newChecksumPolicy( session, repository, resource, CHECKSUM_POLICY_UNKNOWN );
-        assertNotNull( policy );
-        assertEquals( WarnChecksumPolicy.class, policy.getClass() );
+        assertThat(policy ).isNotNull();
+        assertThat(policy.getClass() ).isEqualTo(WarnChecksumPolicy.class);
     }
 
     @Test
@@ -106,7 +104,7 @@ public class DefaultChecksumPolicyProviderTest
                 RepositoryPolicy.CHECKSUM_POLICY_IGNORE, CHECKSUM_POLICY_UNKNOWN };
         for ( String policy : policies )
         {
-            assertEquals( policy, policy, provider.getEffectiveChecksumPolicy( session, policy, policy ) );
+            assertThat( provider.getEffectiveChecksumPolicy( session, policy, policy )).isEqualTo( policy );
         }
     }
 
@@ -119,10 +117,8 @@ public class DefaultChecksumPolicyProviderTest
                 { RepositoryPolicy.CHECKSUM_POLICY_IGNORE, RepositoryPolicy.CHECKSUM_POLICY_WARN } };
         for ( String[] testCase : testCases )
         {
-            assertEquals( testCase[0] + " vs " + testCase[1], testCase[0],
-                          provider.getEffectiveChecksumPolicy( session, testCase[0], testCase[1] ) );
-            assertEquals( testCase[0] + " vs " + testCase[1], testCase[0],
-                          provider.getEffectiveChecksumPolicy( session, testCase[1], testCase[0] ) );
+            assertThat( provider.getEffectiveChecksumPolicy( session, testCase[0], testCase[1] ) );
+            assertThat( provider.getEffectiveChecksumPolicy( session, testCase[1], testCase[0] ) );
         }
     }
 
@@ -135,10 +131,8 @@ public class DefaultChecksumPolicyProviderTest
                 { RepositoryPolicy.CHECKSUM_POLICY_IGNORE, RepositoryPolicy.CHECKSUM_POLICY_IGNORE } };
         for ( String[] testCase : testCases )
         {
-            assertEquals( "unknown vs " + testCase[1], testCase[0],
-                          provider.getEffectiveChecksumPolicy( session, CHECKSUM_POLICY_UNKNOWN, testCase[1] ) );
-            assertEquals( "unknown vs " + testCase[1], testCase[0],
-                          provider.getEffectiveChecksumPolicy( session, testCase[1], CHECKSUM_POLICY_UNKNOWN ) );
+            assertThat( provider.getEffectiveChecksumPolicy( session, CHECKSUM_POLICY_UNKNOWN, testCase[1] ) );
+            assertThat( provider.getEffectiveChecksumPolicy( session, testCase[1], CHECKSUM_POLICY_UNKNOWN ) );
         }
     }
 

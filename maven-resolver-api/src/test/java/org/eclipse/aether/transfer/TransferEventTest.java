@@ -19,15 +19,13 @@ package org.eclipse.aether.transfer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.nio.ByteBuffer;
 
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.transfer.TransferEvent;
-import org.eclipse.aether.transfer.TransferResource;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
@@ -52,7 +50,7 @@ public class TransferEventTest
         bb.get( dst );
 
         byte[] expected = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-        assertArrayEquals( expected, dst );
+        assertThat( dst ).isEqualTo( expected );
     }
 
     @Test
@@ -63,23 +61,23 @@ public class TransferEventTest
 
         TransferEvent event = new TransferEvent.Builder( session, res ).setDataBuffer( buffer ).build();
 
-        assertEquals( 8, event.getDataLength() );
+        assertThat( event.getDataLength() ).isEqualTo( 8 );
 
         ByteBuffer eventBuffer = event.getDataBuffer();
-        assertNotNull( eventBuffer );
-        assertEquals( 8, eventBuffer.remaining() );
+        assertThat( eventBuffer ).isNotNull();
+        assertThat( eventBuffer.remaining() ).isEqualTo( 8 );
 
         byte[] eventData = new byte[8];
         eventBuffer.get( eventData );
-        assertArrayEquals( data, eventData );
-        assertEquals( 0, eventBuffer.remaining() );
-        assertEquals( 8, event.getDataLength() );
+        assertThat( eventData ).isEqualTo(data);
+        assertThat( eventBuffer.remaining() ).isEqualTo( 0 );
+        assertThat( event.getDataLength() ).isEqualTo( 8 );
 
         eventBuffer = event.getDataBuffer();
-        assertNotNull( eventBuffer );
-        assertEquals( 8, eventBuffer.remaining() );
+        assertThat( eventBuffer ).isNotNull();
+        assertThat( eventBuffer.remaining() ).isEqualTo( 8 );
         eventBuffer.get( eventData );
-        assertArrayEquals( data, eventData );
+        assertThat( eventData ).isEqualTo( data );
     }
 
 }

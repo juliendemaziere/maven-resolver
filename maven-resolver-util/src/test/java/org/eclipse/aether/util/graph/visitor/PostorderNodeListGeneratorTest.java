@@ -19,13 +19,13 @@ package org.eclipse.aether.util.graph.visitor;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.internal.test.util.DependencyGraphParser;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PostorderNodeListGeneratorTest
 {
@@ -38,11 +38,11 @@ public class PostorderNodeListGeneratorTest
 
     private void assertSequence( List<DependencyNode> actual, String... expected )
     {
-        assertEquals( actual.toString(), expected.length, actual.size() );
+        assertThat( actual ).hasSize( expected.length );
         for ( int i = 0; i < expected.length; i++ )
         {
             DependencyNode node = actual.get( i );
-            assertEquals( actual.toString(), expected[i], node.getDependency().getArtifact().getArtifactId() );
+            assertThat( expected[i] ).isEqualTo( node.getDependency().getArtifact().getArtifactId() );
         }
     }
 

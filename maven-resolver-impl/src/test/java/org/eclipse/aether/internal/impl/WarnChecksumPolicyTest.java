@@ -19,13 +19,14 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import org.eclipse.aether.spi.connector.checksum.ChecksumPolicy;
 import org.eclipse.aether.transfer.ChecksumFailureException;
 import org.eclipse.aether.transfer.TransferResource;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
 
 public class WarnChecksumPolicyTest
 {
@@ -44,14 +45,14 @@ public class WarnChecksumPolicyTest
     @Test
     public void testOnTransferChecksumFailure()
     {
-        assertTrue( policy.onTransferChecksumFailure( exception ) );
+        assertThat( policy.onTransferChecksumFailure( exception ) ).isTrue();
     }
 
     @Test
     public void testOnChecksumMatch()
     {
-        assertTrue( policy.onChecksumMatch( "SHA-1", 0 ) );
-        assertTrue( policy.onChecksumMatch( "SHA-1", ChecksumPolicy.KIND_UNOFFICIAL ) );
+        assertThat( policy.onChecksumMatch( "SHA-1", 0 ) ).isTrue();
+        assertThat( policy.onChecksumMatch( "SHA-1", ChecksumPolicy.KIND_UNOFFICIAL ) ).isTrue();
     }
 
     @Test
@@ -65,7 +66,7 @@ public class WarnChecksumPolicyTest
         }
         catch ( ChecksumFailureException e )
         {
-            assertSame( exception, e );
+            assertThat( e ).isSameAs( exception );
         }
         policy.onChecksumMismatch( "SHA-1", ChecksumPolicy.KIND_UNOFFICIAL, exception );
     }
@@ -87,7 +88,7 @@ public class WarnChecksumPolicyTest
         }
         catch ( ChecksumFailureException e )
         {
-            assertTrue( e.getMessage().contains( "no checksums available" ) );
+            assertThat( e.getMessage()).contains( "no checksums available" );
         }
     }
 

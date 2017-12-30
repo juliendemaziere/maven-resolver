@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl.collect;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ public class DefaultDependencyCollectorTest
     private static void assertEqualSubtree( DependencyNode expected, DependencyNode actual,
                                             LinkedList<DependencyNode> parents )
     {
-        assertEquals( "path: " + parents, expected.getDependency(), actual.getDependency() );
+        assertThat( actual.getDependency() ).isEqualTo( expected.getDependency());
 
         if ( actual.getDependency() != null )
         {
@@ -132,8 +132,10 @@ public class DefaultDependencyCollectorTest
 
         parents.addLast( expected );
 
-        assertEquals( "path: " + parents + ", expected: " + expected.getChildren() + ", actual: "
-                          + actual.getChildren(), expected.getChildren().size(), actual.getChildren().size() );
+        assertThat(expected.getChildren().size() )
+                .as( "path: " + parents + ", expected: " + expected.getChildren() + ", actual: "
+                        + actual.getChildren())
+                .isEqualTo( actual.getChildren().size() );
 
         Iterator<DependencyNode> iterator1 = expected.getChildren().iterator();
         Iterator<DependencyNode> iterator2 = actual.getChildren().iterator();
@@ -163,11 +165,7 @@ public class DefaultDependencyCollectorTest
 
             return node;
         }
-        catch ( IndexOutOfBoundsException e )
-        {
-            throw new IllegalArgumentException( "illegal coordinates for child", e );
-        }
-        catch ( NullPointerException e )
+        catch ( IndexOutOfBoundsException | NullPointerException e )
         {
             throw new IllegalArgumentException( "illegal coordinates for child", e );
         }
@@ -175,29 +173,28 @@ public class DefaultDependencyCollectorTest
 
     @Test
     public void testSimpleCollection()
-        throws IOException, DependencyCollectionException
+        throws DependencyCollectionException
     {
         Dependency dependency = newDep( "gid:aid:ext:ver", "compile" );
         CollectRequest request = new CollectRequest( dependency, Arrays.asList( repository ) );
         CollectResult result = collector.collectDependencies( session, request );
 
-        assertEquals( 0, result.getExceptions().size() );
+        assertThat(result.getExceptions().size() ).isEqualTo(0);
 
         DependencyNode root = result.getRoot();
         Dependency newDependency = root.getDependency();
 
-        assertEquals( dependency, newDependency );
-        assertEquals( dependency.getArtifact(), newDependency.getArtifact() );
+        assertThat(newDependency ).isEqualTo(dependency);
+        assertThat(newDependency.getArtifact() ).isEqualTo(dependency.getArtifact());
 
-        assertEquals( 1, root.getChildren().size() );
+        assertThat(root.getChildren().size() ).isEqualTo(1);
 
         Dependency expect = newDep( "gid:aid2:ext:ver", "compile" );
-        assertEquals( expect, root.getChildren().get( 0 ).getDependency() );
+        assertThat(root.getChildren().get( 0 ).getDependency() ).isEqualTo(expect);
     }
 
     @Test
     public void testMissingDependencyDescription()
-        throws IOException
     {
         CollectRequest request =
             new CollectRequest( newDep( "missing:description:ext:ver" ), Arrays.asList( repository ) );
@@ -209,13 +206,13 @@ public class DefaultDependencyCollectorTest
         catch ( DependencyCollectionException e )
         {
             CollectResult result = e.getResult();
-            assertSame( request, result.getRequest() );
-            assertNotNull( result.getExceptions() );
-            assertEquals( 1, result.getExceptions().size() );
+            assertThat(result.getRequest() ).isSameAs(request);
+            assertThat(result.getExceptions() ).isNotNull();
+            assertThat(result.getExceptions().size() ).isEqualTo(1);
 
-            assertTrue( result.getExceptions().get( 0 ) instanceof ArtifactDescriptorException );
+            assertThat(result.getExceptions().get( 0 ) instanceof ArtifactDescriptorException ).isTrue();
 
-            assertEquals( request.getRoot(), result.getRoot().getDependency() );
+            assertThat(result.getRoot().getDependency() ).isEqualTo(request.getRoot());
         }
     }
 
@@ -228,23 +225,23 @@ public class DefaultDependencyCollectorTest
 
         CollectResult result = collector.collectDependencies( session, request );
 
-        assertEquals( 0, result.getExceptions().size() );
+        assertThat(result.getExceptions().size() ).isEqualTo(0);
 
         DependencyNode root = result.getRoot();
         Dependency newDependency = root.getDependency();
 
-        assertEquals( dependency, newDependency );
-        assertEquals( dependency.getArtifact(), newDependency.getArtifact() );
+        assertThat(newDependency ).isEqualTo(dependency);
+        assertThat(newDependency.getArtifact() ).isEqualTo(dependency.getArtifact());
 
-        assertEquals( 2, root.getChildren().size() );
+        assertThat(root.getChildren().size() ).isEqualTo(2);
 
         Dependency dep = newDep( "gid:aid:ext:ver", "compile" );
-        assertEquals( dep, dep( root, 0 ) );
+        assertThat(dep( root)).isEqualTo( dep );
 
         dep = newDep( "gid:aid2:ext:ver", "compile" );
-        assertEquals( dep, dep( root, 1 ) );
-        assertEquals( dep, dep( root, 0, 0 ) );
-        assertEquals( dep( root, 1 ), dep( root, 0, 0 ) );
+        assertThat(dep( root, 1 ) ).isEqualTo( dep );
+        assertThat(dep( root, 0, 0 ) ).isEqualTo( dep );
+        assertThat(dep( root, 0, 0 )).isEqualTo( dep );
     }
 
     @Test
@@ -276,7 +273,7 @@ public class DefaultDependencyCollectorTest
         CollectRequest request = new CollectRequest( newDep( "1:2:pom:5.50-SNAPSHOT" ), Arrays.asList( repository ) );
         collector.setArtifactDescriptorReader( newReader( "cycle-big/" ) );
         CollectResult result = collector.collectDependencies( session, request );
-        assertNotNull( result.getRoot() );
+        assertThat(result.getRoot() ).isNotNull();
         // we only care about the performance here, this test must not hang or run out of mem
     }
 
@@ -289,18 +286,18 @@ public class DefaultDependencyCollectorTest
         CollectResult result = collector.collectDependencies( session, request );
         DependencyNode root = result.getRoot();
         DependencyNode a1 = path( root, 0, 0 );
-        assertEquals( "a", a1.getArtifact().getArtifactId() );
-        assertEquals( "1", a1.getArtifact().getVersion() );
+        assertThat(a1.getArtifact().getArtifactId() ).isEqualTo("a");
+        assertThat(a1.getArtifact().getVersion() ).isEqualTo("1");
         for ( DependencyNode child : a1.getChildren() )
         {
-            assertFalse( "1".equals( child.getArtifact().getVersion() ) );
+            assertThat( child.getArtifact().getVersion() ).isNotEqualTo( "1" );
         }
 
-        assertEquals( 1, result.getCycles().size() );
+        assertThat(result.getCycles().size() ).isEqualTo(1);
         DependencyCycle cycle = result.getCycles().get( 0 );
-        assertEquals( Arrays.asList(), cycle.getPrecedingDependencies() );
-        assertEquals( Arrays.asList( root.getDependency(), path( root, 0 ).getDependency(), a1.getDependency() ),
-                      cycle.getCyclicDependencies() );
+        assertThat(cycle.getPrecedingDependencies() ).isEmpty();
+        assertThat( Arrays.asList( root.getDependency(), path( root, 0 ).getDependency()))
+                .isEqualTo( cycle.getCyclicDependencies() );
     }
 
     @Test
@@ -313,17 +310,17 @@ public class DefaultDependencyCollectorTest
         CollectResult result = collector.collectDependencies( session, request );
         DependencyNode root = result.getRoot();
         DependencyNode a1 = root.getChildren().get( 0 );
-        assertEquals( "aid", a1.getArtifact().getArtifactId() );
-        assertEquals( "ver", a1.getArtifact().getVersion() );
+        assertThat(a1.getArtifact().getArtifactId() ).isEqualTo("aid");
+        assertThat(a1.getArtifact().getVersion() ).isEqualTo("ver");
         DependencyNode a2 = a1.getChildren().get( 0 );
-        assertEquals( "aid2", a2.getArtifact().getArtifactId() );
-        assertEquals( "ver", a2.getArtifact().getVersion() );
+        assertThat(a2.getArtifact().getArtifactId() ).isEqualTo("aid2");
+        assertThat(a2.getArtifact().getVersion() ).isEqualTo("ver");
 
-        assertEquals( 1, result.getCycles().size() );
+        assertThat(result.getCycles().size() ).isEqualTo(1);
         DependencyCycle cycle = result.getCycles().get( 0 );
-        assertEquals( Arrays.asList(), cycle.getPrecedingDependencies() );
-        assertEquals( Arrays.asList( new Dependency( dep.getArtifact(), null ), a1.getDependency() ),
-                      cycle.getCyclicDependencies() );
+        assertThat( cycle.getPrecedingDependencies() ).isEmpty();
+        assertThat( Arrays.asList( new Dependency( dep.getArtifact(), null ), a1.getDependency()))
+                .isEqualTo( cycle.getCyclicDependencies() );
     }
 
     @Test
@@ -345,11 +342,11 @@ public class DefaultDependencyCollectorTest
         {
             result = e.getResult();
 
-            assertSame( request, result.getRequest() );
-            assertNotNull( result.getExceptions() );
-            assertEquals( 1, result.getExceptions().size() );
+            assertThat(result.getRequest() ).isSameAs(request);
+            assertThat(result.getExceptions() ).isNotNull();
+            assertThat(result.getExceptions().size() ).isEqualTo(1);
 
-            assertTrue( result.getExceptions().get( 0 ) instanceof ArtifactDescriptorException );
+            assertThat(result.getExceptions().get( 0 ) instanceof ArtifactDescriptorException ).isTrue();
 
             assertEqualSubtree( root, result.getRoot() );
         }
@@ -357,7 +354,7 @@ public class DefaultDependencyCollectorTest
 
     @Test
     public void testCollectMultipleDependencies()
-        throws IOException, DependencyCollectionException
+        throws DependencyCollectionException
     {
         Dependency root1 = newDep( "gid:aid:ext:ver", "compile" );
         Dependency root2 = newDep( "gid:aid2:ext:ver", "compile" );
@@ -365,15 +362,15 @@ public class DefaultDependencyCollectorTest
         CollectRequest request = new CollectRequest( dependencies, null, Arrays.asList( repository ) );
         CollectResult result = collector.collectDependencies( session, request );
 
-        assertEquals( 0, result.getExceptions().size() );
-        assertEquals( 2, result.getRoot().getChildren().size() );
-        assertEquals( root1, dep( result.getRoot(), 0 ) );
+        assertThat( result.getExceptions() ).hasSize( 0 );
+        assertThat( result.getRoot().getChildren() ).hasSize( 2 );
+        assertThat( dep( result.getRoot(), 0 )).isEqualTo( root1 );
 
-        assertEquals( 1, path( result.getRoot(), 0 ).getChildren().size() );
-        assertEquals( root2, dep( result.getRoot(), 0, 0 ) );
+        assertThat( path( result.getRoot(), 0 ).getChildren()).hasSize( 1 );
+        assertThat( dep( result.getRoot(), 0, 0 )).isEqualTo( root2 );
 
-        assertEquals( 0, path( result.getRoot(), 1 ).getChildren().size() );
-        assertEquals( root2, dep( result.getRoot(), 1 ) );
+        assertThat( path( result.getRoot(), 1 ).getChildren() ).hasSize( 0 );
+        assertThat( dep( result.getRoot(), 1 )).isEqualTo( root2 );
     }
 
     @Test
@@ -399,15 +396,15 @@ public class DefaultDependencyCollectorTest
         CollectRequest request = new CollectRequest( dependencies, null, Arrays.asList( repository, repo2 ) );
         CollectResult result = collector.collectDependencies( session, request );
 
-        assertEquals( 0, result.getExceptions().size() );
-        assertEquals( 2, repos.size() );
-        assertEquals( "id", repos.get( 0 ).getId() );
-        assertEquals( "test", repos.get( 1 ).getId() );
+        assertThat( result.getExceptions().size() ).isEqualTo( 0 );
+        assertThat( repos.size() ).isEqualTo(2);
+        assertThat( repos.get( 0 ).getId() ).isEqualTo( "id" );
+        assertThat( repos.get( 1 ).getId() ).isEqualTo( "test" );
     }
 
     @Test
     public void testManagedVersionScope()
-        throws IOException, DependencyCollectionException
+        throws DependencyCollectionException
     {
         Dependency dependency = newDep( "managed:aid:ext:ver" );
         CollectRequest request = new CollectRequest( dependency, Arrays.asList( repository ) );
@@ -416,20 +413,20 @@ public class DefaultDependencyCollectorTest
 
         CollectResult result = collector.collectDependencies( session, request );
 
-        assertEquals( 0, result.getExceptions().size() );
+        assertThat(result.getExceptions().size() ).isEqualTo(0);
 
         DependencyNode root = result.getRoot();
 
-        assertEquals( dependency, dep( root ) );
-        assertEquals( dependency.getArtifact(), dep( root ).getArtifact() );
+        assertThat(dep( root ) ).isEqualTo(dependency);
+        assertThat(dep( root ).getArtifact() ).isEqualTo(dependency.getArtifact());
 
-        assertEquals( 1, root.getChildren().size() );
+        assertThat(root.getChildren().size() ).isEqualTo(1);
         Dependency expect = newDep( "gid:aid:ext:ver", "compile" );
-        assertEquals( expect, dep( root, 0 ) );
+        assertThat( dep( root) ).isEqualTo( expect );
 
-        assertEquals( 1, path( root, 0 ).getChildren().size() );
+        assertThat( path( root).getChildren() ).hasSize( 1 );
         expect = newDep( "gid:aid2:ext:managedVersion", "managedScope" );
-        assertEquals( expect, dep( root, 0, 0 ) );
+        assertThat( dep( root, 0 , 0) ).isEqualTo( expect );
     }
 
     @Test
@@ -451,11 +448,11 @@ public class DefaultDependencyCollectorTest
         CollectResult result = collector.collectDependencies( session, request );
 
         DependencyNode node = result.getRoot();
-        assertEquals( "managed", dep( node, 0, 1 ).getArtifact().getVersion() );
-        assertEquals( "managed", dep( node, 0, 1 ).getScope() );
+        assertThat( dep( node, 0, 1 ).getArtifact().getVersion() ).isEqualTo("managed");
+        assertThat( dep( node, 0, 1 ).getScope() ).isEqualTo("managed");
 
-        assertEquals( "managed", dep( node, 1 ).getArtifact().getProperty( ArtifactProperties.LOCAL_PATH, null ) );
-        assertEquals( "managed", dep( node, 0, 0 ).getArtifact().getProperty( ArtifactProperties.LOCAL_PATH, null ) );
+        assertThat( dep( node, 1 ).getArtifact().getProperty( ArtifactProperties.LOCAL_PATH, null ) ).isEqualTo("managed" );
+        assertThat( dep( node, 0, 0 ).getArtifact().getProperty( ArtifactProperties.LOCAL_PATH, null ) ).isEqualTo("managed" );
     }
 
     @Test
@@ -475,11 +472,11 @@ public class DefaultDependencyCollectorTest
         CollectRequest request = new CollectRequest().setRoot( newDep( "gid:aid:ver" ) );
         CollectResult result = collector.collectDependencies( session, request );
         DependencyNode node = result.getRoot().getChildren().get( 0 );
-        assertEquals( DependencyNode.MANAGED_VERSION | DependencyNode.MANAGED_SCOPE | DependencyNode.MANAGED_OPTIONAL
-            | DependencyNode.MANAGED_PROPERTIES | DependencyNode.MANAGED_EXCLUSIONS, node.getManagedBits() );
-        assertEquals( "ver", DependencyManagerUtils.getPremanagedVersion( node ) );
-        assertEquals( "compile", DependencyManagerUtils.getPremanagedScope( node ) );
-        assertEquals( Boolean.FALSE, DependencyManagerUtils.getPremanagedOptional( node ) );
+        assertThat( node.getManagedBits() ).isEqualTo( DependencyNode.MANAGED_VERSION | DependencyNode.MANAGED_SCOPE | DependencyNode.MANAGED_OPTIONAL
+                | DependencyNode.MANAGED_PROPERTIES | DependencyNode.MANAGED_EXCLUSIONS );
+        assertThat(DependencyManagerUtils.getPremanagedVersion( node ) ).isEqualTo( "ver" );
+        assertThat(DependencyManagerUtils.getPremanagedScope( node ) ).isEqualTo( "compile" );
+        assertThat(DependencyManagerUtils.getPremanagedOptional( node ) ).isFalse();
     }
 
     @Test
@@ -489,22 +486,22 @@ public class DefaultDependencyCollectorTest
         session.setVersionFilter( new HighestVersionFilter() );
         CollectRequest request = new CollectRequest().setRoot( newDep( "gid:aid:1" ) );
         CollectResult result = collector.collectDependencies( session, request );
-        assertEquals( 1, result.getRoot().getChildren().size() );
+        assertThat( result.getRoot().getChildren() ).hasSize( 1 );
     }
 
     static class TestDependencyManager
         implements DependencyManager
     {
 
-        private Map<String, String> versions = new HashMap<String, String>();
+        private Map<String, String> versions = new HashMap<>();
 
-        private Map<String, String> scopes = new HashMap<String, String>();
+        private Map<String, String> scopes = new HashMap<>();
 
-        private Map<String, Boolean> optionals = new HashMap<String, Boolean>();
+        private Map<String, Boolean> optionals = new HashMap<>();
 
-        private Map<String, String> paths = new HashMap<String, String>();
+        private Map<String, String> paths = new HashMap<>();
 
-        private Map<String, Collection<Exclusion>> exclusions = new HashMap<String, Collection<Exclusion>>();
+        private Map<String, Collection<Exclusion>> exclusions = new HashMap<>();
 
         public void add( Dependency d, String version, String scope, String localPath )
         {

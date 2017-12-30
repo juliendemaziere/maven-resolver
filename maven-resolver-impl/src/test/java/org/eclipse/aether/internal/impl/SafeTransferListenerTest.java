@@ -19,12 +19,12 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Method;
 
 import org.eclipse.aether.transfer.TransferListener;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
@@ -38,7 +38,7 @@ public class SafeTransferListenerTest
         Class<?> type = SafeTransferListener.class;
         for ( Method method : TransferListener.class.getMethods() )
         {
-            assertNotNull( type.getDeclaredMethod( method.getName(), method.getParameterTypes() ) );
+            assertThat( type.getDeclaredMethod( method.getName(), method.getParameterTypes() ) ).isNotNull();
         }
     }
 

@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -162,17 +162,17 @@ public class DefaultDeployerTest
         deployer.deploy( session, request );
 
         List<RepositoryEvent> events = listener.getEvents();
-        assertEquals( 2, events.size() );
+        assertThat(events.size() ).isEqualTo(2);
 
         RepositoryEvent event = events.get( 0 );
-        assertEquals( EventType.ARTIFACT_DEPLOYING, event.getType() );
-        assertEquals( artifact, event.getArtifact() );
-        assertNull( event.getException() );
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_DEPLOYING);
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getException() ).isNull();
 
         event = events.get( 1 );
-        assertEquals( EventType.ARTIFACT_DEPLOYED, event.getType() );
-        assertEquals( artifact, event.getArtifact() );
-        assertNull( event.getException() );
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_DEPLOYED);
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getException() ).isNull();
     }
 
     @Test
@@ -190,17 +190,17 @@ public class DefaultDeployerTest
         catch ( DeploymentException e )
         {
             List<RepositoryEvent> events = listener.getEvents();
-            assertEquals( 2, events.size() );
+            assertThat(events.size() ).isEqualTo(2);
 
             RepositoryEvent event = events.get( 0 );
-            assertEquals( EventType.ARTIFACT_DEPLOYING, event.getType() );
-            assertEquals( artifact, event.getArtifact() );
-            assertNull( event.getException() );
+            assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_DEPLOYING);
+            assertThat(event.getArtifact() ).isEqualTo(artifact);
+            assertThat(event.getException() ).isNull();
 
             event = events.get( 1 );
-            assertEquals( EventType.ARTIFACT_DEPLOYED, event.getType() );
-            assertEquals( artifact, event.getArtifact() );
-            assertNotNull( event.getException() );
+            assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_DEPLOYED);
+            assertThat(event.getArtifact() ).isEqualTo(artifact);
+            assertThat(event.getException() ).isNotNull();
         }
     }
 
@@ -213,17 +213,17 @@ public class DefaultDeployerTest
         deployer.deploy( session, request );
 
         List<RepositoryEvent> events = listener.getEvents();
-        assertEquals( 2, events.size() );
+        assertThat(events.size() ).isEqualTo(2);
 
         RepositoryEvent event = events.get( 0 );
-        assertEquals( EventType.METADATA_DEPLOYING, event.getType() );
-        assertEquals( metadata, event.getMetadata() );
-        assertNull( event.getException() );
+        assertThat(event.getType() ).isEqualTo(EventType.METADATA_DEPLOYING);
+        assertThat(event.getMetadata() ).isEqualTo(metadata);
+        assertThat(event.getException() ).isNull();
 
         event = events.get( 1 );
-        assertEquals( EventType.METADATA_DEPLOYED, event.getType() );
-        assertEquals( metadata, event.getMetadata() );
-        assertNull( event.getException() );
+        assertThat(event.getType() ).isEqualTo(EventType.METADATA_DEPLOYED);
+        assertThat(event.getMetadata() ).isEqualTo(metadata);
+        assertThat(event.getException() ).isNull();
     }
 
     @Test
@@ -241,17 +241,17 @@ public class DefaultDeployerTest
         catch ( DeploymentException e )
         {
             List<RepositoryEvent> events = listener.getEvents();
-            assertEquals( 2, events.size() );
+            assertThat(events.size() ).isEqualTo(2);
 
             RepositoryEvent event = events.get( 0 );
-            assertEquals( EventType.METADATA_DEPLOYING, event.getType() );
-            assertEquals( metadata, event.getMetadata() );
-            assertNull( event.getException() );
+            assertThat(event.getType() ).isEqualTo(EventType.METADATA_DEPLOYING);
+            assertThat(event.getMetadata() ).isEqualTo(metadata);
+            assertThat(event.getException() ).isNull();
 
             event = events.get( 1 );
-            assertEquals( EventType.METADATA_DEPLOYED, event.getType() );
-            assertEquals( metadata, event.getMetadata() );
-            assertNotNull( event.getException() );
+            assertThat(event.getType() ).isEqualTo(EventType.METADATA_DEPLOYED);
+            assertThat(event.getMetadata() ).isEqualTo(metadata);
+            assertThat(event.getException() ).isNotNull();
         }
     }
 
@@ -379,7 +379,7 @@ public class DefaultDeployerTest
 
         props = new Properties();
         TestFileUtils.readProps( metadataFile, props );
-        assertNull( props.toString(), props.get( "old" ) );
+        assertThat( props.get( "old" ) ).isNull();
     }
 
 }

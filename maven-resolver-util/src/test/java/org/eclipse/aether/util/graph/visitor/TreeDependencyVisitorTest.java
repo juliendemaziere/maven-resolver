@@ -19,12 +19,12 @@ package org.eclipse.aether.util.graph.visitor;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.internal.test.util.DependencyGraphParser;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TreeDependencyVisitorTest
 {
@@ -45,7 +45,7 @@ public class TreeDependencyVisitorTest
         TreeDependencyVisitor visitor = new TreeDependencyVisitor( rec );
         root.accept( visitor );
 
-        assertEquals( ">a >b >c <c <b >d <d <a ", rec.buffer.toString() );
+        assertThat( rec.buffer.toString() ).isEqualTo(">a >b >c <c <b >d <d <a ");
     }
 
     private static class RecordingVisitor

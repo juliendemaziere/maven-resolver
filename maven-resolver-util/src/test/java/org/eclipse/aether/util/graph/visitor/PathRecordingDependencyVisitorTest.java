@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.visitor;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
@@ -39,11 +39,11 @@ public class PathRecordingDependencyVisitorTest
 
     private void assertPath( List<DependencyNode> actual, String... expected )
     {
-        assertEquals( actual.toString(), expected.length, actual.size() );
+        assertThat( actual ).hasSize( expected.length );
         for ( int i = 0; i < expected.length; i++ )
         {
             DependencyNode node = actual.get( i );
-            assertEquals( actual.toString(), expected[i], node.getDependency().getArtifact().getArtifactId() );
+            assertThat( expected[i] ).isEqualTo( node.getDependency().getArtifact().getArtifactId() );
         }
     }
 
@@ -57,7 +57,7 @@ public class PathRecordingDependencyVisitorTest
         root.accept( visitor );
 
         List<List<DependencyNode>> paths = visitor.getPaths();
-        assertEquals( paths.toString(), 2, paths.size() );
+        assertThat( paths ).hasSize( 2 );
         assertPath( paths.get( 0 ), "a", "b", "x" );
         assertPath( paths.get( 1 ), "a", "x" );
     }
@@ -72,7 +72,7 @@ public class PathRecordingDependencyVisitorTest
         root.accept( visitor );
 
         List<List<DependencyNode>> paths = visitor.getPaths();
-        assertEquals( paths.toString(), 1, paths.size() );
+        assertThat( paths ).hasSize( 1 );
         assertPath( paths.get( 0 ), "x" );
     }
 
@@ -86,7 +86,7 @@ public class PathRecordingDependencyVisitorTest
         root.accept( visitor );
 
         List<List<DependencyNode>> paths = visitor.getPaths();
-        assertEquals( paths.toString(), 3, paths.size() );
+        assertThat( paths ).hasSize( 3 );
         assertPath( paths.get( 0 ), "x" );
         assertPath( paths.get( 1 ), "x", "a", "y" );
         assertPath( paths.get( 2 ), "x", "y" );
@@ -115,7 +115,7 @@ public class PathRecordingDependencyVisitorTest
         PathRecordingDependencyVisitor visitor = new PathRecordingDependencyVisitor( filter );
         root.accept( visitor );
 
-        assertEquals( ",a,ba,cba,a,ea,", buffer.toString() );
+        assertThat(buffer.toString() ).isEqualTo(",a,ba,cba,a,ea,");
     }
 
     @Test
@@ -128,7 +128,7 @@ public class PathRecordingDependencyVisitorTest
         root.accept( visitor );
 
         List<List<DependencyNode>> paths = visitor.getPaths();
-        assertEquals( paths.toString(), 4, paths.size() );
+        assertThat( paths ).hasSize( 4 );
         assertPath( paths.get( 0 ), "a", "b", "x" );
         assertPath( paths.get( 1 ), "a", "x" );
         assertPath( paths.get( 2 ), "a", "x", "b", "x" );

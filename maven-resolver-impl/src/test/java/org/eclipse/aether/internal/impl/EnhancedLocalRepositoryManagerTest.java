@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -157,12 +157,12 @@ public class EnhancedLocalRepositoryManagerTest
     public void testGetPathForLocalArtifact()
     {
         Artifact artifact = new DefaultArtifact( "g.i.d:a.i.d:1.0-SNAPSHOT" );
-        assertEquals( "1.0-SNAPSHOT", artifact.getBaseVersion() );
-        assertEquals( "g/i/d/a.i.d/1.0-SNAPSHOT/a.i.d-1.0-SNAPSHOT.jar", manager.getPathForLocalArtifact( artifact ) );
+        assertThat(artifact.getBaseVersion() ).isEqualTo("1.0-SNAPSHOT");
+        assertThat(manager.getPathForLocalArtifact( artifact ) ).isEqualTo("g/i/d/a.i.d/1.0-SNAPSHOT/a.i.d-1.0-SNAPSHOT.jar");
 
         artifact = new DefaultArtifact( "g.i.d:a.i.d:1.0-20110329.221805-4" );
-        assertEquals( "1.0-SNAPSHOT", artifact.getBaseVersion() );
-        assertEquals( "g/i/d/a.i.d/1.0-SNAPSHOT/a.i.d-1.0-SNAPSHOT.jar", manager.getPathForLocalArtifact( artifact ) );
+        assertThat(artifact.getBaseVersion() ).isEqualTo("1.0-SNAPSHOT");
+        assertThat(manager.getPathForLocalArtifact( artifact ) ).isEqualTo("g/i/d/a.i.d/1.0-SNAPSHOT/a.i.d-1.0-SNAPSHOT.jar");
     }
 
     @Test
@@ -171,14 +171,14 @@ public class EnhancedLocalRepositoryManagerTest
         RemoteRepository remoteRepo = new RemoteRepository.Builder( "repo", "default", "ram:/void" ).build();
 
         Artifact artifact = new DefaultArtifact( "g.i.d:a.i.d:1.0-SNAPSHOT" );
-        assertEquals( "1.0-SNAPSHOT", artifact.getBaseVersion() );
-        assertEquals( "g/i/d/a.i.d/1.0-SNAPSHOT/a.i.d-1.0-SNAPSHOT.jar",
-                      manager.getPathForRemoteArtifact( artifact, remoteRepo, "" ) );
+        assertThat(artifact.getBaseVersion() ).isEqualTo("1.0-SNAPSHOT");
+        assertThat( manager.getPathForRemoteArtifact( artifact, remoteRepo, "" ) )
+                .isEqualTo( "g/i/d/a.i.d/1.0-SNAPSHOT/a.i.d-1.0-SNAPSHOT.jar" );
 
         artifact = new DefaultArtifact( "g.i.d:a.i.d:1.0-20110329.221805-4" );
-        assertEquals( "1.0-SNAPSHOT", artifact.getBaseVersion() );
-        assertEquals( "g/i/d/a.i.d/1.0-SNAPSHOT/a.i.d-1.0-20110329.221805-4.jar",
-                      manager.getPathForRemoteArtifact( artifact, remoteRepo, "" ) );
+        assertThat(artifact.getBaseVersion() ).isEqualTo("1.0-SNAPSHOT");
+        assertThat( manager.getPathForRemoteArtifact( artifact, remoteRepo, "" ) )
+                .isEqualTo( "g/i/d/a.i.d/1.0-SNAPSHOT/a.i.d-1.0-20110329.221805-4.jar" );
     }
 
     @Test
@@ -189,16 +189,16 @@ public class EnhancedLocalRepositoryManagerTest
 
         LocalArtifactRequest request = new LocalArtifactRequest( artifact, null, null );
         LocalArtifactResult result = manager.find( session, request );
-        assertTrue( result.isAvailable() );
-        assertEquals( null, result.getRepository() );
+        assertThat(result.isAvailable() ).isTrue();
+        assertThat(result.getRepository() ).isEqualTo(null);
 
         snapshot = snapshot.setVersion( snapshot.getBaseVersion() );
         addLocalArtifact( snapshot );
 
         request = new LocalArtifactRequest( snapshot, null, null );
         result = manager.find( session, request );
-        assertTrue( result.isAvailable() );
-        assertEquals( null, result.getRepository() );
+        assertThat(result.isAvailable() ).isTrue();
+        assertThat(result.getRepository() ).isEqualTo(null);
     }
 
     @Test
@@ -209,15 +209,15 @@ public class EnhancedLocalRepositoryManagerTest
 
         LocalArtifactRequest request = new LocalArtifactRequest( artifact, Arrays.asList( repository ), testContext );
         LocalArtifactResult result = manager.find( session, request );
-        assertTrue( result.isAvailable() );
-        assertEquals( repository, result.getRepository() );
+        assertThat(result.isAvailable() ).isTrue();
+        assertThat(result.getRepository() ).isEqualTo(repository);
 
         addRemoteArtifact( snapshot );
 
         request = new LocalArtifactRequest( snapshot, Arrays.asList( repository ), testContext );
         result = manager.find( session, request );
-        assertTrue( result.isAvailable() );
-        assertEquals( repository, result.getRepository() );
+        assertThat(result.isAvailable() ).isTrue();
+        assertThat(result.getRepository() ).isEqualTo(repository);
     }
 
     @Test
@@ -228,7 +228,7 @@ public class EnhancedLocalRepositoryManagerTest
 
         LocalArtifactRequest request = new LocalArtifactRequest( artifact, Arrays.asList( repository ), "different" );
         LocalArtifactResult result = manager.find( session, request );
-        assertFalse( result.isAvailable() );
+        assertThat(result.isAvailable() ).isFalse();
     }
 
     @Test
@@ -240,7 +240,7 @@ public class EnhancedLocalRepositoryManagerTest
 
         LocalArtifactRequest request = new LocalArtifactRequest( artifact, Arrays.asList( repository ), testContext );
         LocalArtifactResult result = manager.find( session, request );
-        assertFalse( result.isAvailable() );
+        assertThat(result.isAvailable() ).isFalse();
     }
 
     @Test
@@ -248,11 +248,11 @@ public class EnhancedLocalRepositoryManagerTest
         throws Exception
     {
         addLocalArtifact( artifact );
-        assertTrue( "could not delete artifact file", artifactFile.delete() );
+        assertThat( artifactFile.delete() ).isTrue();
 
         LocalArtifactRequest request = new LocalArtifactRequest( artifact, Arrays.asList( repository ), testContext );
         LocalArtifactResult result = manager.find( session, request );
-        assertFalse( result.isAvailable() );
+        assertThat(result.isAvailable() ).isFalse();
     }
 
     @Test
@@ -263,7 +263,7 @@ public class EnhancedLocalRepositoryManagerTest
 
         LocalArtifactRequest request = new LocalArtifactRequest( artifact, Arrays.asList( repository ), testContext );
         LocalArtifactResult result = manager.find( session, request );
-        assertTrue( result.isAvailable() );
+        assertThat(result.isAvailable() ).isTrue();
     }
 
     private long addMetadata( Metadata metadata, RemoteRepository repo )
@@ -292,7 +292,7 @@ public class EnhancedLocalRepositoryManagerTest
         LocalMetadataRequest request = new LocalMetadataRequest( metadata, null, testContext );
         LocalMetadataResult result = manager.find( session, request );
 
-        assertNotNull( result.getFile() );
+        assertThat(result.getFile() ).isNotNull();
     }
 
     @Test
@@ -304,7 +304,7 @@ public class EnhancedLocalRepositoryManagerTest
         LocalMetadataRequest request = new LocalMetadataRequest( noVerMetadata, null, testContext );
         LocalMetadataResult result = manager.find( session, request );
 
-        assertNotNull( result.getFile() );
+        assertThat(result.getFile() ).isNotNull();
     }
 
     @Test
@@ -316,11 +316,11 @@ public class EnhancedLocalRepositoryManagerTest
 
         LocalMetadataRequest request = new LocalMetadataRequest( noVerMetadata, repository, "different" );
         LocalMetadataResult result = manager.find( session, request );
-        assertNull( result.getFile() );
+        assertThat(result.getFile() ).isNull();
 
         request = new LocalMetadataRequest( metadata, repository, "different" );
         result = manager.find( session, request );
-        assertNull( result.getFile() );
+        assertThat(result.getFile() ).isNull();
     }
 
     @Test
@@ -336,8 +336,8 @@ public class EnhancedLocalRepositoryManagerTest
         LocalArtifactRequest request = new LocalArtifactRequest();
         request.setArtifact( artifact );
         LocalArtifactResult result = manager.find( session, request );
-        assertNull( result.toString(), result.getFile() );
-        assertFalse( result.toString(), result.isAvailable() );
+        assertThat( result.getFile() ).isNull();
+        assertThat( result.isAvailable() ).isFalse();
     }
 
 }

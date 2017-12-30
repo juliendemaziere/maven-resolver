@@ -19,14 +19,14 @@ package org.eclipse.aether.transport.http;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class UriUtilsTest
 {
@@ -40,44 +40,44 @@ public class UriUtilsTest
     public void testResolve_BaseEmptyPath()
     {
         URI base = URI.create( "http://host" );
-        assertEquals( "http://host/file.jar", resolve( base, "file.jar" ) );
-        assertEquals( "http://host/dir/file.jar", resolve( base, "dir/file.jar" ) );
-        assertEquals( "http://host?arg=val", resolve( base, "?arg=val" ) );
-        assertEquals( "http://host/file?arg=val", resolve( base, "file?arg=val" ) );
-        assertEquals( "http://host/dir/file?arg=val", resolve( base, "dir/file?arg=val" ) );
+        assertThat( resolve( base, "file.jar" ) ).isEqualTo( "http://host/file.jar" );
+        assertThat( resolve( base, "dir/file.jar")).isEqualTo( "http://host/dir/file.jar" );
+        assertThat( resolve( base, "?arg=val" ) ).isEqualTo("http://host?arg=val" );
+        assertThat( resolve( base, "file?arg=val")).isEqualTo("http://host/file?arg=val" );
+        assertThat( resolve( base, "dir/file?arg=val")).isEqualTo("http://host/dir/file?arg=val" );
     }
 
     @Test
     public void testResolve_BaseRootPath()
     {
         URI base = URI.create( "http://host/" );
-        assertEquals( "http://host/file.jar", resolve( base, "file.jar" ) );
-        assertEquals( "http://host/dir/file.jar", resolve( base, "dir/file.jar" ) );
-        assertEquals( "http://host/?arg=val", resolve( base, "?arg=val" ) );
-        assertEquals( "http://host/file?arg=val", resolve( base, "file?arg=val" ) );
-        assertEquals( "http://host/dir/file?arg=val", resolve( base, "dir/file?arg=val" ) );
+        assertThat( resolve( base, "file.jar" ) ).isEqualTo( "http://host/file.jar" );
+        assertThat( resolve( base, "dir/file.jar")).isEqualTo( "http://host/dir/file.jar" );
+        assertThat( resolve( base, "?arg=val" ) ).isEqualTo("http://host?arg=val" );
+        assertThat( resolve( base, "file?arg=val")).isEqualTo("http://host/file?arg=val" );
+        assertThat( resolve( base, "dir/file?arg=val")).isEqualTo("http://host/dir/file?arg=val" );
     }
 
     @Test
     public void testResolve_BasePathTrailingSlash()
     {
         URI base = URI.create( "http://host/sub/dir/" );
-        assertEquals( "http://host/sub/dir/file.jar", resolve( base, "file.jar" ) );
-        assertEquals( "http://host/sub/dir/dir/file.jar", resolve( base, "dir/file.jar" ) );
-        assertEquals( "http://host/sub/dir/?arg=val", resolve( base, "?arg=val" ) );
-        assertEquals( "http://host/sub/dir/file?arg=val", resolve( base, "file?arg=val" ) );
-        assertEquals( "http://host/sub/dir/dir/file?arg=val", resolve( base, "dir/file?arg=val" ) );
+        assertThat( resolve( base, "file.jar" ) ).isEqualTo( "http://host/sub/dir/file.jar" );
+        assertThat( resolve( base, "dir/file.jar")).isEqualTo( "http://host/sub/dir/dir/file.jar" );
+        assertThat( resolve( base, "?arg=val" ) ).isEqualTo("http://host/sub/dir?arg=val" );
+        assertThat( resolve( base, "file?arg=val")).isEqualTo("http://host/sub/dir/file?arg=val" );
+        assertThat( resolve( base, "dir/file?arg=val")).isEqualTo("http://host/sub/dir/dir/file?arg=val" );
     }
 
     @Test
     public void testResolve_BasePathNoTrailingSlash()
     {
         URI base = URI.create( "http://host/sub/d%20r" );
-        assertEquals( "http://host/sub/d%20r/file.jar", resolve( base, "file.jar" ) );
-        assertEquals( "http://host/sub/d%20r/dir/file.jar", resolve( base, "dir/file.jar" ) );
-        assertEquals( "http://host/sub/d%20r?arg=val", resolve( base, "?arg=val" ) );
-        assertEquals( "http://host/sub/d%20r/file?arg=val", resolve( base, "file?arg=val" ) );
-        assertEquals( "http://host/sub/d%20r/dir/file?arg=val", resolve( base, "dir/file?arg=val" ) );
+        assertThat( resolve( base, "file.jar" ) ).isEqualTo( "http://host/sub/d%20r/file.jar" );
+        assertThat( resolve( base, "dir/file.jar")).isEqualTo( "http://host/sub/d%20r/dir/file.jar" );
+        assertThat( resolve( base, "?arg=val" ) ).isEqualTo("http://host/sub/d%20r?arg=val" );
+        assertThat( resolve( base, "file?arg=val")).isEqualTo("http://host/sub/d%20r/file?arg=val" );
+        assertThat( resolve( base, "dir/file?arg=val")).isEqualTo("http://host/sub/d%20r/dir/file?arg=val" );
     }
 
     private List<URI> getDirs( String base, String uri )
@@ -92,7 +92,7 @@ public class UriUtilsTest
         {
             uris.add( uri.toString() );
         }
-        assertEquals( Arrays.asList( expected ), uris );
+        assertThat(uris ).isEqualTo(Arrays.asList( expected ));
     }
 
     @Test

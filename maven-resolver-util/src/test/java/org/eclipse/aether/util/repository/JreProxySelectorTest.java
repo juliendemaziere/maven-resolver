@@ -19,7 +19,7 @@ package org.eclipse.aether.util.repository;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.IOException;
 import java.net.Authenticator;
@@ -76,7 +76,7 @@ public class JreProxySelectorTest
         throws Exception
     {
         RemoteRepository repo = new RemoteRepository.Builder( "test", "default", "http://host:invalid" ).build();
-        assertNull( selector.getProxy( repo ) );
+        assertThat(selector.getProxy( repo ) ).isNull();
     }
 
     @Test
@@ -84,7 +84,7 @@ public class JreProxySelectorTest
         throws Exception
     {
         RemoteRepository repo = new RemoteRepository.Builder( "test", "default", "classpath:base" ).build();
-        assertNull( selector.getProxy( repo ) );
+        assertThat(selector.getProxy( repo ) ).isNull();
     }
 
     @Test
@@ -93,7 +93,7 @@ public class JreProxySelectorTest
     {
         RemoteRepository repo = new RemoteRepository.Builder( "test", "default", "http://repo.eclipse.org/" ).build();
         java.net.ProxySelector.setDefault( null );
-        assertNull( selector.getProxy( repo ) );
+        assertThat(selector.getProxy( repo ) ).isNull();
     }
 
     @Test
@@ -110,7 +110,7 @@ public class JreProxySelectorTest
             }
 
         } );
-        assertNull( selector.getProxy( repo ) );
+        assertThat(selector.getProxy( repo ) ).isNull();
     }
 
     @Test
@@ -128,7 +128,7 @@ public class JreProxySelectorTest
             }
 
         } );
-        assertNull( selector.getProxy( repo ) );
+        assertThat(selector.getProxy( repo ) ).isNull();
     }
 
     @Test
@@ -168,17 +168,17 @@ public class JreProxySelectorTest
         } );
 
         Proxy proxy = selector.getProxy( repo );
-        assertNotNull( proxy );
-        assertEquals( addr.getHostName(), proxy.getHost() );
-        assertEquals( addr.getPort(), proxy.getPort() );
-        assertEquals( Proxy.TYPE_HTTP, proxy.getType() );
+        assertThat(proxy ).isNotNull();
+        assertThat(proxy.getHost() ).isEqualTo(addr.getHostName());
+        assertThat(proxy.getPort() ).isEqualTo(addr.getPort());
+        assertThat(proxy.getType() ).isEqualTo(Proxy.TYPE_HTTP);
 
         RemoteRepository repo2 = new RemoteRepository.Builder( repo ).setProxy( proxy ).build();
         Authentication auth = proxy.getAuthentication();
-        assertNotNull( auth );
+        assertThat(auth ).isNotNull();
         AuthenticationContext authCtx = AuthenticationContext.forProxy( new DefaultRepositorySystemSession(), repo2 );
-        assertEquals( "proxyuser", authCtx.get( AuthenticationContext.USERNAME ) );
-        assertEquals( "proxypass", authCtx.get( AuthenticationContext.PASSWORD ) );
+        assertThat(authCtx.get( AuthenticationContext.USERNAME ) ).isEqualTo("proxyuser");
+        assertThat(authCtx.get( AuthenticationContext.PASSWORD ) ).isEqualTo("proxypass");
     }
 
 }

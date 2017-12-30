@@ -19,7 +19,7 @@ package org.eclipse.aether.spi.connector.layout;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.net.URI;
 
@@ -34,12 +34,12 @@ public class ChecksumTest
     public void testForLocation()
     {
         Checksum cs = Checksum.forLocation( URI.create( "dir/sub%20dir/file.txt" ), "SHA-1" );
-        assertEquals( "SHA-1", cs.getAlgorithm() );
-        assertEquals( "dir/sub%20dir/file.txt.sha1", cs.getLocation().toString() );
+        assertThat(cs.getAlgorithm() ).isEqualTo("SHA-1");
+        assertThat(cs.getLocation().toString() ).isEqualTo("dir/sub%20dir/file.txt.sha1");
 
         cs = Checksum.forLocation( URI.create( "dir/sub%20dir/file.txt" ), "MD5" );
-        assertEquals( "MD5", cs.getAlgorithm() );
-        assertEquals( "dir/sub%20dir/file.txt.md5", cs.getLocation().toString() );
+        assertThat(cs.getAlgorithm() ).isEqualTo("MD5");
+        assertThat(cs.getLocation().toString() ).isEqualTo("dir/sub%20dir/file.txt.md5");
     }
 
     @Test( expected = IllegalArgumentException.class )

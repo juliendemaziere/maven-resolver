@@ -19,7 +19,7 @@ package org.eclipse.aether.util.listener;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.lang.reflect.Method;
 
@@ -38,8 +38,9 @@ public class ChainedRepositoryListenerTest
     {
         for ( Method method : RepositoryListener.class.getMethods() )
         {
-            assertNotNull( ChainedRepositoryListener.class.getDeclaredMethod( method.getName(),
-                                                                              method.getParameterTypes() ) );
+            assertThat(ChainedRepositoryListener.class.getDeclaredMethod(
+                    method.getName(), method.getParameterTypes() ) )
+                    .isNotNull();
         }
     }
 

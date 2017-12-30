@@ -19,12 +19,12 @@ package org.eclipse.aether.util.graph.traverser;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.DependencyTraverser;
 import org.eclipse.aether.graph.Dependency;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StaticDependencyTraverserTest
 {
@@ -34,16 +34,16 @@ public class StaticDependencyTraverserTest
     {
         Dependency dependency = new Dependency( new DefaultArtifact( "g:a:v:1" ), "runtime" );
         DependencyTraverser traverser = new StaticDependencyTraverser( true );
-        assertTrue( traverser.traverseDependency( dependency ) );
+        assertThat( traverser.traverseDependency( dependency ) ).isTrue();
         traverser = new StaticDependencyTraverser( false );
-        assertFalse( traverser.traverseDependency( dependency ) );
+        assertThat( traverser.traverseDependency( dependency ) ).isFalse();
     }
 
     @Test
     public void testDeriveChildTraverser()
     {
         DependencyTraverser traverser = new StaticDependencyTraverser( true );
-        assertSame( traverser, traverser.deriveChildTraverser( null ) );
+        assertThat( traverser.deriveChildTraverser( null ) ).isSameAs(traverser);
     }
 
     @Test
@@ -52,11 +52,11 @@ public class StaticDependencyTraverserTest
         DependencyTraverser traverser1 = new StaticDependencyTraverser( true );
         DependencyTraverser traverser2 = new StaticDependencyTraverser( true );
         DependencyTraverser traverser3 = new StaticDependencyTraverser( false );
-        assertEquals( traverser1, traverser1 );
-        assertEquals( traverser1, traverser2 );
-        assertNotEquals( traverser1, traverser3 );
-        assertNotEquals( traverser1, this );
-        assertNotEquals( traverser1, null );
+        assertThat( traverser1 ).isEqualTo( traverser1 );
+        assertThat( traverser2 ).isEqualTo( traverser1 );
+        assertThat( traverser1 ).isNotEqualTo( traverser3 );
+        assertThat( traverser1 ).isNotEqualTo( this );
+        assertThat( traverser1 ).isNotEqualTo( null );
     }
 
     @Test
@@ -64,7 +64,7 @@ public class StaticDependencyTraverserTest
     {
         DependencyTraverser traverser1 = new StaticDependencyTraverser( true );
         DependencyTraverser traverser2 = new StaticDependencyTraverser( true );
-        assertEquals( traverser1.hashCode(), traverser2.hashCode() );
+        assertThat(traverser2.hashCode() ).isEqualTo(traverser1.hashCode());
     }
 
 }

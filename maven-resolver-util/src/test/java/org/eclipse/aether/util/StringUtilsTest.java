@@ -19,10 +19,10 @@ package org.eclipse.aether.util;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
-import org.eclipse.aether.util.StringUtils;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.aether.util.StringUtils.isEmpty;
 
 /**
  */
@@ -32,10 +32,10 @@ public class StringUtilsTest
     @Test
     public void testIsEmpty()
     {
-        assertTrue( StringUtils.isEmpty( null ) );
-        assertTrue( StringUtils.isEmpty( "" ) );
-        assertFalse( StringUtils.isEmpty( " " ) );
-        assertFalse( StringUtils.isEmpty( "test" ) );
+        assertThat( isEmpty( null ) ).isTrue();
+        assertThat( isEmpty( "" ) ).isTrue();
+        assertThat( isEmpty( " " ) ).isFalse();
+        assertThat( isEmpty( "test" ) ).isFalse();
     }
 
 }

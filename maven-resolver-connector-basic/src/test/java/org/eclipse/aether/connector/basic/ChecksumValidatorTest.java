@@ -19,7 +19,7 @@ package org.eclipse.aether.connector.basic;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,7 +113,7 @@ public class ChecksumValidatorTest
 
         void assertCallbacks( String... callbacks )
         {
-            assertEquals( Arrays.asList( callbacks ), this.callbacks );
+            assertThat(this.callbacks ).isEqualTo(Arrays.asList( callbacks ));
         }
 
     }
@@ -158,7 +158,7 @@ public class ChecksumValidatorTest
             {
                 expected.add( toUri( algo ) );
             }
-            assertEquals( expected, fetchedFiles );
+            assertThat(fetchedFiles ).isEqualTo(expected);
         }
 
         private static URI toUri( String algo )
@@ -261,9 +261,9 @@ public class ChecksumValidatorTest
         }
         catch ( ChecksumFailureException e )
         {
-            assertEquals( "foo", e.getExpected() );
-            assertEquals( "not-foo", e.getActual() );
-            assertTrue( e.isRetryWorthy() );
+            assertThat(e.getExpected() ).isEqualTo("foo");
+            assertThat(e.getActual() ).isEqualTo("not-foo");
+            assertThat(e.isRetryWorthy() ).isTrue();
         }
         fetcher.assertFetchedFiles( SHA1 );
         policy.assertCallbacks( "mismatch(SHA-1, 0000)" );
@@ -297,9 +297,9 @@ public class ChecksumValidatorTest
         }
         catch ( ChecksumFailureException e )
         {
-            assertEquals( "foo", e.getExpected() );
-            assertEquals( "not-foo", e.getActual() );
-            assertTrue( e.isRetryWorthy() );
+            assertThat(e.getExpected() ).isEqualTo("foo");
+            assertThat(e.getActual() ).isEqualTo("not-foo");
+            assertThat(e.isRetryWorthy() ).isTrue();
         }
         fetcher.assertFetchedFiles( SHA1, MD5 );
         policy.assertCallbacks( "mismatch(SHA-1, 0000)", "match(MD5, 0000)", "noMore()" );
@@ -371,7 +371,7 @@ public class ChecksumValidatorTest
     {
         policy.tolerateFailure = true;
         ChecksumValidator validator = newValidator( SHA1 );
-        assertEquals( true, validator.handle( new ChecksumFailureException( "accept" ) ) );
+        assertThat(validator.handle( new ChecksumFailureException( "accept" ) ) ).isEqualTo(true);
         policy.assertCallbacks( "fail(accept)" );
     }
 
@@ -381,7 +381,7 @@ public class ChecksumValidatorTest
     {
         policy.tolerateFailure = false;
         ChecksumValidator validator = newValidator( SHA1 );
-        assertEquals( false, validator.handle( new ChecksumFailureException( "reject" ) ) );
+        assertThat(validator.handle( new ChecksumFailureException( "reject" ) ) ).isEqualTo(false);
         policy.assertCallbacks( "fail(reject)" );
     }
 
@@ -402,15 +402,15 @@ public class ChecksumValidatorTest
         fetcher.mock( SHA1, "foo" );
         validator.validate( checksums( SHA1, "foo" ), null );
         fetcher.assertFetchedFiles( SHA1 );
-        assertEquals( 1, fetcher.checksumFiles.size() );
+        assertThat(fetcher.checksumFiles.size() ).isEqualTo(1);
         for ( File file : fetcher.checksumFiles )
         {
-            assertTrue( file.getAbsolutePath(), file.isFile() );
+            assertThat( file.isFile() ).isTrue();
         }
         validator.retry();
         for ( File file : fetcher.checksumFiles )
         {
-            assertFalse( file.getAbsolutePath(), file.exists() );
+            assertThat( file.exists() ).isFalse();
         }
     }
 
@@ -422,21 +422,21 @@ public class ChecksumValidatorTest
         ChecksumValidator validator = newValidator( SHA1, MD5 );
         fetcher.mock( MD5, "bar" );
         validator.validate( checksums( SHA1, "foo", MD5, "bar" ), checksums( SHA1, "foo" ) );
-        assertEquals( 1, fetcher.checksumFiles.size() );
+        assertThat(fetcher.checksumFiles.size() ).isEqualTo(1);
         for ( File file : fetcher.checksumFiles )
         {
-            assertTrue( file.getAbsolutePath(), file.isFile() );
+            assertThat(file.isFile() ).isTrue();
         }
         validator.commit();
         File checksumFile = new File( dataFile.getPath() + ".sha1" );
-        assertTrue( checksumFile.getAbsolutePath(), checksumFile.isFile() );
-        assertEquals( "foo", TestFileUtils.readString( checksumFile ) );
+        assertThat(checksumFile.isFile() ).isTrue();
+        assertThat(TestFileUtils.readString( checksumFile ) ).isEqualTo("foo");
         checksumFile = new File( dataFile.getPath() + ".md5" );
-        assertTrue( checksumFile.getAbsolutePath(), checksumFile.isFile() );
-        assertEquals( "bar", TestFileUtils.readString( checksumFile ) );
+        assertThat(checksumFile.isFile() ).isTrue();
+        assertThat(TestFileUtils.readString( checksumFile ) ).isEqualTo("bar");
         for ( File file : fetcher.checksumFiles )
         {
-            assertFalse( file.getAbsolutePath(), file.exists() );
+            assertThat(file.exists() ).isFalse();
         }
     }
 
@@ -448,15 +448,15 @@ public class ChecksumValidatorTest
         fetcher.mock( SHA1, "foo" );
         validator.validate( checksums( SHA1, "foo" ), null );
         fetcher.assertFetchedFiles( SHA1 );
-        assertEquals( 1, fetcher.checksumFiles.size() );
+        assertThat(fetcher.checksumFiles.size() ).isEqualTo(1);
         for ( File file : fetcher.checksumFiles )
         {
-            assertTrue( file.getAbsolutePath(), file.isFile() );
+            assertThat(file.isFile() ).isTrue();
         }
         validator.close();
         for ( File file : fetcher.checksumFiles )
         {
-            assertFalse( file.getAbsolutePath(), file.exists() );
+            assertThat(file.exists() ).isFalse();
         }
     }
 

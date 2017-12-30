@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl.collect;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -54,13 +54,13 @@ public class DataPoolTest
         Object key = pool.toKey( request );
         pool.putDescriptor( key, result );
         ArtifactDescriptorResult cached = pool.getDescriptor( key, request );
-        assertNotNull( cached );
-        assertEquals( result.getArtifact(), cached.getArtifact() );
-        assertEquals( result.getRelocations(), cached.getRelocations() );
-        assertEquals( result.getDependencies(), cached.getDependencies() );
-        assertEquals( result.getManagedDependencies(), cached.getManagedDependencies() );
-        assertEquals( result.getRepositories(), cached.getRepositories() );
-        assertEquals( result.getAliases(), cached.getAliases() );
+        assertThat( cached ).isNotNull();
+        assertThat( cached.getArtifact() ).isEqualTo( result.getArtifact());
+        assertThat( cached.getRelocations() ).isEqualTo( result.getRelocations());
+        assertThat( cached.getDependencies() ).isEqualTo( result.getDependencies());
+        assertThat( cached.getManagedDependencies() ).isEqualTo( result.getManagedDependencies());
+        assertThat( cached.getRepositories() ).isEqualTo( result.getRepositories());
+        assertThat( cached.getAliases() ).isEqualTo( result.getAliases());
     }
 
 }

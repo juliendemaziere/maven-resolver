@@ -19,7 +19,7 @@ package org.eclipse.aether.util.version;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.util.version.GenericVersion;
 import org.eclipse.aether.util.version.GenericVersionScheme;
@@ -37,7 +37,6 @@ public class GenericVersionSchemeTest
 
     @Before
     public void setUp()
-        throws Exception
     {
         scheme = new GenericVersionScheme();
     }
@@ -61,16 +60,16 @@ public class GenericVersionSchemeTest
         throws InvalidVersionSpecificationException
     {
         VersionConstraint c = scheme.parseVersionConstraint( "1.0" );
-        assertEquals( "1.0", c.getVersion().toString() );
-        assertTrue( c.containsVersion( new GenericVersion( "1.0" ) ) );
+        assertThat( c.getVersion().toString() ).isEqualTo("1.0");
+        assertThat( c.containsVersion( new GenericVersion( "1.0" ) ) ).isTrue();
 
         c = scheme.parseVersionConstraint( "[1.0]" );
-        assertEquals( null, c.getVersion() );
-        assertTrue( c.containsVersion( new GenericVersion( "1.0" ) ) );
+        assertThat( c.getVersion() ).isEqualTo(null);
+        assertThat( c.containsVersion( new GenericVersion( "1.0" ) ) ).isTrue();
 
         c = scheme.parseVersionConstraint( "[1.0],[2.0]" );
-        assertTrue( c.containsVersion( new GenericVersion( "1.0" ) ) );
-        assertTrue( c.containsVersion( new GenericVersion( "2.0" ) ) );
+        assertThat( c.containsVersion( new GenericVersion( "1.0" ) ) ).isTrue();
+        assertThat( c.containsVersion( new GenericVersion( "2.0" ) ) ).isTrue();
 
         c = scheme.parseVersionConstraint( "[1.0],[2.0],[3.0]" );
         assertContains( c, "1.0", "2.0", "3.0" );
@@ -87,20 +86,20 @@ public class GenericVersionSchemeTest
 
     private void assertNotContains( VersionConstraint c, String... versions )
     {
-        assertContains( String.format( "%s: %%s should not be contained\n", c.toString() ), c, false, versions );
+        assertContains( String.format( "%s: %%s should not be contained\n", c ), c, false, versions );
     }
 
     private void assertContains( String msg, VersionConstraint c, boolean b, String... versions )
     {
         for ( String v : versions )
         {
-            assertEquals( String.format( msg, v ), b, c.containsVersion( new GenericVersion( v ) ) );
+            assertThat( c.containsVersion( new GenericVersion( v ) ) ).as( msg, v ).isEqualTo( b );
         }
     }
 
     private void assertContains( VersionConstraint c, String... versions )
     {
-        assertContains( String.format( "%s: %%s should be contained\n", c.toString() ), c, true, versions );
+        assertContains( String.format( "%s: %%s should be contained\n", c ), c, true, versions );
     }
 
     @Test

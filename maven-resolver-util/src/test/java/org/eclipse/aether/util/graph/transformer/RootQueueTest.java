@@ -19,11 +19,11 @@ package org.eclipse.aether.util.graph.transformer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import org.eclipse.aether.util.graph.transformer.ConflictIdSorter.ConflictId;
 import org.eclipse.aether.util.graph.transformer.ConflictIdSorter.RootQueue;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RootQueueTest
 {
@@ -33,11 +33,11 @@ public class RootQueueTest
     {
         ConflictId id = new ConflictId( "a", 0 );
         RootQueue queue = new RootQueue( 10 );
-        assertTrue( queue.isEmpty() );
+        assertThat( queue.isEmpty() ).isTrue();
         queue.add( id );
-        assertFalse( queue.isEmpty() );
-        assertSame( id, queue.remove() );
-        assertTrue( queue.isEmpty() );
+        assertThat( queue.isEmpty() ).isFalse();
+        assertThat( queue.remove() ).isSameAs( id );
+        assertThat( queue.isEmpty() ).isTrue();
     }
 
     @Test
@@ -53,20 +53,20 @@ public class RootQueueTest
         queue.add( id2 );
         queue.add( id3 );
         queue.add( id4 );
-        assertSame( id1, queue.remove() );
-        assertSame( id2, queue.remove() );
-        assertSame( id3, queue.remove() );
-        assertSame( id4, queue.remove() );
+        assertThat( queue.remove() ).isSameAs( id1 );
+        assertThat( queue.remove() ).isSameAs( id2 );
+        assertThat( queue.remove() ).isSameAs( id3 );
+        assertThat( queue.remove() ).isSameAs( id4 );
 
         queue = new RootQueue( 10 );
         queue.add( id4 );
         queue.add( id3 );
         queue.add( id2 );
         queue.add( id1 );
-        assertSame( id1, queue.remove() );
-        assertSame( id2, queue.remove() );
-        assertSame( id3, queue.remove() );
-        assertSame( id4, queue.remove() );
+        assertThat( queue.remove() ).isSameAs( id1 );
+        assertThat( queue.remove() ).isSameAs( id2 );
+        assertThat( queue.remove() ).isSameAs( id3 );
+        assertThat( queue.remove() ).isSameAs( id4 );
     }
 
     @Test
@@ -75,15 +75,15 @@ public class RootQueueTest
         ConflictId id = new ConflictId( "a", 0 );
 
         RootQueue queue = new RootQueue( 10 );
-        assertTrue( queue.isEmpty() );
+        assertThat( queue.isEmpty() ).isTrue();
         queue.add( id );
-        assertFalse( queue.isEmpty() );
-        assertSame( id, queue.remove() );
-        assertTrue( queue.isEmpty() );
+        assertThat( queue.isEmpty() ).isFalse();
+        assertThat( queue.remove() ).isSameAs( id );
+        assertThat( queue.isEmpty() ).isTrue();
         queue.add( id );
-        assertFalse( queue.isEmpty() );
-        assertSame( id, queue.remove() );
-        assertTrue( queue.isEmpty() );
+        assertThat( queue.isEmpty() ).isFalse();
+        assertThat( queue.remove() ).isSameAs( id );
+        assertThat( queue.isEmpty() ).isTrue();
     }
 
     @Test
@@ -96,11 +96,10 @@ public class RootQueueTest
         RootQueue queue = new RootQueue( 10 );
         queue.add( id2 );
         queue.add( id3 );
-        assertSame( id2, queue.remove() );
+        assertThat( queue.remove() ).isSameAs( id2 );
         queue.add( id1 );
-        assertSame( id1, queue.remove() );
-        assertSame( id3, queue.remove() );
-        assertTrue( queue.isEmpty() );
+        assertThat( queue.remove() ).isSameAs( id1 );
+        assertThat( queue.remove() ).isSameAs( id3 );
+        assertThat( queue.isEmpty() ).isTrue();
     }
-
 }

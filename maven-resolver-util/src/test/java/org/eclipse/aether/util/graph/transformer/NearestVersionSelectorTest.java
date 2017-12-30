@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.transformer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
@@ -52,10 +52,10 @@ public class NearestVersionSelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "sibling-versions.txt" );
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
-        assertEquals( 1, root.getChildren().size() );
-        assertEquals( "3", root.getChildren().get( 0 ).getArtifact().getVersion() );
+        assertThat(root.getChildren().size() ).isEqualTo(1);
+        assertThat(root.getChildren().get( 0 ).getArtifact().getVersion() ).isEqualTo("3");
     }
 
     @Test
@@ -64,10 +64,10 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "nearest-underneath-loser-a.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         List<DependencyNode> trail = find( root, "j" );
-        assertEquals( 5, trail.size() );
+        assertThat(trail.size() ).isEqualTo(5);
     }
 
     @Test
@@ -76,10 +76,10 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "nearest-underneath-loser-b.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         List<DependencyNode> trail = find( root, "j" );
-        assertEquals( 5, trail.size() );
+        assertThat(trail.size() ).isEqualTo(5);
     }
 
     @Test
@@ -88,11 +88,11 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "range-backtracking.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         List<DependencyNode> trail = find( root, "x" );
-        assertEquals( 3, trail.size() );
-        assertEquals( "2", trail.get( 0 ).getArtifact().getVersion() );
+        assertThat(trail.size() ).isEqualTo(3);
+        assertThat(trail.get( 0 ).getArtifact().getVersion() ).isEqualTo("2");
     }
 
     @Test
@@ -101,13 +101,13 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "conflict-id-cycle.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
-        assertEquals( 2, root.getChildren().size() );
-        assertEquals( "a", root.getChildren().get( 0 ).getArtifact().getArtifactId() );
-        assertEquals( "b", root.getChildren().get( 1 ).getArtifact().getArtifactId() );
-        assertTrue( root.getChildren().get( 0 ).getChildren().isEmpty() );
-        assertTrue( root.getChildren().get( 1 ).getChildren().isEmpty() );
+        assertThat(root.getChildren().size() ).isEqualTo(2);
+        assertThat(root.getChildren().get( 0 ).getArtifact().getArtifactId() ).isEqualTo("a");
+        assertThat(root.getChildren().get( 1 ).getArtifact().getArtifactId() ).isEqualTo("b");
+        assertThat(root.getChildren().get( 0 ).getChildren().isEmpty() ).isTrue();
+        assertThat(root.getChildren().get( 1 ).getChildren().isEmpty() ).isTrue();
     }
 
     @Test( expected = UnsolvableVersionConflictException.class )
@@ -116,7 +116,7 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "unsolvable.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
     }
 
     @Test( expected = UnsolvableVersionConflictException.class )
@@ -134,7 +134,7 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "ranges.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
     }
 
     @Test
@@ -143,13 +143,13 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "dead-conflict-group.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
-        assertEquals( 2, root.getChildren().size() );
-        assertEquals( "a", root.getChildren().get( 0 ).getArtifact().getArtifactId() );
-        assertEquals( "b", root.getChildren().get( 1 ).getArtifact().getArtifactId() );
-        assertTrue( root.getChildren().get( 0 ).getChildren().isEmpty() );
-        assertTrue( root.getChildren().get( 1 ).getChildren().isEmpty() );
+        assertThat(root.getChildren().size() ).isEqualTo(2);
+        assertThat(root.getChildren().get( 0 ).getArtifact().getArtifactId() ).isEqualTo("a");
+        assertThat(root.getChildren().get( 1 ).getArtifact().getArtifactId() ).isEqualTo("b");
+        assertThat(root.getChildren().get( 0 ).getChildren().isEmpty() ).isTrue();
+        assertThat(root.getChildren().get( 1 ).getChildren().isEmpty() ).isTrue();
     }
 
     @Test
@@ -158,13 +158,13 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "soft-vs-range.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
-        assertEquals( 2, root.getChildren().size() );
-        assertEquals( "a", root.getChildren().get( 0 ).getArtifact().getArtifactId() );
-        assertEquals( 0, root.getChildren().get( 0 ).getChildren().size() );
-        assertEquals( "b", root.getChildren().get( 1 ).getArtifact().getArtifactId() );
-        assertEquals( 1, root.getChildren().get( 1 ).getChildren().size() );
+        assertThat(root.getChildren().size() ).isEqualTo(2);
+        assertThat(root.getChildren().get( 0 ).getArtifact().getArtifactId() ).isEqualTo("a");
+        assertThat(root.getChildren().get( 0 ).getChildren().size() ).isEqualTo(0);
+        assertThat(root.getChildren().get( 1 ).getArtifact().getArtifactId() ).isEqualTo("b");
+        assertThat(root.getChildren().get( 1 ).getChildren().size() ).isEqualTo(1);
     }
 
     @Test
@@ -173,12 +173,12 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "cycle.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
-        assertEquals( 2, root.getChildren().size() );
-        assertEquals( 1, root.getChildren().get( 0 ).getChildren().size() );
-        assertEquals( 0, root.getChildren().get( 0 ).getChildren().get( 0 ).getChildren().size() );
-        assertEquals( 0, root.getChildren().get( 1 ).getChildren().size() );
+        assertThat(root.getChildren().size() ).isEqualTo(2);
+        assertThat(root.getChildren().get( 0 ).getChildren().size() ).isEqualTo(1);
+        assertThat(root.getChildren().get( 0 ).getChildren().get( 0 ).getChildren().size() ).isEqualTo(0);
+        assertThat(root.getChildren().get( 1 ).getChildren().size() ).isEqualTo(0);
     }
 
     @Test
@@ -187,9 +187,9 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "loop.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
-        assertEquals( 0, root.getChildren().size() );
+        assertThat(root.getChildren().size() ).isEqualTo(0);
     }
 
     @Test
@@ -198,9 +198,9 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "overlapping-cycles.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
-        assertEquals( 2, root.getChildren().size() );
+        assertThat(root.getChildren().size() ).isEqualTo(2);
     }
 
     @Test
@@ -209,12 +209,12 @@ public class NearestVersionSelectorTest
     {
         DependencyNode root = parseResource( "scope-vs-version.txt" );
 
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         DependencyNode[] nodes = find( root, "y" ).toArray( new DependencyNode[0] );
-        assertEquals( 3, nodes.length );
-        assertEquals( "test", nodes[1].getDependency().getScope() );
-        assertEquals( "test", nodes[0].getDependency().getScope() );
+        assertThat(nodes.length ).isEqualTo(3);
+        assertThat(nodes[1].getDependency().getScope() ).isEqualTo("test");
+        assertThat(nodes[0].getDependency().getScope() ).isEqualTo("test");
     }
 
     @Test
@@ -224,21 +224,21 @@ public class NearestVersionSelectorTest
         DependencyNode root = parseResource( "verbose.txt" );
 
         session.setConfigProperty( ConflictResolver.CONFIG_PROP_VERBOSE, Boolean.TRUE );
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
-        assertEquals( 2, root.getChildren().size() );
-        assertEquals( 1, root.getChildren().get( 0 ).getChildren().size() );
+        assertThat(root.getChildren().size() ).isEqualTo(2);
+        assertThat(root.getChildren().get( 0 ).getChildren().size() ).isEqualTo(1);
         DependencyNode winner = root.getChildren().get( 0 ).getChildren().get( 0 );
-        assertEquals( "test", winner.getDependency().getScope() );
-        assertEquals( "compile", winner.getData().get( ConflictResolver.NODE_DATA_ORIGINAL_SCOPE ) );
-        assertEquals( false, winner.getData().get( ConflictResolver.NODE_DATA_ORIGINAL_OPTIONALITY) );
-        assertEquals( 1, root.getChildren().get( 1 ).getChildren().size() );
+        assertThat(winner.getDependency().getScope() ).isEqualTo("test");
+        assertThat(winner.getData().get( ConflictResolver.NODE_DATA_ORIGINAL_SCOPE ) ).isEqualTo("compile");
+        assertThat(winner.getData().get( ConflictResolver.NODE_DATA_ORIGINAL_OPTIONALITY) ).isEqualTo(false);
+        assertThat(root.getChildren().get( 1 ).getChildren().size() ).isEqualTo(1);
         DependencyNode loser = root.getChildren().get( 1 ).getChildren().get( 0 );
-        assertEquals( "test", loser.getDependency().getScope() );
-        assertEquals( 0, loser.getChildren().size() );
-        assertSame( winner, loser.getData().get( ConflictResolver.NODE_DATA_WINNER ) );
-        assertEquals( "compile", loser.getData().get( ConflictResolver.NODE_DATA_ORIGINAL_SCOPE ) );
-        assertEquals( false, loser.getData().get( ConflictResolver.NODE_DATA_ORIGINAL_OPTIONALITY ) );
+        assertThat(loser.getDependency().getScope() ).isEqualTo("test");
+        assertThat(loser.getChildren().size() ).isEqualTo(0);
+        assertThat(loser.getData().get( ConflictResolver.NODE_DATA_WINNER ) ).isSameAs(winner);
+        assertThat(loser.getData().get( ConflictResolver.NODE_DATA_ORIGINAL_SCOPE ) ).isEqualTo("compile");
+        assertThat(loser.getData().get( ConflictResolver.NODE_DATA_ORIGINAL_OPTIONALITY ) ).isEqualTo(false);
     }
 
 }

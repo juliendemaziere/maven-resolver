@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.visitor;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class FilteringDependencyVisitorTest
         FilteringDependencyVisitor visitor = new FilteringDependencyVisitor( new PreorderNodeListGenerator(), filter );
         root.accept( visitor );
 
-        assertEquals( ",a,ba,cba,a,ea,", buffer.toString() );
+        assertThat(buffer.toString() ).isEqualTo(",a,ba,cba,a,ea,");
     }
 
 }

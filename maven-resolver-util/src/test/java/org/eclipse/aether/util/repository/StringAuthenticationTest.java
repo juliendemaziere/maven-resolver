@@ -19,8 +19,6 @@ package org.eclipse.aether.util.repository;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.Authentication;
@@ -28,6 +26,8 @@ import org.eclipse.aether.repository.AuthenticationContext;
 import org.eclipse.aether.repository.AuthenticationDigest;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StringAuthenticationTest
 {
@@ -57,8 +57,8 @@ public class StringAuthenticationTest
     {
         Authentication auth = new StringAuthentication( "key", "value" );
         AuthenticationContext context = newContext( auth );
-        assertEquals( null, context.get( "another-key" ) );
-        assertEquals( "value", context.get( "key" ) );
+        assertThat( context.get( "another-key" ) ).isEqualTo(null);
+        assertThat( context.get( "key" ) ).isEqualTo("value");
     }
 
     @Test
@@ -68,15 +68,15 @@ public class StringAuthenticationTest
         Authentication auth2 = new StringAuthentication( "key", "value" );
         String digest1 = newDigest( auth1 );
         String digest2 = newDigest( auth2 );
-        assertEquals( digest1, digest2 );
+        assertThat( digest2 ).isEqualTo( digest1 );
 
         Authentication auth3 = new StringAuthentication( "key", "Value" );
         String digest3 = newDigest( auth3 );
-        assertFalse( digest3.equals( digest1 ) );
+        assertThat( digest3.equals( digest1 ) ).isFalse();
 
         Authentication auth4 = new StringAuthentication( "Key", "value" );
         String digest4 = newDigest( auth4 );
-        assertFalse( digest4.equals( digest1 ) );
+        assertThat( digest4.equals( digest1 ) ).isFalse();
     }
 
     @Test
@@ -85,9 +85,9 @@ public class StringAuthenticationTest
         Authentication auth1 = new StringAuthentication( "key", "value" );
         Authentication auth2 = new StringAuthentication( "key", "value" );
         Authentication auth3 = new StringAuthentication( "key", "Value" );
-        assertEquals( auth1, auth2 );
-        assertFalse( auth1.equals( auth3 ) );
-        assertFalse( auth1.equals( null ) );
+        assertThat( auth2 ).isEqualTo(auth1);
+        assertThat( auth1.equals( auth3 ) ).isFalse();
+        assertThat( auth1.equals( null ) ).isFalse();
     }
 
     @Test
@@ -95,7 +95,7 @@ public class StringAuthenticationTest
     {
         Authentication auth1 = new StringAuthentication( "key", "value" );
         Authentication auth2 = new StringAuthentication( "key", "value" );
-        assertEquals( auth1.hashCode(), auth2.hashCode() );
+        assertThat( auth2.hashCode() ).isEqualTo( auth1.hashCode() );
     }
 
 }

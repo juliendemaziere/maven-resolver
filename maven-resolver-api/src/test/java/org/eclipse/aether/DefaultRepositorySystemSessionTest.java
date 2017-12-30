@@ -19,7 +19,7 @@ package org.eclipse.aether;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Map;
 
@@ -41,11 +41,11 @@ public class DefaultRepositorySystemSessionTest
         DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
 
         RemoteRepository repo = new RemoteRepository.Builder( "id", "default", "void" ).build();
-        assertSame( null, session.getProxySelector().getProxy( repo ) );
+        assertThat(session.getProxySelector().getProxy( repo ) ).isSameAs(null);
 
         Proxy proxy = new Proxy( "http", "localhost", 8080, null );
         repo = new RemoteRepository.Builder( repo ).setProxy( proxy ).build();
-        assertSame( proxy, session.getProxySelector().getProxy( repo ) );
+        assertThat(session.getProxySelector().getProxy( repo ) ).isSameAs(proxy);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class DefaultRepositorySystemSessionTest
         DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
 
         RemoteRepository repo = new RemoteRepository.Builder( "id", "default", "void" ).build();
-        assertSame( null, session.getAuthenticationSelector().getAuthentication( repo ) );
+        assertThat(session.getAuthenticationSelector().getAuthentication( repo ) ).isSameAs(null);
 
         Authentication auth = new Authentication()
         {
@@ -67,7 +67,7 @@ public class DefaultRepositorySystemSessionTest
             }
         };
         repo = new RemoteRepository.Builder( repo ).setAuthentication( auth ).build();
-        assertSame( auth, session.getAuthenticationSelector().getAuthentication( repo ) );
+        assertThat(session.getAuthenticationSelector().getAuthentication( repo ) ).isSameAs(auth);
     }
 
     @Test
@@ -83,9 +83,9 @@ public class DefaultRepositorySystemSessionTest
         session2.setSystemProperty( "key", "test" );
         session2.setConfigProperty( "key", "test" );
 
-        assertEquals( null, session1.getUserProperties().get( "key" ) );
-        assertEquals( null, session1.getSystemProperties().get( "key" ) );
-        assertEquals( null, session1.getConfigProperties().get( "key" ) );
+        assertThat(session1.getUserProperties().get( "key" ) ).isEqualTo(null);
+        assertThat(session1.getSystemProperties().get( "key" ) ).isEqualTo(null);
+        assertThat(session1.getConfigProperties().get( "key" ) ).isEqualTo(null);
     }
 
     @Test

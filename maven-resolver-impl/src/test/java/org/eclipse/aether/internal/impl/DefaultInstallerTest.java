@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -122,24 +122,24 @@ public class DefaultInstallerTest
 
         InstallResult result = installer.install( session, request );
 
-        assertTrue( artifactFile.exists() );
-        assertEquals( "artifact", TestFileUtils.readString( artifactFile ) );
+        assertThat(artifactFile.exists() ).isTrue();
+        assertThat(TestFileUtils.readString( artifactFile ) ).isEqualTo("artifact");
 
-        assertTrue( metadataFile.exists() );
-        assertEquals( "metadata", TestFileUtils.readString( metadataFile ) );
+        assertThat(metadataFile.exists() ).isTrue();
+        assertThat(TestFileUtils.readString( metadataFile ) ).isEqualTo("metadata");
 
-        assertEquals( result.getRequest(), request );
+        assertThat(request ).isEqualTo(result.getRequest());
 
-        assertEquals( result.getArtifacts().size(), 1 );
-        assertTrue( result.getArtifacts().contains( artifact ) );
+        assertThat(1 ).isEqualTo(result.getArtifacts().size());
+        assertThat(result.getArtifacts().contains( artifact ) ).isTrue();
 
-        assertEquals( result.getMetadata().size(), 1 );
-        assertTrue( result.getMetadata().contains( metadata ) );
+        assertThat(1 ).isEqualTo(result.getMetadata().size());
+        assertThat(result.getMetadata().contains( metadata ) ).isTrue();
 
-        assertEquals( 1, lrm.getMetadataRegistration().size() );
-        assertTrue( lrm.getMetadataRegistration().contains( metadata ) );
-        assertEquals( 1, lrm.getArtifactRegistration().size() );
-        assertTrue( lrm.getArtifactRegistration().contains( artifact ) );
+        assertThat(lrm.getMetadataRegistration().size() ).isEqualTo(1);
+        assertThat(lrm.getMetadataRegistration().contains( metadata ) ).isTrue();
+        assertThat(lrm.getArtifactRegistration().size() ).isEqualTo(1);
+        assertThat(lrm.getArtifactRegistration().contains( artifact ) ).isTrue();
     }
 
     @Test( expected = InstallationException.class )
@@ -188,10 +188,10 @@ public class DefaultInstallerTest
     {
         String path = session.getLocalRepositoryManager().getPathForLocalArtifact( artifact );
         File file = new File( session.getLocalRepository().getBasedir(), path );
-        assertFalse( file.getAbsolutePath() + " is a file, not directory", file.isFile() );
-        assertFalse( file.getAbsolutePath() + " already exists", file.exists() );
-        assertTrue( "failed to setup test: could not create " + file.getAbsolutePath(),
-                    file.mkdirs() || file.isDirectory() );
+        assertThat( file ).isDirectory();
+        assertThat( file ).doesNotExist();
+        assertThat(file.mkdirs() || file.isDirectory() )
+                .as( "failed to setup test: could not create " + file.getAbsolutePath()).isTrue();
 
         request.addArtifact( artifact );
         installer.install( session, request );
@@ -202,8 +202,7 @@ public class DefaultInstallerTest
         throws InstallationException
     {
         String path = session.getLocalRepositoryManager().getPathForLocalMetadata( metadata );
-        assertTrue( "failed to setup test: could not create " + path,
-                    new File( session.getLocalRepository().getBasedir(), path ).mkdirs() );
+        assertThat( new File( session.getLocalRepository().getBasedir(), path ).mkdirs() ).isTrue();
 
         request.addMetadata( metadata );
         installer.install( session, request );
@@ -273,8 +272,7 @@ public class DefaultInstallerTest
     public void testFailingEventsArtifactExistsAsDir()
     {
         String path = session.getLocalRepositoryManager().getPathForLocalArtifact( artifact );
-        assertTrue( "failed to setup test: could not create " + path,
-                    new File( session.getLocalRepository().getBasedir(), path ).mkdirs() );
+        assertThat( new File( session.getLocalRepository().getBasedir(), path ).mkdirs() );
         checkFailedEvents( "target exists as dir", artifact );
     }
 
@@ -282,8 +280,7 @@ public class DefaultInstallerTest
     public void testFailingEventsMetadataExistsAsDir()
     {
         String path = session.getLocalRepositoryManager().getPathForLocalMetadata( metadata );
-        assertTrue( "failed to setup test: could not create " + path,
-                    new File( session.getLocalRepository().getBasedir(), path ).mkdirs() );
+        assertThat( new File( session.getLocalRepository().getBasedir(), path ).mkdirs() );
         checkFailedEvents( "target exists as dir", metadata );
     }
 
@@ -307,22 +304,22 @@ public class DefaultInstallerTest
     private void checkEvents( String msg, Metadata metadata, boolean failed )
     {
         List<RepositoryEvent> events = listener.getEvents();
-        assertEquals( msg, 2, events.size() );
+        assertThat( events ).hasSize( 2 );
         RepositoryEvent event = events.get( 0 );
-        assertEquals( msg, EventType.METADATA_INSTALLING, event.getType() );
-        assertEquals( msg, metadata, event.getMetadata() );
-        assertNull( msg, event.getException() );
+        assertThat( event.getType()).isEqualTo( EventType.ARTIFACT_INSTALLING );
+        assertThat( event.getArtifact() ).isEqualTo( artifact );
+        assertThat( event.getException() ).isNull();
 
         event = events.get( 1 );
-        assertEquals( msg, EventType.METADATA_INSTALLED, event.getType() );
-        assertEquals( msg, metadata, event.getMetadata() );
+        assertThat( event.getType() ).isEqualTo(  EventType.ARTIFACT_INSTALLED );
+        assertThat( event.getArtifact() ).isEqualTo( artifact ) ;
         if ( failed )
         {
-            assertNotNull( msg, event.getException() );
+            assertThat( event.getException() ).isNotNull();
         }
         else
         {
-            assertNull( msg, event.getException() );
+            assertThat( event.getException() ).isNull();
         }
     }
 
@@ -345,22 +342,22 @@ public class DefaultInstallerTest
     private void checkEvents( String msg, Artifact artifact, boolean failed )
     {
         List<RepositoryEvent> events = listener.getEvents();
-        assertEquals( msg, 2, events.size() );
+        assertThat( events ).hasSize( 2 );
         RepositoryEvent event = events.get( 0 );
-        assertEquals( msg, EventType.ARTIFACT_INSTALLING, event.getType() );
-        assertEquals( msg, artifact, event.getArtifact() );
-        assertNull( msg, event.getException() );
-        
+        assertThat( event.getType()).isEqualTo( EventType.ARTIFACT_INSTALLING );
+        assertThat( event.getArtifact() ).isEqualTo( artifact );
+        assertThat( event.getException() ).isNull();
+
         event = events.get( 1 );
-        assertEquals( msg, EventType.ARTIFACT_INSTALLED, event.getType() );
-        assertEquals( msg, artifact, event.getArtifact() );
+        assertThat( event.getType() ).isEqualTo(  EventType.ARTIFACT_INSTALLED );
+        assertThat( event.getArtifact() ).isEqualTo( artifact ) ;
         if ( failed )
         {
-            assertNotNull( msg + " > expected exception", event.getException() );
+            assertThat( event.getException() ).isNotNull();
         }
         else
         {
-            assertNull( msg + " > " + event.getException(), event.getException() );
+            assertThat( event.getException() ).isNull();
         }
     }
 
@@ -396,8 +393,7 @@ public class DefaultInstallerTest
 
         installer.install( session, request );
 
-        assertEquals( "artifact timestamp was not set to src file", artifact.getFile().lastModified(),
-                      localArtifactFile.lastModified() );
+        assertThat( artifact.getFile().lastModified()).isEqualTo(localArtifactFile.lastModified() );
 
         request = new InstallRequest();
 
@@ -407,7 +403,6 @@ public class DefaultInstallerTest
 
         installer.install( session, request );
 
-        assertEquals( "artifact timestamp was not set to src file", artifact.getFile().lastModified(),
-                      localArtifactFile.lastModified() );
+        assertThat( artifact.getFile().lastModified()).isEqualTo( localArtifactFile.lastModified() );
     }
 }

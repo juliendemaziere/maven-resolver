@@ -19,11 +19,10 @@ package org.eclipse.aether.impl.guice;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.Collections;
 import java.util.Set;
 
+import com.google.inject.Injector;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.impl.ArtifactDescriptorReader;
 import org.eclipse.aether.impl.MetadataGeneratorFactory;
@@ -40,13 +39,16 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Provides;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class AetherModuleTest
 {
 
     @Test
     public void testModuleCompleteness()
     {
-        assertNotNull( Guice.createInjector( new SystemModule() ).getInstance( RepositorySystem.class ) );
+        Injector injector = Guice.createInjector( new SystemModule() );
+        assertThat( injector.getInstance( RepositorySystem.class ) ).isNotNull();
     }
 
     static class SystemModule

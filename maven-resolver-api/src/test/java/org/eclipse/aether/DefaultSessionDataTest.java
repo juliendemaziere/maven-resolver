@@ -19,7 +19,7 @@ package org.eclipse.aether;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -62,36 +62,36 @@ public class DefaultSessionDataTest
     public void testGetSet()
     {
         Object key = "key";
-        assertNull( get( key ) );
+        assertThat(get( key ) ).isNull();
         set( key, "value" );
-        assertEquals( "value", get( key ) );
+        assertThat(get( key ) ).isEqualTo("value");
         set( key, "changed" );
-        assertEquals( "changed", get( key ) );
+        assertThat(get( key ) ).isEqualTo("changed");
         set( key, null );
-        assertNull( get( key ) );
+        assertThat(get( key ) ).isNull();
     }
 
     @Test
     public void testGetSafeSet()
     {
         Object key = "key";
-        assertNull( get( key ) );
-        assertFalse( set( key, "wrong", "value" ) );
-        assertNull( get( key ) );
-        assertTrue( set( key, null, "value" ) );
-        assertEquals( "value", get( key ) );
-        assertTrue( set( key, "value", "value" ) );
-        assertEquals( "value", get( key ) );
-        assertFalse( set( key, "wrong", "changed" ) );
-        assertEquals( "value", get( key ) );
-        assertTrue( set( key, "value", "changed" ) );
-        assertEquals( "changed", get( key ) );
-        assertFalse( set( key, "wrong", null ) );
-        assertEquals( "changed", get( key ) );
-        assertTrue( set( key, "changed", null ) );
-        assertNull( get( key ) );
-        assertTrue( set( key, null, null ) );
-        assertNull( get( key ) );
+        assertThat(get( key ) ).isNull();
+        assertThat(set( key, "wrong", "value" ) ).isFalse();
+        assertThat(get( key ) ).isNull();
+        assertThat(set( key, null, "value" ) ).isTrue();
+        assertThat(get( key ) ).isEqualTo("value");
+        assertThat(set( key, "value", "value" ) ).isTrue();
+        assertThat(get( key ) ).isEqualTo("value");
+        assertThat(set( key, "wrong", "changed" ) ).isFalse();
+        assertThat(get( key ) ).isEqualTo("value");
+        assertThat(set( key, "value", "changed" ) ).isTrue();
+        assertThat(get( key ) ).isEqualTo("changed");
+        assertThat(set( key, "wrong", null ) ).isFalse();
+        assertThat(get( key ) ).isEqualTo("changed");
+        assertThat(set( key, "changed", null ) ).isTrue();
+        assertThat(get( key ) ).isNull();
+        assertThat(set( key, null, null ) ).isTrue();
+        assertThat(get( key ) ).isNull();
     }
 
     @Test( timeout = 10000L )
@@ -113,7 +113,7 @@ public class DefaultSessionDataTest
                         try
                         {
                             set( key, Boolean.TRUE );
-                            assertEquals( Boolean.TRUE, get( key ) );
+                            assertThat(get( key ) ).isEqualTo(Boolean.TRUE);
                         }
                         catch ( Throwable t )
                         {
@@ -132,6 +132,6 @@ public class DefaultSessionDataTest
         {
             thread.join();
         }
-        assertNull( String.valueOf( error.get() ), error.get() );
+        assertThat(error.get() ).isNull();
     }
 }

@@ -19,7 +19,7 @@ package org.eclipse.aether.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +43,7 @@ public class DefaultServiceLocatorTest
         locator.addService( VersionRangeResolver.class, StubVersionRangeResolver.class );
 
         RepositorySystem repoSys = locator.getService( RepositorySystem.class );
-        assertNotNull( repoSys );
+        assertThat(repoSys ).isNotNull();
     }
 
     @Test
@@ -52,7 +52,7 @@ public class DefaultServiceLocatorTest
         DefaultServiceLocator locator = new DefaultServiceLocator();
         locator.setServices( String.class, "one", "two" );
         List<String> services = locator.getServices( String.class );
-        assertNotNull( services );
+        assertThat(services ).isNotNull();
         try
         {
             services.set( 0, "fail" );
@@ -70,7 +70,7 @@ public class DefaultServiceLocatorTest
         DefaultServiceLocator locator = new DefaultServiceLocator();
         locator.setServices( String.class, "one", "two" );
         locator.addService( String.class, String.class );
-        assertEquals( Arrays.asList( "one", "two", "" ), locator.getServices( String.class ) );
+        assertThat(locator.getServices( String.class ) ).isEqualTo(Arrays.asList( "one", "two", "" ));
     }
 
     @Test
@@ -79,8 +79,8 @@ public class DefaultServiceLocatorTest
         DefaultServiceLocator locator = new DefaultServiceLocator();
         locator.setService( DummyService.class, DummyService.class );
         DummyService service = locator.getService( DummyService.class );
-        assertNotNull( service );
-        assertNotNull( service.locator );
+        assertThat(service ).isNotNull();
+        assertThat(service.locator ).isNotNull();
     }
 
     private static class DummyService

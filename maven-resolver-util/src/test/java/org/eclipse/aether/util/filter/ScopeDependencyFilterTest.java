@@ -19,16 +19,15 @@ package org.eclipse.aether.util.filter;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.internal.test.util.NodeBuilder;
-import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScopeDependencyFilterTest
     extends AbstractDependencyFilterTest
@@ -40,31 +39,31 @@ public class ScopeDependencyFilterTest
 
         NodeBuilder builder = new NodeBuilder();
         builder.scope( "compile" ).artifactId( "test" );
-        List<DependencyNode> parents = new LinkedList<DependencyNode>();
+        List<DependencyNode> parents = new LinkedList<>();
 
         // null or empty
-        assertTrue( new ScopeDependencyFilter( null, null ).accept( builder.build(), parents ) );
-        assertTrue( new ScopeDependencyFilter( new LinkedList<String>(), new LinkedList<String>() ).accept( builder.build(),
-                                                                                                            parents ) );
-        assertTrue( new ScopeDependencyFilter( (String[]) null ).accept( builder.build(), parents ) );
+        assertThat( new ScopeDependencyFilter( null, null ).accept( builder.build(), parents ) ).isTrue();
+        assertThat( new ScopeDependencyFilter( new LinkedList<String>(), new LinkedList<String>() ).accept( builder.build(),
+                                                                                                            parents ) ).isTrue();
+        assertThat( new ScopeDependencyFilter( (String[]) null ).accept( builder.build(), parents ) ).isTrue();
 
         // only excludes
-        assertTrue( new ScopeDependencyFilter( "test" ).accept( builder.build(), parents ) );
-        assertFalse( new ScopeDependencyFilter( "compile" ).accept( builder.build(), parents ) );
-        assertFalse( new ScopeDependencyFilter( "compile", "test" ).accept( builder.build(), parents ) );
+        assertThat( new ScopeDependencyFilter( "test" ).accept( builder.build(), parents ) ).isTrue();
+        assertThat( new ScopeDependencyFilter( "compile" ).accept( builder.build(), parents ) ).isFalse();
+        assertThat( new ScopeDependencyFilter( "compile", "test" ).accept( builder.build(), parents ) ).isFalse();
 
         // Both
         String[] excludes1 = { "provided" };
         String[] includes1 = { "compile", "test" };
-        assertTrue( new ScopeDependencyFilter( Arrays.asList( includes1 ), Arrays.asList( excludes1 ) ).accept( builder.build(),
-                                                                                                                parents ) );
-        assertTrue( new ScopeDependencyFilter( Arrays.asList( includes1 ), null ).accept( builder.build(), parents ) );
+        assertThat( new ScopeDependencyFilter( Arrays.asList( includes1 ), Arrays.asList( excludes1 ) ).accept( builder.build(),
+                                                                                                                parents ) ).isTrue();
+        assertThat( new ScopeDependencyFilter( Arrays.asList( includes1 ), null ).accept( builder.build(), parents ) ).isTrue();
 
         // exclude wins
         String[] excludes2 = { "compile" };
         String[] includes2 = { "compile" };
-        assertFalse( new ScopeDependencyFilter( Arrays.asList( includes2 ), Arrays.asList( excludes2 ) ).accept( builder.build(),
-                                                                                                                 parents ) );
+        assertThat( new ScopeDependencyFilter( Arrays.asList( includes2 ), Arrays.asList( excludes2 ) ).accept( builder.build(),
+                                                                                                                 parents ) ).isFalse();
 
     }
 

@@ -19,7 +19,7 @@ package org.eclipse.aether.util.filter;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -43,10 +43,10 @@ public class PatternExclusionsDependencyFilterTest
         List<DependencyNode> parents = new LinkedList<DependencyNode>();
 
         // Empty String, Empty List
-        assertTrue( dontAccept( node, "" ) );
-        assertTrue( new PatternExclusionsDependencyFilter( new LinkedList<String>() ).accept( node, parents ) );
-        assertTrue( new PatternExclusionsDependencyFilter( (String[]) null ).accept( node, parents ) );
-        assertTrue( new PatternExclusionsDependencyFilter( (VersionScheme) null, "[1,10]" ).accept( node, parents ) );
+        assertThat(dontAccept( node, "" ) ).isTrue();
+        assertThat(new PatternExclusionsDependencyFilter( new LinkedList<String>() ).accept( node, parents ) ).isTrue();
+        assertThat(new PatternExclusionsDependencyFilter( (String[]) null ).accept( node, parents ) ).isTrue();
+        assertThat(new PatternExclusionsDependencyFilter( (VersionScheme) null, "[1,10]" ).accept( node, parents ) ).isTrue();
     }
 
     @Test
@@ -57,46 +57,37 @@ public class PatternExclusionsDependencyFilterTest
         DependencyNode node = builder.build();
 
         // full match
-        assertEquals( "com.example.test:testArtifact:jar:1.0.3", true,
-                      dontAccept( node, "com.example.test:testArtifact:jar:1.0.3" ) );
+        assertThat( dontAccept( node, "com.example.test:testArtifact:jar:1.0.3" ) )
+                .as("com.example.test:testArtifact:jar:1.0.3").isTrue();
 
         // single wildcard
-        assertEquals( "*:testArtifact:jar:1.0.3", true, dontAccept( node, "*:testArtifact:jar:1.0.3" ) );
-        assertEquals( "com.example.test:*:jar:1.0.3", true, dontAccept( node, "com.example.test:*:jar:1.0.3" ) );
-        assertEquals( "com.example.test:testArtifact:*:1.0.3", true,
-                      dontAccept( node, "com.example.test:testArtifact:*:1.0.3" ) );
-        assertEquals( "com.example.test:testArtifact:*:1.0.3", true,
-                      dontAccept( node, "com.example.test:testArtifact:*:1.0.3" ) );
+        assertThat( dontAccept( node, "*:testArtifact:jar:1.0.3" ) ).isTrue();
+        assertThat( dontAccept( node, "com.example.test:*:jar:1.0.3" ) ).isTrue();
+        assertThat( dontAccept( node, "com.example.test:testArtifact:*:1.0.3" ) ).isTrue();
+        assertThat( dontAccept( node, "com.example.test:testArtifact:*:1.0.3" ) );
 
         // implicit wildcard
-        assertEquals( ":testArtifact:jar:1.0.3", true, dontAccept( node, ":testArtifact:jar:1.0.3" ) );
-        assertEquals( "com.example.test::jar:1.0.3", true, dontAccept( node, "com.example.test::jar:1.0.3" ) );
-        assertEquals( "com.example.test:testArtifact::1.0.3", true,
-                      dontAccept( node, "com.example.test:testArtifact::1.0.3" ) );
-        assertEquals( "com.example.test:testArtifact:jar:", true,
-                      dontAccept( node, "com.example.test:testArtifact:jar:" ) );
+        assertThat( dontAccept( node, ":testArtifact:jar:1.0.3")).isTrue();
+        assertThat( dontAccept( node, "com.example.test::jar:1.0.3")).isTrue();
+        assertThat( dontAccept( node, "com.example.test:testArtifact::1.0.3" ) ).isTrue();
+        assertThat( dontAccept( node, "com.example.test:testArtifact:jar:" ) ).isTrue();
 
         // multi wildcards
-        assertEquals( "*:*:jar:1.0.3", true, dontAccept( node, "*:*:jar:1.0.3" ) );
-        assertEquals( "com.example.test:*:*:1.0.3", true, dontAccept( node, "com.example.test:*:*:1.0.3" ) );
-        assertEquals( "com.example.test:testArtifact:*:*", true, dontAccept( node, "com.example.test:testArtifact:*:*" ) );
-        assertEquals( "*:testArtifact:jar:*", true, dontAccept( node, "*:testArtifact:jar:*" ) );
-        assertEquals( "*:*:jar:*", true, dontAccept( node, "*:*:jar:*" ) );
-        assertEquals( ":*:jar:", true, dontAccept( node, ":*:jar:" ) );
+        assertThat( dontAccept( node, "*:*:jar:1.0.3" )).isTrue();
+        assertThat( dontAccept( node, "com.example.test:*:*:1.0.3")).isTrue();
+        assertThat( dontAccept( node, "com.example.test:testArtifact:*:*")).isTrue();
+        assertThat( dontAccept( node, "*:testArtifact:jar:*")).isTrue();
+        assertThat( dontAccept( node, "*:*:jar:*")).isTrue();
+        assertThat(dontAccept( node, ":*:jar:")).isTrue();
 
         // partial wildcards
-        assertEquals( "*.example.test:testArtifact:jar:1.0.3", true,
-                      dontAccept( node, "*.example.test:testArtifact:jar:1.0.3" ) );
-        assertEquals( "com.example.test:testArtifact:*ar:1.0.*", true,
-                      dontAccept( node, "com.example.test:testArtifact:*ar:1.0.*" ) );
-        assertEquals( "com.example.test:testArtifact:jar:1.0.*", true,
-                      dontAccept( node, "com.example.test:testArtifact:jar:1.0.*" ) );
-        assertEquals( "*.example.*:testArtifact:jar:1.0.3", true,
-                      dontAccept( node, "*.example.*:testArtifact:jar:1.0.3" ) );
+        assertThat( dontAccept( node, "*.example.test:testArtifact:jar:1.0.3" ) ).isTrue();
+        assertThat( dontAccept( node, "com.example.test:testArtifact:*ar:1.0.*" ) ).isTrue();
+        assertThat( dontAccept( node, "com.example.test:testArtifact:jar:1.0.*" ) ).isTrue();
+        assertThat( dontAccept( node, "*.example.*:testArtifact:jar:1.0.3" ) ).isTrue();
 
         // wildcard as empty string
-        assertEquals( "com.example.test*:testArtifact:jar:1.0.3", true,
-                      dontAccept( node, "com.example.test*:testArtifact:jar:1.0.3" ) );
+        assertThat( dontAccept( node, "com.example.test*:testArtifact:jar:1.0.3" ) ).isTrue();
     }
 
     @Test
@@ -106,11 +97,11 @@ public class PatternExclusionsDependencyFilterTest
         builder.groupId( "com.example.test" ).artifactId( "testArtifact" ).ext( "jar" ).version( "1.0.3" );
         DependencyNode node = builder.build();
 
-        assertEquals( "com.example.test:testArtifact:jar", true, dontAccept( node, "com.example.test:testArtifact:jar" ) );
-        assertEquals( "com.example.test:testArtifact", true, dontAccept( node, "com.example.test:testArtifact" ) );
-        assertEquals( "com.example.test", true, dontAccept( node, "com.example.test" ) );
+        assertThat( dontAccept( node, "com.example.test:testArtifact:jar")).isTrue();
+        assertThat( dontAccept( node, "com.example.test:testArtifact")).isTrue();
+        assertThat( dontAccept( node, "com.example.test")).isTrue();
 
-        assertEquals( "com.example.foo", false, dontAccept( node, "com.example.foo" ) );
+        assertThat( dontAccept( node, "com.example.foo")).isFalse();
     }
 
     @Test
@@ -120,19 +111,14 @@ public class PatternExclusionsDependencyFilterTest
         builder.groupId( "com.example.test" ).artifactId( "testArtifact" ).ext( "jar" ).version( "1.0.3" );
         DependencyNode node = builder.build();
 
-        assertEquals( "OTHER.GROUP.ID:testArtifact:jar:1.0.3", false,
-                      dontAccept( node, "OTHER.GROUP.ID:testArtifact:jar:1.0.3" ) );
-        assertEquals( "com.example.test:OTHER_ARTIFACT:jar:1.0.3", false,
-                      dontAccept( node, "com.example.test:OTHER_ARTIFACT:jar:1.0.3" ) );
-        assertEquals( "com.example.test:OTHER_ARTIFACT:jar:1.0.3", false,
-                      dontAccept( node, "com.example.test:OTHER_ARTIFACT:jar:1.0.3" ) );
-        assertEquals( "com.example.test:testArtifact:WAR:1.0.3", false,
-                      dontAccept( node, "com.example.test:testArtifact:WAR:1.0.3" ) );
-        assertEquals( "com.example.test:testArtifact:jar:SNAPSHOT", false,
-                      dontAccept( node, "com.example.test:testArtifact:jar:SNAPSHOT" ) );
+        assertThat( dontAccept( node, "OTHER.GROUP.ID:testArtifact:jar:1.0.3" ) ).isFalse();
+        assertThat( dontAccept( node, "com.example.test:OTHER_ARTIFACT:jar:1.0.3" ) ).isFalse();
+        assertThat( dontAccept( node, "com.example.test:OTHER_ARTIFACT:jar:1.0.3" ) ).isFalse();
+        assertThat( dontAccept( node, "com.example.test:testArtifact:WAR:1.0.3" ) ).isFalse();
+        assertThat( dontAccept( node, "com.example.test:testArtifact:jar:SNAPSHOT" ) ).isFalse();
 
-        assertEquals( "*:*:war:*", false, dontAccept( node, "*:*:war:*" ) );
-        assertEquals( "OTHER.GROUP.ID", false, dontAccept( node, "OTHER.GROUP.ID" ) );
+        assertThat( dontAccept( node, "*:*:war:*")).isFalse();
+        assertThat( dontAccept( node, "OTHER.GROUP.ID")).isFalse();
     }
 
     @Test
@@ -142,8 +128,7 @@ public class PatternExclusionsDependencyFilterTest
         builder.groupId( "com.example.test" ).artifactId( "testArtifact" ).ext( "jar" ).version( "1.0.3" );
 
         DependencyNode node = builder.build();
-        assertEquals( "com.example.test:testArtifact:jar:1.0.3:foo", false,
-                      dontAccept( node, "com.example.test:testArtifact:jar:1.0.3:foo" ) );
+        assertThat( dontAccept( node, "com.example.test:testArtifact:jar:1.0.3:foo" ) ).as("com.example.test:testArtifact:jar:1.0.3:foo").isFalse();
     }
 
     @Test
@@ -155,33 +140,32 @@ public class PatternExclusionsDependencyFilterTest
 
         String prefix = "com.example.test:testArtifact:jar:";
 
-        assertTrue( prefix + "[1.0.3,1.0.4)", dontAcceptVersionRange( node, prefix + "[1.0.3,1.0.4)" ) );
-        assertTrue( prefix + "[1.0.3,)", dontAcceptVersionRange( node, prefix + "[1.0.3,)" ) );
-        assertTrue( prefix + "[1.0.3,]", dontAcceptVersionRange( node, prefix + "[1.0.3,]" ) );
-        assertTrue( prefix + "(,1.0.3]", dontAcceptVersionRange( node, prefix + "(,1.0.3]" ) );
-        assertTrue( prefix + "[1.0,]", dontAcceptVersionRange( node, prefix + "[1.0,]" ) );
-        assertTrue( prefix + "[1,4]", dontAcceptVersionRange( node, prefix + "[1,4]" ) );
-        assertTrue( prefix + "(1,4)", dontAcceptVersionRange( node, prefix + "(1,4)" ) );
+        assertThat( dontAcceptVersionRange( node, prefix + "[1.0.3,1.0.4)" ) ).as(prefix + "[1.0.3,1.0.4)").isTrue();
+        assertThat( dontAcceptVersionRange( node, prefix + "[1.0.3,)" ) ).as(prefix + "[1.0.3,)").isTrue();
+        assertThat( dontAcceptVersionRange( node, prefix + "[1.0.3,]" ) ).isTrue();
+        assertThat( dontAcceptVersionRange( node, prefix + "(,1.0.3]" ) ).isTrue();
+        assertThat( dontAcceptVersionRange( node, prefix + "[1.0,]" ) ).isTrue();
+        assertThat( dontAcceptVersionRange( node, prefix + "[1,4]" ) ).isTrue();
+        assertThat( dontAcceptVersionRange( node, prefix + "(1,4)" ) ).isTrue();
 
-        assertTrue( prefix + "(1.0.2,1.0.3]",
-                    dontAcceptVersionRange( node, prefix + "(1.0.2,1.0.3]", prefix + "(1.1,)" ) );
+        assertThat( dontAcceptVersionRange( node, prefix + "(1.0.2,1.0.3]", prefix + "(1.1,)" ) ).as(prefix + "(1.0.2,1.0.3]").isTrue();
 
-        assertFalse( prefix + "(1.0.3,2.0]", dontAcceptVersionRange( node, prefix + "(1.0.3,2.0]" ) );
-        assertFalse( prefix + "(1,1.0.2]", dontAcceptVersionRange( node, prefix + "(1,1.0.2]" ) );
+        assertThat( dontAcceptVersionRange( node, prefix + "(1.0.3,2.0]" ) ).isFalse();
+        assertThat( dontAcceptVersionRange( node, prefix + "(1,1.0.2]" ) ).isFalse();
 
-        assertFalse( prefix + "(1.0.2,1.0.3)",
-                     dontAcceptVersionRange( node, prefix + "(1.0.2,1.0.3)", prefix + "(1.0.3,)" ) );
+        assertThat( dontAcceptVersionRange( node, prefix + "(1.0.2,1.0.3)", prefix + "(1.0.3,)" ) ).isFalse();
     }
 
     private boolean dontAccept( DependencyNode node, String expression )
     {
-        return !new PatternExclusionsDependencyFilter( expression ).accept( node, new LinkedList<DependencyNode>() );
+        return !new PatternExclusionsDependencyFilter( expression )
+                .accept( node, new LinkedList<DependencyNode>() );
     }
 
     private boolean dontAcceptVersionRange( DependencyNode node, String... expression )
     {
-        return !new PatternExclusionsDependencyFilter( new GenericVersionScheme(), expression ).accept( node,
-                                                                                                        new LinkedList<DependencyNode>() );
+        return !new PatternExclusionsDependencyFilter( new GenericVersionScheme(), expression )
+                .accept( node, new LinkedList<DependencyNode>() );
     }
 
 }

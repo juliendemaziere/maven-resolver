@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.transformer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -58,15 +58,15 @@ public class ConflictIdSorterTest
         for ( String id : ids )
         {
             String item = queue.poll();
-            assertNotNull( String.format( "not enough conflict groups (no match for '%s'", id ), item );
+            assertThat( item ).as( "not enough conflict groups (no match for '%s'", id ).isNotNull();
 
             if ( !"*".equals( id ) )
             {
-                assertEquals( id, item );
+                assertThat(item ).isEqualTo(id);
             }
         }
 
-        assertTrue( String.format( "leftover conflict groups (remaining: '%s')", queue ), queue.isEmpty() );
+        assertThat( queue ).as( "leftover conflict groups (remaining: '%s')", queue ).isEmpty();
     }
 
     private void expectOrder( String... id )
@@ -79,7 +79,7 @@ public class ConflictIdSorterTest
     private void expectCycle( boolean cycle )
     {
         Collection<?> cycles = (Collection<?>) context.get( TransformationContextKeys.CYCLIC_CONFLICT_IDS );
-        assertEquals( cycle, !cycles.isEmpty() );
+        assertThat(!cycles.isEmpty() ).isEqualTo(cycle);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ConflictIdSorterTest
         throws Exception
     {
         DependencyNode node = parseResource( "simple.txt" );
-        assertSame( node, transform( node ) );
+        assertThat(transform( node ) ).isSameAs(node);
 
         expectOrder( "gid2:aid::jar", "gid:aid::jar", "gid:aid2::jar" );
         expectCycle( false );
@@ -98,7 +98,7 @@ public class ConflictIdSorterTest
         throws Exception
     {
         DependencyNode node = parseResource( "cycle.txt" );
-        assertSame( node, transform( node ) );
+        assertThat(transform( node ) ).isSameAs(node);
 
         expectOrder( "gid:aid::jar", "gid2:aid::jar" );
         expectCycle( true );
@@ -109,7 +109,7 @@ public class ConflictIdSorterTest
         throws Exception
     {
         DependencyNode node = parseResource( "cycles.txt" );
-        assertSame( node, transform( node ) );
+        assertThat(transform( node ) ).isSameAs(node);
 
         expectOrder( "*", "*", "*", "gid:aid::jar" );
         expectCycle( true );
@@ -120,7 +120,7 @@ public class ConflictIdSorterTest
         throws Exception
     {
         DependencyNode node = parseResource( "no-conflicts.txt" );
-        assertSame( node, transform( node ) );
+        assertThat(transform( node ) ).isSameAs(node);
 
         expectOrder( "gid:aid::jar", "gid3:aid::jar", "gid2:aid::jar", "gid4:aid::jar" );
         expectCycle( false );

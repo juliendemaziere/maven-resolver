@@ -19,11 +19,11 @@ package org.eclipse.aether.util.graph.versions;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import org.eclipse.aether.collection.VersionFilter.VersionFilterContext;
 import org.eclipse.aether.util.graph.version.HighestVersionFilter;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HighestVersionFilterTest
     extends AbstractVersionFilterTest
@@ -42,16 +42,16 @@ public class HighestVersionFilterTest
     public void testDeriveChildFilter()
     {
         HighestVersionFilter filter = new HighestVersionFilter();
-        assertSame( filter, derive( filter, "g:a:1" ) );
+        assertThat( derive( filter, "g:a:1")).isSameAs( filter );
     }
 
     @Test
     public void testEquals()
     {
         HighestVersionFilter filter = new HighestVersionFilter();
-        assertFalse( filter.equals( null ) );
-        assertTrue( filter.equals( filter ) );
-        assertTrue( filter.equals( new HighestVersionFilter() ) );
+        assertThat( filter.equals( null ) ).isFalse();
+        assertThat( filter.equals( filter ) ).isTrue();
+        assertThat( filter.equals( new HighestVersionFilter() ) ).isTrue();
     }
 
 }

@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.versions;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.collection.VersionFilter;
 import org.eclipse.aether.collection.VersionFilter.VersionFilterContext;
@@ -54,19 +54,19 @@ public class ContextualSnapshotVersionFilterTest
     public void testDeriveChildFilter()
     {
         ContextualSnapshotVersionFilter filter = new ContextualSnapshotVersionFilter();
-        assertTrue( derive( filter, "g:a:1" ) instanceof SnapshotVersionFilter );
-        assertSame( null, derive( filter, "g:a:1-SNAPSHOT" ) );
+        assertThat( derive( filter, "g:a:1" ) instanceof SnapshotVersionFilter ).isTrue();
+        assertThat( derive( filter, "g:a:1-SNAPSHOT")).isNull();
         session.setConfigProperty( ContextualSnapshotVersionFilter.CONFIG_PROP_ENABLE, "true" );
-        assertTrue( derive( filter, "g:a:1-SNAPSHOT" ) instanceof SnapshotVersionFilter );
+        assertThat( derive( filter, "g:a:1-SNAPSHOT" ) instanceof SnapshotVersionFilter ).isTrue();
     }
 
     @Test
     public void testEquals()
     {
         ContextualSnapshotVersionFilter filter = new ContextualSnapshotVersionFilter();
-        assertFalse( filter.equals( null ) );
-        assertTrue( filter.equals( filter ) );
-        assertTrue( filter.equals( new ContextualSnapshotVersionFilter() ) );
+        assertThat( filter.equals( null ) ).isFalse();
+        assertThat( filter.equals( filter ) ).isTrue();
+        assertThat( filter.equals( new ContextualSnapshotVersionFilter() ) ).isTrue();
     }
 
 }

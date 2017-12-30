@@ -19,14 +19,15 @@ package org.eclipse.aether.repository;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.Map;
 
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystemSession;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
 
 public class AuthenticationContextTest
 {
@@ -53,10 +54,10 @@ public class AuthenticationContextTest
         {
             public void fill( AuthenticationContext context, String key, Map<String, String> data )
             {
-                assertNotNull( context );
-                assertNotNull( context.getSession() );
-                assertNotNull( context.getRepository() );
-                assertNull( "fill() should only be called once", context.get( "key" ) );
+                assertThat( context ).isNotNull();
+                assertThat( context.getSession() ).isNotNull();
+                assertThat( context.getRepository() ).isNotNull();
+                assertThat( context.get( "key" ) ).as( "fill() should only be called once" ).isNull();
                 context.put( "key", "value" );
             }
 
@@ -73,12 +74,12 @@ public class AuthenticationContextTest
         RepositorySystemSession session = newSession();
         RemoteRepository repo = newRepo( newAuth(), newProxy( newAuth() ) );
         AuthenticationContext context = AuthenticationContext.forRepository( session, repo );
-        assertNotNull( context );
-        assertSame( session, context.getSession() );
-        assertSame( repo, context.getRepository() );
-        assertNull( context.getProxy() );
-        assertEquals( "value", context.get( "key" ) );
-        assertEquals( "value", context.get( "key" ) );
+        assertThat( context ).isNotNull();
+        assertThat( context.getSession() ).isSameAs(session);
+        assertThat( context.getRepository() ).isSameAs(repo);
+        assertThat( context.getProxy() ).isNull();
+        assertThat( context.get( "key" ) ).isEqualTo("value");
+        assertThat( context.get( "key" ) ).isEqualTo("value");
     }
 
     @Test
@@ -87,7 +88,7 @@ public class AuthenticationContextTest
         RepositorySystemSession session = newSession();
         RemoteRepository repo = newRepo( null, newProxy( newAuth() ) );
         AuthenticationContext context = AuthenticationContext.forRepository( session, repo );
-        assertNull( context );
+        assertThat( context ).isNull();
     }
 
     @Test
@@ -97,12 +98,12 @@ public class AuthenticationContextTest
         Proxy proxy = newProxy( newAuth() );
         RemoteRepository repo = newRepo( newAuth(), proxy );
         AuthenticationContext context = AuthenticationContext.forProxy( session, repo );
-        assertNotNull( context );
-        assertSame( session, context.getSession() );
-        assertSame( repo, context.getRepository() );
-        assertSame( proxy, context.getProxy() );
-        assertEquals( "value", context.get( "key" ) );
-        assertEquals( "value", context.get( "key" ) );
+        assertThat( context ).isNotNull();
+        assertThat( context.getSession() ).isSameAs(session);
+        assertThat( context.getRepository() ).isSameAs(repo);
+        assertThat( context.getProxy() ).isSameAs(proxy);
+        assertThat( context.get( "key" ) ).isEqualTo("value");
+        assertThat( context.get( "key" ) ).isEqualTo("value");
     }
 
     @Test
@@ -112,7 +113,7 @@ public class AuthenticationContextTest
         Proxy proxy = null;
         RemoteRepository repo = newRepo( newAuth(), proxy );
         AuthenticationContext context = AuthenticationContext.forProxy( session, repo );
-        assertNull( context );
+        assertThat( context ).isNull();
     }
 
     @Test
@@ -122,7 +123,7 @@ public class AuthenticationContextTest
         Proxy proxy = newProxy( null );
         RemoteRepository repo = newRepo( newAuth(), proxy );
         AuthenticationContext context = AuthenticationContext.forProxy( session, repo );
-        assertNull( context );
+        assertThat( context ).isNull();
     }
 
     @Test
@@ -130,9 +131,9 @@ public class AuthenticationContextTest
     {
         AuthenticationContext context = AuthenticationContext.forRepository( newSession(), newRepo( newAuth(), null ) );
         context.put( "key", new char[] { 'v', 'a', 'l', '1' } );
-        assertEquals( "val1", context.get( "key" ) );
+        assertThat( context.get( "key" ) ).isEqualTo("val1");
         context.put( "key", "val2" );
-        assertArrayEquals( new char[] { 'v', 'a', 'l', '2' }, context.get( "key", char[].class ) );
+        assertThat( context.get( "key", char[].class)).isEqualTo( new char[] { 'v', 'a', 'l', '2' } );
     }
 
     @Test
@@ -140,9 +141,9 @@ public class AuthenticationContextTest
     {
         AuthenticationContext context = AuthenticationContext.forRepository( newSession(), newRepo( newAuth(), null ) );
         context.put( "key", "val1" );
-        assertEquals( new File( "val1" ), context.get( "key", File.class ) );
+        assertThat( context.get( "key", File.class )).isEqualTo( new File( "val1" ));
         context.put( "key", new File( "val2" ) );
-        assertEquals( "val2", context.get( "key" ) );
+        assertThat(context.get( "key" ) ).isEqualTo("val2");
     }
 
     @Test
@@ -152,7 +153,7 @@ public class AuthenticationContextTest
         char[] secret = { 'v', 'a', 'l', 'u', 'e' };
         context.put( "key", secret );
         context.put( "key", secret.clone() );
-        assertArrayEquals( new char[] { 0, 0, 0, 0, 0 }, secret );
+        assertThat( secret ).isEqualTo( new char[] { 0, 0, 0, 0, 0 } );
     }
 
     @Test
@@ -164,7 +165,7 @@ public class AuthenticationContextTest
         char[] secret = { 'v', 'a', 'l', 'u', 'e' };
         context.put( "key", secret );
         AuthenticationContext.close( context );
-        assertArrayEquals( new char[] { 0, 0, 0, 0, 0 }, secret );
+        assertThat( secret ).isEqualTo( new char[] { 0, 0, 0, 0, 0 } );
     }
 
 }

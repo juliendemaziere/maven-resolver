@@ -19,8 +19,6 @@ package org.eclipse.aether.util.graph.transformer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,6 +30,8 @@ import org.eclipse.aether.internal.test.util.DependencyGraphParser;
 import org.eclipse.aether.internal.test.util.TestUtils;
 import org.junit.After;
 import org.junit.Before;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
@@ -55,7 +55,7 @@ public abstract class AbstractDependencyGraphTransformerTest
     {
         context = TestUtils.newTransformationContext( session );
         root = transformer.transformGraph( root, context );
-        assertNotNull( root );
+        assertThat( root ).isNotNull();
         return root;
     }
 

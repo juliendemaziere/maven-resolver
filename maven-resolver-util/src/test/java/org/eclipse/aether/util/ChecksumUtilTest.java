@@ -20,7 +20,7 @@ package org.eclipse.aether.util;
  */
 
 import static org.eclipse.aether.internal.test.util.TestFileUtils.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.aether.util.ChecksumUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,17 +42,16 @@ public class ChecksumUtilTest
 
     private File textFile;
 
-    private static Map<String, String> emptyFileChecksums = new HashMap<String, String>();
+    private static Map<String, String> emptyFileChecksums = new HashMap<>();
 
-    private static Map<String, String> patternFileChecksums = new HashMap<String, String>();
+    private static Map<String, String> patternFileChecksums = new HashMap<>();
 
-    private static Map<String, String> textFileChecksums = new HashMap<String, String>();
+    private static Map<String, String> textFileChecksums = new HashMap<>();
 
-    private Map<File, Map<String, String>> sums = new HashMap<File, Map<String, String>>();
+    private Map<File, Map<String, String>> sums = new HashMap<>();
 
     @BeforeClass
     public static void beforeClass()
-        throws IOException
     {
         emptyFileChecksums.put( "MD5", "d41d8cd98f00b204e9800998ecf8427e" );
         emptyFileChecksums.put( "SHA-1", "da39a3ee5e6b4b0d3255bfef95601890afd80709" );
@@ -100,10 +98,11 @@ public class ChecksumUtilTest
                 }
                 String actual = entry.getValue().toString();
                 String expected = sums.get( file ).get( entry.getKey() );
-                assertEquals( String.format( "checksums do not match for '%s', algorithm '%s'", file.getName(),
-                                             entry.getKey() ), expected, actual );
+                assertThat( actual )
+                        .as( "checksums do not match for '%s', algorithm '%s'", entry.getKey() , actual )
+                .isEqualTo( expected );
             }
-            assertTrue( "Could not delete file", file.delete() );
+            assertThat( file.delete() ).as("Could not delete file").isTrue();
         }
     }
 
@@ -117,8 +116,7 @@ public class ChecksumUtilTest
             {
                 ChecksumUtils.calc( file, Arrays.asList( "SHA-1", "MD5" ) );
             }
-            assertTrue( "Could not delete file", file.delete() );
-        }
+            assertThat( file.delete() ).as("Could not delete file").isTrue();        }
 
     }
 
@@ -134,11 +132,13 @@ public class ChecksumUtilTest
             File sha1File = createTempFile( sha1 );
             File md5File = createTempFile( md5 );
 
-            assertEquals( sha1, ChecksumUtils.read( sha1File ) );
-            assertEquals( md5, ChecksumUtils.read( md5File ) );
+            assertThat(ChecksumUtils.read( sha1File ) ).isEqualTo(sha1);
+            assertThat(ChecksumUtils.read( md5File ) ).isEqualTo(md5);
 
-            assertTrue( "ChecksumUtils leaks file handles (cannot delete checksums.sha1)", sha1File.delete() );
-            assertTrue( "ChecksumUtils leaks file handles (cannot delete checksums.md5)", md5File.delete() );
+            assertThat( sha1File.delete() ).as( "ChecksumUtils leaks file handles (cannot delete checksums.sha1)")
+                    .isTrue();
+            assertThat( md5File.delete() ).as( "ChecksumUtils leaks file handles (cannot delete checksums.md5)")
+                    .isTrue();
         }
     }
 
@@ -154,11 +154,13 @@ public class ChecksumUtilTest
             File sha1File = createTempFile( "sha1-checksum = " + sha1 );
             File md5File = createTempFile( md5 + " test" );
 
-            assertEquals( sha1, ChecksumUtils.read( sha1File ) );
-            assertEquals( md5, ChecksumUtils.read( md5File ) );
+            assertThat(ChecksumUtils.read( sha1File ) ).isEqualTo(sha1);
+            assertThat(ChecksumUtils.read( md5File ) ).isEqualTo(md5);
 
-            assertTrue( "ChecksumUtils leaks file handles (cannot delete checksums.sha1)", sha1File.delete() );
-            assertTrue( "ChecksumUtils leaks file handles (cannot delete checksums.md5)", md5File.delete() );
+            assertThat( sha1File.delete() ).as( "ChecksumUtils leaks file handles (cannot delete checksums.sha1)")
+                    .isTrue();
+            assertThat( md5File.delete() ).as( "ChecksumUtils leaks file handles (cannot delete checksums.md5)")
+                    .isTrue();
         }
     }
 
@@ -168,19 +170,20 @@ public class ChecksumUtilTest
     {
         File file = createTempFile( "" );
 
-        assertEquals( "", ChecksumUtils.read( file ) );
+        assertThat(ChecksumUtils.read( file ) ).isEqualTo("");
 
-        assertTrue( "ChecksumUtils leaks file handles (cannot delete checksum.empty)", file.delete() );
+        assertThat(file.delete() ).as("ChecksumUtils leaks file handles (cannot delete checksum.empty)")
+                .isTrue();
     }
 
     @Test
     public void testToHexString()
     {
-        assertEquals( null, ChecksumUtils.toHexString( null ) );
-        assertEquals( "", ChecksumUtils.toHexString( new byte[] {} ) );
-        assertEquals( "00", ChecksumUtils.toHexString( new byte[] { 0 } ) );
-        assertEquals( "ff", ChecksumUtils.toHexString( new byte[] { -1 } ) );
-        assertEquals( "00017f", ChecksumUtils.toHexString( new byte[] { 0, 1, 127 } ) );
+        assertThat( ChecksumUtils.toHexString( null ) ).isNull();
+        assertThat( ChecksumUtils.toHexString( new byte[] {} ) ).isEqualTo("");
+        assertThat( ChecksumUtils.toHexString( new byte[] { 0 } ) ).isEqualTo("00");
+        assertThat( ChecksumUtils.toHexString( new byte[] { -1 } ) ).isEqualTo("ff");
+        assertThat( ChecksumUtils.toHexString( new byte[] { 0, 1, 127 } ) ).isEqualTo("00017f");
     }
 
 }

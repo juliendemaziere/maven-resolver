@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.manager;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 
@@ -67,16 +67,16 @@ public class ClassicDependencyManagerTest
             manager.deriveChildManager( newContext( new Dependency( A, null, null ), new Dependency( B, null, true ) ) );
         DependencyManagement mngt;
         mngt = manager.manageDependency( new Dependency( A1, null ) );
-        assertNull( mngt );
+        assertThat(mngt ).isNull();
         mngt = manager.manageDependency( new Dependency( B1, null ) );
-        assertNull( mngt );
+        assertThat(mngt ).isNull();
 
         manager = manager.deriveChildManager( newContext() );
         mngt = manager.manageDependency( new Dependency( A1, null ) );
-        assertNull( mngt );
+        assertThat(mngt ).isNull();
         mngt = manager.manageDependency( new Dependency( B1, null ) );
-        assertNotNull( mngt );
-        assertEquals( Boolean.TRUE, mngt.getOptional() );
+        assertThat(mngt ).isNotNull();
+        assertThat(mngt.getOptional() ).isEqualTo(Boolean.TRUE);
     }
 
 }

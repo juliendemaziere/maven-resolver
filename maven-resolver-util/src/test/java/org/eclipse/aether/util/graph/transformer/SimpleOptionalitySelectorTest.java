@@ -19,12 +19,12 @@ package org.eclipse.aether.util.graph.transformer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import org.eclipse.aether.collection.DependencyGraphTransformer;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.internal.test.util.DependencyGraphParser;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SimpleOptionalitySelectorTest
     extends AbstractDependencyGraphTransformerTest
@@ -48,13 +48,13 @@ public class SimpleOptionalitySelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "derive.txt" );
-        assertSame( root, transform( root ) );
+        assertThat( transform( root ) ).isSameAs( root );
 
-        assertEquals( 2, root.getChildren().size() );
-        assertEquals( true, root.getChildren().get( 0 ).getDependency().isOptional() );
-        assertEquals( true, root.getChildren().get( 0 ).getChildren().get( 0 ).getDependency().isOptional() );
-        assertEquals( false, root.getChildren().get( 1 ).getDependency().isOptional() );
-        assertEquals( false, root.getChildren().get( 1 ).getChildren().get( 0 ).getDependency().isOptional() );
+        assertThat( root.getChildren() ).hasSize( 2 );
+        assertThat( root.getChildren().get( 0 ).getDependency().isOptional() ).isTrue();
+        assertThat( root.getChildren().get( 0 ).getChildren().get( 0 ).getDependency().isOptional() ).isTrue();
+        assertThat( root.getChildren().get( 1 ).getDependency().isOptional() ).isFalse();
+        assertThat( root.getChildren().get( 1 ).getChildren().get( 0 ).getDependency().isOptional() ).isFalse();
     }
 
     @Test
@@ -62,11 +62,11 @@ public class SimpleOptionalitySelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "conflict.txt" );
-        assertSame( root, transform( root ) );
+        assertThat( transform( root ) ).isSameAs(root);
 
-        assertEquals( 2, root.getChildren().size() );
-        assertEquals( true, root.getChildren().get( 0 ).getDependency().isOptional() );
-        assertEquals( false, root.getChildren().get( 0 ).getChildren().get( 0 ).getDependency().isOptional() );
+        assertThat( root.getChildren().size() ).isEqualTo(2);
+        assertThat( root.getChildren().get( 0 ).getDependency().isOptional() ).isEqualTo(true);
+        assertThat( root.getChildren().get( 0 ).getChildren().get( 0 ).getDependency().isOptional() ).isEqualTo(false);
     }
 
     @Test
@@ -74,10 +74,10 @@ public class SimpleOptionalitySelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "conflict-direct-dep.txt" );
-        assertSame( root, transform( root ) );
+        assertThat( transform( root ) ).isSameAs(root);
 
-        assertEquals( 2, root.getChildren().size() );
-        assertEquals( true, root.getChildren().get( 1 ).getDependency().isOptional() );
+        assertThat( root.getChildren().size() ).isEqualTo(2);
+        assertThat( root.getChildren().get( 1 ).getDependency().isOptional() ).isEqualTo(true);
     }
 
 }

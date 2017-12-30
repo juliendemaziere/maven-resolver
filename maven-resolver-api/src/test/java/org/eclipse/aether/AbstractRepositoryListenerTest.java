@@ -19,13 +19,11 @@ package org.eclipse.aether;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Method;
 
-import org.eclipse.aether.AbstractRepositoryListener;
-import org.eclipse.aether.RepositoryListener;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
@@ -38,8 +36,8 @@ public class AbstractRepositoryListenerTest
     {
         for ( Method method : RepositoryListener.class.getMethods() )
         {
-            assertNotNull( AbstractRepositoryListener.class.getDeclaredMethod( method.getName(),
-                                                                               method.getParameterTypes() ) );
+            assertThat( AbstractRepositoryListener.class.getDeclaredMethod(
+                    method.getName(), method.getParameterTypes() ) ).isNotNull();
         }
     }
 

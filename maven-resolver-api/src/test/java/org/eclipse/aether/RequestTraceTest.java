@@ -19,7 +19,7 @@ package org.eclipse.aether;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Test;
 
@@ -32,10 +32,10 @@ public class RequestTraceTest
     public void testConstructor()
     {
         RequestTrace trace = new RequestTrace( null );
-        assertSame( null, trace.getData() );
+        assertThat(trace.getData() ).isSameAs(null);
 
         trace = new RequestTrace( this );
-        assertSame( this, trace.getData() );
+        assertThat(trace.getData() ).isSameAs(this);
     }
 
     @Test
@@ -44,19 +44,19 @@ public class RequestTraceTest
         RequestTrace trace1 = new RequestTrace( null );
         RequestTrace trace2 = trace1.newChild( this );
 
-        assertSame( null, trace1.getParent() );
-        assertSame( null, trace1.getData() );
-        assertSame( trace1, trace2.getParent() );
-        assertSame( this, trace2.getData() );
+        assertThat(trace1.getParent() ).isSameAs(null);
+        assertThat(trace1.getData() ).isSameAs(null);
+        assertThat(trace2.getParent() ).isSameAs(trace1);
+        assertThat(trace2.getData() ).isSameAs(this);
     }
 
     @Test
     public void testNewChildRequestTrace()
     {
         RequestTrace trace = RequestTrace.newChild( null, this );
-        assertNotNull( trace );
-        assertSame( null, trace.getParent() );
-        assertSame( this, trace.getData() );
+        assertThat(trace ).isNotNull();
+        assertThat(trace.getParent() ).isSameAs(null);
+        assertThat(trace.getData() ).isSameAs(this);
     }
 
 }

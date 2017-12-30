@@ -19,7 +19,7 @@ package org.eclipse.aether.transport.classpath;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -93,8 +93,8 @@ public class ClasspathTransporterTest
     public void testClassify()
         throws Exception
     {
-        assertEquals( Transporter.ERROR_OTHER, transporter.classify( new FileNotFoundException() ) );
-        assertEquals( Transporter.ERROR_NOT_FOUND, transporter.classify( new ResourceNotFoundException( "test" ) ) );
+        assertThat(transporter.classify( new FileNotFoundException() ) ).isEqualTo(Transporter.ERROR_OTHER);
+        assertThat(transporter.classify( new ResourceNotFoundException( "test" ) ) ).isEqualTo(Transporter.ERROR_NOT_FOUND);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class ClasspathTransporterTest
         }
         catch ( ResourceNotFoundException e )
         {
-            assertEquals( Transporter.ERROR_NOT_FOUND, transporter.classify( e ) );
+            assertThat(transporter.classify( e ) ).isEqualTo(Transporter.ERROR_NOT_FOUND);
         }
     }
 
@@ -131,7 +131,7 @@ public class ClasspathTransporterTest
         }
         catch ( IllegalStateException e )
         {
-            assertEquals( Transporter.ERROR_OTHER, transporter.classify( e ) );
+            assertThat(transporter.classify( e ) ).isEqualTo(Transporter.ERROR_OTHER);
         }
     }
 
@@ -142,12 +142,12 @@ public class ClasspathTransporterTest
         RecordingTransportListener listener = new RecordingTransportListener();
         GetTask task = new GetTask( URI.create( "file.txt" ) ).setListener( listener );
         transporter.get( task );
-        assertEquals( "test", task.getDataString() );
-        assertEquals( 0L, listener.dataOffset );
-        assertEquals( 4L, listener.dataLength );
-        assertEquals( 1, listener.startedCount );
-        assertTrue( "Count: " + listener.progressedCount, listener.progressedCount > 0 );
-        assertEquals( task.getDataString(), new String( listener.baos.toByteArray(), StandardCharsets.UTF_8 ) );
+        assertThat(task.getDataString() ).isEqualTo("test");
+        assertThat(listener.dataOffset ).isEqualTo(0L);
+        assertThat(listener.dataLength ).isEqualTo(4L);
+        assertThat(listener.startedCount ).isEqualTo(1);
+        assertThat(listener.progressedCount ).isGreaterThan( 0 );
+        assertThat(new String( listener.baos.toByteArray(), StandardCharsets.UTF_8)).isEqualTo(task.getDataString());
     }
 
     @Test
@@ -158,12 +158,12 @@ public class ClasspathTransporterTest
         RecordingTransportListener listener = new RecordingTransportListener();
         GetTask task = new GetTask( URI.create( "file.txt" ) ).setDataFile( file ).setListener( listener );
         transporter.get( task );
-        assertEquals( "test", TestFileUtils.readString( file ) );
-        assertEquals( 0L, listener.dataOffset );
-        assertEquals( 4L, listener.dataLength );
-        assertEquals( 1, listener.startedCount );
-        assertTrue( "Count: " + listener.progressedCount, listener.progressedCount > 0 );
-        assertEquals( "test", new String( listener.baos.toByteArray(), StandardCharsets.UTF_8 ) );
+        assertThat(TestFileUtils.readString( file ) ).isEqualTo("test");
+        assertThat(listener.dataOffset ).isEqualTo(0L);
+        assertThat(listener.dataLength ).isEqualTo(4L);
+        assertThat(listener.startedCount ).isEqualTo(1);
+        assertThat(listener.progressedCount ).isGreaterThan( 0 );
+        assertThat(new String( listener.baos.toByteArray(), StandardCharsets.UTF_8)).isEqualTo( "test");
     }
 
     @Test
@@ -174,12 +174,12 @@ public class ClasspathTransporterTest
         RecordingTransportListener listener = new RecordingTransportListener();
         GetTask task = new GetTask( URI.create( "empty.txt" ) ).setDataFile( file ).setListener( listener );
         transporter.get( task );
-        assertEquals( "", TestFileUtils.readString( file ) );
-        assertEquals( 0L, listener.dataOffset );
-        assertEquals( 0L, listener.dataLength );
-        assertEquals( 1, listener.startedCount );
-        assertEquals( 0, listener.progressedCount );
-        assertEquals( "", new String( listener.baos.toByteArray(), StandardCharsets.UTF_8 ) );
+        assertThat(TestFileUtils.readString( file ) ).isEqualTo("");
+        assertThat(listener.dataOffset ).isEqualTo(0L);
+        assertThat(listener.dataLength ).isEqualTo(0L);
+        assertThat(listener.startedCount ).isEqualTo(1);
+        assertThat(listener.progressedCount ).isEqualTo(0);
+        assertThat( new String( listener.baos.toByteArray(), StandardCharsets.UTF_8 ) ).isEqualTo( "" );
     }
 
     @Test
@@ -188,7 +188,7 @@ public class ClasspathTransporterTest
     {
         GetTask task = new GetTask( URI.create( "some%20space.txt" ) );
         transporter.get( task );
-        assertEquals( "space", task.getDataString() );
+        assertThat(task.getDataString() ).isEqualTo("space");
     }
 
     @Test
@@ -197,7 +197,7 @@ public class ClasspathTransporterTest
     {
         GetTask task = new GetTask( URI.create( "file.txt#ignored" ) );
         transporter.get( task );
-        assertEquals( "test", task.getDataString() );
+        assertThat(task.getDataString() ).isEqualTo("test");
     }
 
     @Test
@@ -206,7 +206,7 @@ public class ClasspathTransporterTest
     {
         GetTask task = new GetTask( URI.create( "file.txt?ignored" ) );
         transporter.get( task );
-        assertEquals( "test", task.getDataString() );
+        assertThat(task.getDataString() ).isEqualTo("test");
     }
 
     @Test
@@ -217,7 +217,7 @@ public class ClasspathTransporterTest
         {
             File file = TestFileUtils.createTempFile( "failure" );
             transporter.get( new GetTask( URI.create( "file.txt" ) ).setDataFile( file ) );
-            assertTrue( i + ", " + file.getAbsolutePath(), file.delete() );
+            assertThat( file.delete() ).as( i + ", " + file.getAbsolutePath() ).isTrue();
         }
     }
 
@@ -232,7 +232,7 @@ public class ClasspathTransporterTest
         }
         catch ( ResourceNotFoundException e )
         {
-            assertEquals( Transporter.ERROR_NOT_FOUND, transporter.classify( e ) );
+            assertThat(transporter.classify( e ) ).isEqualTo(Transporter.ERROR_NOT_FOUND);
         }
     }
 
@@ -248,7 +248,7 @@ public class ClasspathTransporterTest
         }
         catch ( IllegalStateException e )
         {
-            assertEquals( Transporter.ERROR_OTHER, transporter.classify( e ) );
+            assertThat(transporter.classify( e ) ).isEqualTo(Transporter.ERROR_OTHER);
         }
     }
 
@@ -266,12 +266,12 @@ public class ClasspathTransporterTest
         }
         catch ( TransferCancelledException e )
         {
-            assertEquals( Transporter.ERROR_OTHER, transporter.classify( e ) );
+            assertThat(transporter.classify( e ) ).isEqualTo(Transporter.ERROR_OTHER);
         }
-        assertEquals( 0L, listener.dataOffset );
-        assertEquals( 4L, listener.dataLength );
-        assertEquals( 1, listener.startedCount );
-        assertEquals( 0, listener.progressedCount );
+        assertThat(listener.dataOffset ).isEqualTo(0L);
+        assertThat(listener.dataLength ).isEqualTo(4L);
+        assertThat(listener.startedCount ).isEqualTo(1);
+        assertThat(listener.progressedCount ).isEqualTo(0);
     }
 
     @Test
@@ -288,12 +288,12 @@ public class ClasspathTransporterTest
         }
         catch ( TransferCancelledException e )
         {
-            assertEquals( Transporter.ERROR_OTHER, transporter.classify( e ) );
+            assertThat(transporter.classify( e ) ).isEqualTo(Transporter.ERROR_OTHER);
         }
-        assertEquals( 0L, listener.dataOffset );
-        assertEquals( 4L, listener.dataLength );
-        assertEquals( 1, listener.startedCount );
-        assertEquals( 1, listener.progressedCount );
+        assertThat(listener.dataOffset ).isEqualTo(0L);
+        assertThat(listener.dataLength ).isEqualTo(4L);
+        assertThat(listener.startedCount ).isEqualTo(1);
+        assertThat(listener.progressedCount ).isEqualTo(1);
     }
 
     @Test
@@ -307,7 +307,7 @@ public class ClasspathTransporterTest
         }
         catch ( UnsupportedOperationException e )
         {
-            assertEquals( Transporter.ERROR_OTHER, transporter.classify( e ) );
+            assertThat(transporter.classify( e ) ).isEqualTo(Transporter.ERROR_OTHER);
         }
     }
 
@@ -323,7 +323,7 @@ public class ClasspathTransporterTest
         }
         catch ( IllegalStateException e )
         {
-            assertEquals( Transporter.ERROR_OTHER, transporter.classify( e ) );
+            assertThat(transporter.classify( e ) ).isEqualTo(Transporter.ERROR_OTHER);
         }
     }
 
@@ -405,7 +405,7 @@ public class ClasspathTransporterTest
         newTransporter( base );
         GetTask task = new GetTask( URI.create( "file.txt" ) );
         transporter.get( task );
-        assertEquals( "test", task.getDataString() );
+        assertThat(task.getDataString() ).isEqualTo("test");
     }
 
 }

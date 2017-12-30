@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.transformer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Locale;
 
@@ -72,13 +72,10 @@ public class JavaScopeSelectorTest
             DependencyNode node = root;
             node = path( node, coords );
 
-            assertEquals( msg + "\nculprit: " + node.toString() + "\n", expected, node.getDependency().getScope() );
+            assertThat(node.getDependency().getScope() )
+                    .as("%s\nculprit: %s\n", msg, node ).isEqualTo( expected );
         }
-        catch ( IndexOutOfBoundsException e )
-        {
-            throw new IllegalArgumentException( "illegal coordinates for child", e );
-        }
-        catch ( NullPointerException e )
+        catch ( IndexOutOfBoundsException | NullPointerException e )
         {
             throw new IllegalArgumentException( "illegal coordinates for child", e );
         }
@@ -109,7 +106,7 @@ public class JavaScopeSelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "conflict-and-inheritance.txt" );
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         expectScope( "compile", root, 0, 0 );
         expectScope( "compile", root, 0, 0, 0 );
@@ -120,7 +117,7 @@ public class JavaScopeSelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "direct-with-conflict-and-inheritance.txt" );
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         expectScope( "test", root, 0, 0 );
     }
@@ -130,7 +127,7 @@ public class JavaScopeSelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "cycle-a.txt" );
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         expectScope( "compile", root, 0 );
         expectScope( "runtime", root, 1 );
@@ -141,7 +138,7 @@ public class JavaScopeSelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "cycle-b.txt" );
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         expectScope( "runtime", root, 0 );
         expectScope( "compile", root, 1 );
@@ -152,7 +149,7 @@ public class JavaScopeSelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "cycle-c.txt" );
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         expectScope( "runtime", root, 0 );
         expectScope( "runtime", root, 0, 0 );
@@ -165,7 +162,7 @@ public class JavaScopeSelectorTest
         throws Exception
     {
         DependencyNode root = parseResource( "cycle-d.txt" );
-        assertSame( root, transform( root ) );
+        assertThat(transform( root ) ).isSameAs(root);
 
         expectScope( "compile", root, 0 );
         expectScope( "compile", root, 0, 0 );
@@ -185,7 +182,7 @@ public class JavaScopeSelectorTest
             String msg =
                 String.format( "direct node should be setting scope ('%s') for all nodes.\n" + parser.dump( root ),
                                direct );
-            assertSame( root, transform( root ) );
+            assertThat(transform( root ) ).isSameAs(root);
             msg += "\ntransformed:\n" + parser.dump( root );
 
             expectScope( msg, direct, root, 0 );
@@ -205,7 +202,7 @@ public class JavaScopeSelectorTest
                 String expected = scope1.compareTo( scope2 ) >= 0 ? scope1.toString() : scope2.toString();
                 String msg = String.format( "expected '%s' to win\n" + parser.dump( root ), expected );
 
-                assertSame( root, transform( root ) );
+                assertThat(transform( root ) ).isSameAs(root);
                 msg += "\ntransformed:\n" + parser.dump( root );
 
                 expectScope( msg, expected, root, 0, 0 );
@@ -226,7 +223,7 @@ public class JavaScopeSelectorTest
                 String expected = scope1.compareTo( scope2 ) >= 0 ? scope1.toString() : scope2.toString();
                 String msg = String.format( "expected '%s' to win\n" + parser.dump( root ), expected );
 
-                assertSame( root, transform( root ) );
+                assertThat(transform( root ) ).isSameAs(root);
                 msg += "\ntransformed:\n" + parser.dump( root );
 
                 expectScope( msg, expected, root, 0, 0 );
@@ -250,7 +247,7 @@ public class JavaScopeSelectorTest
                 String expected = scope1.toString();
                 String msg = String.format( "expected '%s' to win\n" + parser.dump( root ), expected );
 
-                assertSame( root, transform( root ) );
+                assertThat(transform( root ) ).isSameAs(root);
                 msg += "\ntransformed:\n" + parser.dump( root );
 
                 expectScope( msg, expected, root, 0 );

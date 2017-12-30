@@ -19,7 +19,7 @@ package org.eclipse.aether.util;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,13 +34,13 @@ import org.junit.Test;
 public class ConfigUtilsTest
 {
 
-    Map<Object, Object> config = new HashMap<Object, Object>();
+    private Map<Object, Object> config = new HashMap<>();
 
     @Test
     public void testGetObject_Default()
     {
         Object val = new Object();
-        assertSame( val, ConfigUtils.getObject( config, val, "no-value" ) );
+        assertThat( ConfigUtils.getObject( config, val, "no-value")).isSameAs( val );
     }
 
     @Test
@@ -48,14 +48,14 @@ public class ConfigUtilsTest
     {
         Object val = new Object();
         config.put( "some-object", val );
-        assertSame( val, ConfigUtils.getObject( config, null, "no-object", "some-object" ) );
+        assertThat( ConfigUtils.getObject( config, null, "no-object", "some-object")).isSameAs( val );
     }
 
     @Test
     public void testGetMap_Default()
     {
         Map<?, ?> val = new HashMap<Object, Object>();
-        assertSame( val, ConfigUtils.getMap( config, val, "no-value" ) );
+        assertThat( ConfigUtils.getMap( config, val, "no-value")).isSameAs(val );
     }
 
     @Test
@@ -63,14 +63,14 @@ public class ConfigUtilsTest
     {
         Map<?, ?> val = new HashMap<Object, Object>();
         config.put( "some-map", val );
-        assertSame( val, ConfigUtils.getMap( config, null, "no-object", "some-map" ) );
+        assertThat( ConfigUtils.getMap( config, null, "some-map")).isSameAs( val );
     }
 
     @Test
     public void testGetList_Default()
     {
         List<?> val = new ArrayList<Object>();
-        assertSame( val, ConfigUtils.getList( config, val, "no-value" ) );
+        assertThat( ConfigUtils.getList( config, val, "no-value")).isSameAs( val );
     }
 
     @Test
@@ -78,7 +78,7 @@ public class ConfigUtilsTest
     {
         List<?> val = new ArrayList<Object>();
         config.put( "some-list", val );
-        assertSame( val, ConfigUtils.getList( config, null, "no-object", "some-list" ) );
+        assertThat( ConfigUtils.getList( config, null, "some-list")).isSameAs( val );
     }
 
     @Test
@@ -86,15 +86,15 @@ public class ConfigUtilsTest
     {
         Collection<?> val = Collections.singleton( "item" );
         config.put( "some-collection", val );
-        assertEquals( Arrays.asList( "item" ), ConfigUtils.getList( config, null, "some-collection" ) );
+        assertThat( ConfigUtils.getList( config, null, "some-collection")).isEqualTo( Arrays.asList( "item" ) );
     }
 
     @Test
     public void testGetString_Default()
     {
         config.put( "no-string", new Object() );
-        assertEquals( "default", ConfigUtils.getString( config, "default", "no-value" ) );
-        assertEquals( "default", ConfigUtils.getString( config, "default", "no-string" ) );
+        assertThat( ConfigUtils.getString( config, "default", "no-value")).isEqualTo( "default" );
+        assertThat( ConfigUtils.getString( config, "default", "no-string")).isSameAs( "default" );
     }
 
     @Test
@@ -102,17 +102,17 @@ public class ConfigUtilsTest
     {
         config.put( "no-string", new Object() );
         config.put( "some-string", "passed" );
-        assertEquals( "passed", ConfigUtils.getString( config, "default", "no-string", "some-string" ) );
+        assertThat( ConfigUtils.getString( config, "default", "some-string")).isEqualTo( "passed" );
     }
 
     @Test
     public void testGetBoolean_Default()
     {
         config.put( "no-boolean", new Object() );
-        assertEquals( true, ConfigUtils.getBoolean( config, true, "no-value" ) );
-        assertEquals( false, ConfigUtils.getBoolean( config, false, "no-value" ) );
-        assertEquals( true, ConfigUtils.getBoolean( config, true, "no-boolean" ) );
-        assertEquals( false, ConfigUtils.getBoolean( config, false, "no-boolean" ) );
+        assertThat( ConfigUtils.getBoolean( config, true, "no-value")).isTrue();
+        assertThat( ConfigUtils.getBoolean( config, false, "no-value")).isFalse();
+        assertThat( ConfigUtils.getBoolean( config, true, "no-boolean")).isTrue();
+        assertThat( ConfigUtils.getBoolean( config, false, "no-boolean")).isFalse();
     }
 
     @Test
@@ -120,26 +120,26 @@ public class ConfigUtilsTest
     {
         config.put( "no-boolean", new Object() );
         config.put( "some-boolean", true );
-        assertEquals( true, ConfigUtils.getBoolean( config, false, "no-boolean", "some-boolean" ) );
+        assertThat( ConfigUtils.getBoolean( config, false, "some-boolean")).isTrue();
         config.put( "some-boolean", false );
-        assertEquals( false, ConfigUtils.getBoolean( config, true, "no-boolean", "some-boolean" ) );
+        assertThat( ConfigUtils.getBoolean( config, true, "some-boolean")).isFalse();
     }
 
     @Test
     public void testGetBoolean_StringConversion()
     {
         config.put( "some-boolean", "true" );
-        assertEquals( true, ConfigUtils.getBoolean( config, false, "some-boolean" ) );
+        assertThat( ConfigUtils.getBoolean( config, false, "some-boolean")).isTrue();
         config.put( "some-boolean", "false" );
-        assertEquals( false, ConfigUtils.getBoolean( config, true, "some-boolean" ) );
+        assertThat( ConfigUtils.getBoolean( config, true, "some-boolean")).isFalse();
     }
 
     @Test
     public void testGetInteger_Default()
     {
         config.put( "no-integer", new Object() );
-        assertEquals( -17, ConfigUtils.getInteger( config, -17, "no-value" ) );
-        assertEquals( 43, ConfigUtils.getInteger( config, 43, "no-integer" ) );
+        assertThat( ConfigUtils.getInteger( config, -17, "no-value")).isEqualTo( -17 );
+        assertThat( ConfigUtils.getInteger( config, 43, "no-integer")).isEqualTo( 43 );
     }
 
     @Test
@@ -147,29 +147,29 @@ public class ConfigUtilsTest
     {
         config.put( "no-integer", "text" );
         config.put( "some-integer", 23 );
-        assertEquals( 23, ConfigUtils.getInteger( config, 0, "no-integer", "some-integer" ) );
+        assertThat( ConfigUtils.getInteger( config, 0, "no-integer", "some-integer" ) ).isEqualTo( 23 );
     }
 
     @Test
     public void testGetInteger_StringConversion()
     {
         config.put( "some-integer", "-123456" );
-        assertEquals( -123456, ConfigUtils.getInteger( config, 0, "some-integer" ) );
+        assertThat( ConfigUtils.getInteger( config, 0, "some-integer" ) ).isEqualTo( -123456 );
     }
 
     @Test
     public void testGetInteger_NumberConversion()
     {
         config.put( "some-number", -123456.789 );
-        assertEquals( -123456, ConfigUtils.getInteger( config, 0, "some-number" ) );
+        assertThat( ConfigUtils.getInteger( config, 0,"some-number" ) ).isEqualTo( -123456 );
     }
 
     @Test
     public void testGetLong_Default()
     {
         config.put( "no-long", new Object() );
-        assertEquals( -17L, ConfigUtils.getLong( config, -17L, "no-value" ) );
-        assertEquals( 43L, ConfigUtils.getLong( config, 43L, "no-long" ) );
+        assertThat( ConfigUtils.getLong( config, -17L, "no-value" ) ).isEqualTo( -17L );
+        assertThat( ConfigUtils.getLong( config, 43L, "no-long" ) ).isEqualTo( 43 );
     }
 
     @Test
@@ -177,29 +177,29 @@ public class ConfigUtilsTest
     {
         config.put( "no-long", "text" );
         config.put( "some-long", 23L );
-        assertEquals( 23L, ConfigUtils.getLong( config, 0, "no-long", "some-long" ) );
+        assertThat( ConfigUtils.getLong( config, 0, "no-long", "some-long" ) ).isEqualTo( 23L );
     }
 
     @Test
     public void testGetLong_StringConversion()
     {
         config.put( "some-long", "-123456789012" );
-        assertEquals( -123456789012L, ConfigUtils.getLong( config, 0, "some-long" ) );
+        assertThat( ConfigUtils.getLong( config, 0, "some-long")).isEqualTo(-123456789012L );
     }
 
     @Test
     public void testGetLong_NumberConversion()
     {
         config.put( "some-number", -123456789012.789 );
-        assertEquals( -123456789012L, ConfigUtils.getLong( config, 0, "some-number" ) );
+        assertThat( ConfigUtils.getLong( config, 0, "some-number")).isEqualTo(-123456789012L );
     }
 
     @Test
     public void testGetFloat_Default()
     {
         config.put( "no-float", new Object() );
-        assertEquals( -17.1f, ConfigUtils.getFloat( config, -17.1f, "no-value" ), 0.01f );
-        assertEquals( 43.2f, ConfigUtils.getFloat( config, 43.2f, "no-float" ), 0.01f );
+        assertThat(ConfigUtils.getFloat( config, -17.1f, "no-value" )).isEqualTo(-17.1f );
+        assertThat( ConfigUtils.getFloat( config, 43.2f, "no-float" )).isEqualTo(43.2f);
     }
 
     @Test
@@ -207,23 +207,23 @@ public class ConfigUtilsTest
     {
         config.put( "no-float", "text" );
         config.put( "some-float", 12.3f );
-        assertEquals( 12.3f, ConfigUtils.getFloat( config, 0, "no-float", "some-float" ), 0.01f );
+        assertThat( ConfigUtils.getFloat( config, 0, "no-float", "some-float" )).isEqualTo(12.3f );
     }
 
     @Test
     public void testGetFloat_StringConversion()
     {
         config.put( "some-float", "-12.3" );
-        assertEquals( -12.3f, ConfigUtils.getFloat( config, 0, "some-float" ), 0.01f );
+        assertThat( ConfigUtils.getFloat( config, 0, "some-float" )).isEqualTo( -12.3f );
         config.put( "some-float", "NaN" );
-        assertEquals( true, Float.isNaN( ConfigUtils.getFloat( config, 0, "some-float" ) ) );
+        assertThat( Float.isNaN( ConfigUtils.getFloat( config, 0, "some-float"))).isTrue();
     }
 
     @Test
     public void testGetFloat_NumberConversion()
     {
         config.put( "some-number", -1234f );
-        assertEquals( -1234f, ConfigUtils.getFloat( config, 0, "some-number" ), 0.1f );
+        assertThat( ConfigUtils.getFloat( config, 0, "some-number" )).isEqualTo( -1234f );
     }
 
 }

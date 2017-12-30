@@ -19,13 +19,14 @@ package org.eclipse.aether.repository;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.Map;
 
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystemSession;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class AuthenticationDigestTest
 {
@@ -61,11 +62,11 @@ public class AuthenticationDigestTest
 
             public void digest( AuthenticationDigest digest )
             {
-                assertNotNull( digest );
-                assertSame( session, digest.getSession() );
-                assertNotNull( digest.getRepository() );
-                assertNull( digest.getProxy() );
-                assertNull( "digest() should only be called once", repos[0] );
+                assertThat( digest ).isNotNull();
+                assertThat( digest.getSession() ).isSameAs(session);
+                assertThat( digest.getRepository() ).isNotNull();
+                assertThat( digest.getProxy() ).isNull();
+                assertThat( repos[0] ).as( "digest() should only be called once" ).isNull();
                 repos[0] = digest.getRepository();
 
                 digest.update( (byte[]) null );
@@ -78,9 +79,9 @@ public class AuthenticationDigestTest
         RemoteRepository repo = newRepo( auth, newProxy( null ) );
 
         String digest = AuthenticationDigest.forRepository( session, repo );
-        assertSame( repo, repos[0] );
-        assertNotNull( digest );
-        assertTrue( digest.length() > 0 );
+        assertThat(repos[0] ).isSameAs(repo);
+        assertThat(digest ).isNotNull();
+        assertThat(digest.length() > 0 ).isTrue();
     }
 
     @Test
@@ -89,7 +90,7 @@ public class AuthenticationDigestTest
         RemoteRepository repo = newRepo( null, null );
 
         String digest = AuthenticationDigest.forRepository( newSession(), repo );
-        assertEquals( "", digest );
+        assertThat(digest ).isEqualTo("");
     }
 
     @Test
@@ -107,11 +108,11 @@ public class AuthenticationDigestTest
 
             public void digest( AuthenticationDigest digest )
             {
-                assertNotNull( digest );
-                assertSame( session, digest.getSession() );
-                assertNotNull( digest.getRepository() );
-                assertNotNull( digest.getProxy() );
-                assertNull( "digest() should only be called once", proxies[0] );
+                assertThat(digest ).isNotNull();
+                assertThat(digest.getSession() ).isSameAs(session);
+                assertThat(digest.getRepository() ).isNotNull();
+                assertThat(digest.getProxy() ).isNotNull();
+                assertThat( proxies[0] ).as( "digest() should only be called once" ).isNull();
                 proxies[0] = digest.getProxy();
 
                 digest.update( (byte[]) null );
@@ -124,9 +125,9 @@ public class AuthenticationDigestTest
         Proxy proxy = newProxy( auth );
 
         String digest = AuthenticationDigest.forProxy( session, newRepo( null, proxy ) );
-        assertSame( proxy, proxies[0] );
-        assertNotNull( digest );
-        assertTrue( digest.length() > 0 );
+        assertThat(proxies[0] ).isSameAs(proxy);
+        assertThat(digest ).isNotNull();
+        assertThat(digest.length() > 0 ).isTrue();
     }
 
     @Test
@@ -135,7 +136,7 @@ public class AuthenticationDigestTest
         RemoteRepository repo = newRepo( null, null );
 
         String digest = AuthenticationDigest.forProxy( newSession(), repo );
-        assertEquals( "", digest );
+        assertThat(digest ).isEqualTo("");
     }
 
     @Test
@@ -144,7 +145,7 @@ public class AuthenticationDigestTest
         RemoteRepository repo = newRepo( null, newProxy( null ) );
 
         String digest = AuthenticationDigest.forProxy( newSession(), repo );
-        assertEquals( "", digest );
+        assertThat(digest ).isEqualTo("");
     }
 
 }

@@ -19,11 +19,11 @@ package org.eclipse.aether;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Method;
 
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractForwardingRepositorySystemSessionTest
 {
@@ -37,7 +37,7 @@ public class AbstractForwardingRepositorySystemSessionTest
             Method m =
                 AbstractForwardingRepositorySystemSession.class.getDeclaredMethod( method.getName(),
                                                                                    method.getParameterTypes() );
-            assertNotNull( method.toString(), m );
+            assertThat( m ).isNotNull();
         }
     }
 

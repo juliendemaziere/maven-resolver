@@ -19,7 +19,7 @@ package org.eclipse.aether.repository;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.repository.RemoteRepository;
 import org.junit.Test;
@@ -34,31 +34,31 @@ public class RemoteRepositoryTest
     {
         RemoteRepository.Builder builder = new RemoteRepository.Builder( "id", "type", "" );
         RemoteRepository repo = builder.build();
-        assertEquals( "", repo.getProtocol() );
+        assertThat(repo.getProtocol() ).isEqualTo("");
 
         repo = builder.setUrl( "http://localhost" ).build();
-        assertEquals( "http", repo.getProtocol() );
+        assertThat(repo.getProtocol() ).isEqualTo("http");
 
         repo = builder.setUrl( "HTTP://localhost" ).build();
-        assertEquals( "HTTP", repo.getProtocol() );
+        assertThat(repo.getProtocol() ).isEqualTo("HTTP");
 
         repo = builder.setUrl( "dav+http://www.sonatype.org/" ).build();
-        assertEquals( "dav+http", repo.getProtocol() );
+        assertThat(repo.getProtocol() ).isEqualTo("dav+http");
 
         repo = builder.setUrl( "dav:http://www.sonatype.org/" ).build();
-        assertEquals( "dav:http", repo.getProtocol() );
+        assertThat(repo.getProtocol() ).isEqualTo("dav:http");
 
         repo = builder.setUrl( "file:/path" ).build();
-        assertEquals( "file", repo.getProtocol() );
+        assertThat(repo.getProtocol() ).isEqualTo("file");
 
         repo = builder.setUrl( "file:path" ).build();
-        assertEquals( "file", repo.getProtocol() );
+        assertThat(repo.getProtocol() ).isEqualTo("file");
 
         repo = builder.setUrl( "file:C:\\dir" ).build();
-        assertEquals( "file", repo.getProtocol() );
+        assertThat(repo.getProtocol() ).isEqualTo("file");
 
         repo = builder.setUrl( "file:C:/dir" ).build();
-        assertEquals( "file", repo.getProtocol() );
+        assertThat(repo.getProtocol() ).isEqualTo("file");
     }
 
     @Test
@@ -66,31 +66,31 @@ public class RemoteRepositoryTest
     {
         RemoteRepository.Builder builder = new RemoteRepository.Builder( "id", "type", "" );
         RemoteRepository repo = builder.build();
-        assertEquals( "", repo.getHost() );
+        assertThat(repo.getHost() ).isEqualTo("");
 
         repo = builder.setUrl( "http://localhost" ).build();
-        assertEquals( "localhost", repo.getHost() );
+        assertThat(repo.getHost() ).isEqualTo("localhost");
 
         repo = builder.setUrl( "http://localhost/" ).build();
-        assertEquals( "localhost", repo.getHost() );
+        assertThat(repo.getHost() ).isEqualTo("localhost");
 
         repo = builder.setUrl( "http://localhost:1234/" ).build();
-        assertEquals( "localhost", repo.getHost() );
+        assertThat(repo.getHost() ).isEqualTo("localhost");
 
         repo = builder.setUrl( "http://127.0.0.1" ).build();
-        assertEquals( "127.0.0.1", repo.getHost() );
+        assertThat(repo.getHost() ).isEqualTo("127.0.0.1");
 
         repo = builder.setUrl( "http://127.0.0.1/" ).build();
-        assertEquals( "127.0.0.1", repo.getHost() );
+        assertThat(repo.getHost() ).isEqualTo("127.0.0.1");
 
         repo = builder.setUrl( "http://user@localhost/path" ).build();
-        assertEquals( "localhost", repo.getHost() );
+        assertThat(repo.getHost() ).isEqualTo("localhost");
 
         repo = builder.setUrl( "http://user:pass@localhost/path" ).build();
-        assertEquals( "localhost", repo.getHost() );
+        assertThat(repo.getHost() ).isEqualTo("localhost");
 
         repo = builder.setUrl( "http://user:pass@localhost:1234/path" ).build();
-        assertEquals( "localhost", repo.getHost() );
+        assertThat(repo.getHost() ).isEqualTo("localhost");
     }
 
 }

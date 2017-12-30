@@ -19,7 +19,7 @@ package org.eclipse.aether.connector.basic;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,10 +74,10 @@ public class ChecksumCalculatorTest
         calculator.init( 0 );
         calculator.update( toBuffer( "Hello World!" ) );
         Map<String, Object> digests = calculator.get();
-        assertNotNull( digests );
-        assertEquals( "2ef7bde608ce5404e97d5f042f95f89f1c232871", digests.get( SHA1 ) );
-        assertEquals( "ed076287532e86365e841e92bfc50d8c", digests.get( MD5 ) );
-        assertEquals( 2, digests.size() );
+        assertThat(digests ).isNotNull();
+        assertThat(digests.get( SHA1 ) ).isEqualTo("2ef7bde608ce5404e97d5f042f95f89f1c232871");
+        assertThat(digests.get( MD5 ) ).isEqualTo("ed076287532e86365e841e92bfc50d8c");
+        assertThat(digests.size() ).isEqualTo(2);
     }
 
     @Test
@@ -87,10 +87,10 @@ public class ChecksumCalculatorTest
         calculator.init( 6 );
         calculator.update( toBuffer( "World!" ) );
         Map<String, Object> digests = calculator.get();
-        assertNotNull( digests );
-        assertEquals( "2ef7bde608ce5404e97d5f042f95f89f1c232871", digests.get( SHA1 ) );
-        assertEquals( "ed076287532e86365e841e92bfc50d8c", digests.get( MD5 ) );
-        assertEquals( 2, digests.size() );
+        assertThat(digests ).isNotNull();
+        assertThat(digests.get( SHA1 ) ).isEqualTo("2ef7bde608ce5404e97d5f042f95f89f1c232871");
+        assertThat(digests.get( MD5 ) ).isEqualTo("ed076287532e86365e841e92bfc50d8c");
+        assertThat(digests.size() ).isEqualTo(2);
     }
 
     @Test
@@ -100,10 +100,10 @@ public class ChecksumCalculatorTest
         calculator.init( 100 );
         calculator.update( toBuffer( "World!" ) );
         Map<String, Object> digests = calculator.get();
-        assertNotNull( digests );
-        assertTrue( digests.get( SHA1 ) instanceof IOException );
-        assertTrue( digests.get( MD5 ) instanceof IOException );
-        assertEquals( 2, digests.size() );
+        assertThat(digests ).isNotNull();
+        assertThat(digests.get( SHA1 ) instanceof IOException ).isTrue();
+        assertThat(digests.get( MD5 ) instanceof IOException ).isTrue();
+        assertThat(digests.size() ).isEqualTo(2);
     }
 
     @Test
@@ -113,10 +113,10 @@ public class ChecksumCalculatorTest
         calculator.init( 0 );
         calculator.update( toBuffer( "Hello World!" ) );
         Map<String, Object> digests = calculator.get();
-        assertNotNull( digests );
-        assertEquals( "2ef7bde608ce5404e97d5f042f95f89f1c232871", digests.get( SHA1 ) );
-        assertTrue( digests.get( "unknown" ) instanceof NoSuchAlgorithmException );
-        assertEquals( 2, digests.size() );
+        assertThat(digests ).isNotNull();
+        assertThat(digests.get( SHA1 ) ).isEqualTo("2ef7bde608ce5404e97d5f042f95f89f1c232871");
+        assertThat(digests.get( "unknown" ) instanceof NoSuchAlgorithmException ).isTrue();
+        assertThat(digests.size() ).isEqualTo(2);
     }
 
     @Test
@@ -125,10 +125,10 @@ public class ChecksumCalculatorTest
         ChecksumCalculator calculator = newCalculator( SHA1, MD5 );
         calculator.update( toBuffer( "Hello World!" ) );
         Map<String, Object> digests = calculator.get();
-        assertNotNull( digests );
-        assertEquals( "2ef7bde608ce5404e97d5f042f95f89f1c232871", digests.get( SHA1 ) );
-        assertEquals( "ed076287532e86365e841e92bfc50d8c", digests.get( MD5 ) );
-        assertEquals( 2, digests.size() );
+        assertThat(digests ).isNotNull();
+        assertThat(digests.get( SHA1 ) ).isEqualTo("2ef7bde608ce5404e97d5f042f95f89f1c232871");
+        assertThat(digests.get( MD5 ) ).isEqualTo("ed076287532e86365e841e92bfc50d8c");
+        assertThat(digests.size() ).isEqualTo(2);
     }
 
     @Test
@@ -140,10 +140,10 @@ public class ChecksumCalculatorTest
         calculator.init( 0 );
         calculator.update( toBuffer( "Hello World!" ) );
         Map<String, Object> digests = calculator.get();
-        assertNotNull( digests );
-        assertEquals( "2ef7bde608ce5404e97d5f042f95f89f1c232871", digests.get( SHA1 ) );
-        assertEquals( "ed076287532e86365e841e92bfc50d8c", digests.get( MD5 ) );
-        assertEquals( 2, digests.size() );
+        assertThat(digests ).isNotNull();
+        assertThat(digests.get( SHA1 ) ).isEqualTo("2ef7bde608ce5404e97d5f042f95f89f1c232871");
+        assertThat(digests.get( MD5 ) ).isEqualTo("ed076287532e86365e841e92bfc50d8c");
+        assertThat(digests.size() ).isEqualTo(2);
     }
 
     @Test
@@ -154,10 +154,10 @@ public class ChecksumCalculatorTest
         calculator.init( 0 );
         calculator.update( toBuffer( "Hello World!" ) );
         Map<String, Object> digests = calculator.get();
-        assertNotNull( digests );
-        assertEquals( "2ef7bde608ce5404e97d5f042f95f89f1c232871", digests.get( SHA1 ) );
-        assertEquals( "ed076287532e86365e841e92bfc50d8c", digests.get( MD5 ) );
-        assertEquals( 2, digests.size() );
+        assertThat(digests ).isNotNull();
+        assertThat(digests.get( SHA1 ) ).isEqualTo("2ef7bde608ce5404e97d5f042f95f89f1c232871");
+        assertThat(digests.get( MD5 ) ).isEqualTo("ed076287532e86365e841e92bfc50d8c");
+        assertThat(digests.size() ).isEqualTo(2);
     }
 
 }

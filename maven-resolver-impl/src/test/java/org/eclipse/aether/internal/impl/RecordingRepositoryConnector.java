@@ -19,8 +19,6 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,6 +39,8 @@ import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferListener;
 import org.eclipse.aether.transfer.TransferResource;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * A repository connector recording all get/put-requests and faking the results.
  */
@@ -60,13 +60,13 @@ class RecordingRepositoryConnector
 
     private Metadata[] expectPutMD;
 
-    private List<Artifact> actualGet = new ArrayList<Artifact>();
+    private List<Artifact> actualGet = new ArrayList<>();
 
-    private List<Metadata> actualGetMD = new ArrayList<Metadata>();
+    private List<Metadata> actualGetMD = new ArrayList<>();
 
-    private List<Artifact> actualPut = new ArrayList<Artifact>();
+    private List<Artifact> actualPut = new ArrayList<>();
 
-    private List<Metadata> actualPutMD = new ArrayList<Metadata>();
+    private List<Metadata> actualPutMD = new ArrayList<>();
 
     public RecordingRepositoryConnector( RepositorySystemSession session, Artifact[] expectGet, Artifact[] expectPut,
                                          Metadata[] expectGetMD, Metadata[] expectPutMD )
@@ -200,7 +200,6 @@ class RecordingRepositoryConnector
     }
 
     private void fireDone( Transfer transfer )
-        throws Exception
     {
         TransferListener listener = transfer.getListener();
         if ( listener == null )
@@ -239,11 +238,11 @@ class RecordingRepositoryConnector
             expected = new Object[0];
         }
 
-        assertEquals( "different number of expected and actual elements:\n", expected.length, actual.size() );
+        assertThat( actual ).as( "different number of expected and actual elements:\n").hasSize( expected.length );
         int idx = 0;
         for ( Object actualObject : actual )
         {
-            assertEquals( "seen object differs", expected[idx++], actualObject );
+            assertThat( actualObject ).isEqualTo( expected[idx++] );
         }
     }
 
@@ -289,10 +288,10 @@ class RecordingRepositoryConnector
 
     public void resetActual()
     {
-        this.actualGet = new ArrayList<Artifact>();
-        this.actualGetMD = new ArrayList<Metadata>();
-        this.actualPut = new ArrayList<Artifact>();
-        this.actualPutMD = new ArrayList<Metadata>();
+        this.actualGet = new ArrayList<>();
+        this.actualGetMD = new ArrayList<>();
+        this.actualPut = new ArrayList<>();
+        this.actualPutMD = new ArrayList<>();
     }
 
 }

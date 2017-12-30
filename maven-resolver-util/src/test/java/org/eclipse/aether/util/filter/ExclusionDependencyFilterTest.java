@@ -19,7 +19,7 @@ package org.eclipse.aether.util.filter;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,17 +44,17 @@ public class ExclusionDependencyFilterTest
         String[] excludes;
 
         excludes = new String[] { "com.example.test:testArtifact" };
-        assertFalse( new ExclusionsDependencyFilter( Arrays.asList( excludes ) ).accept( builder.build(), parents ) );
+        assertThat(new ExclusionsDependencyFilter( Arrays.asList( excludes ) ).accept( builder.build(), parents ) ).isFalse();
 
         excludes = new String[] { "com.example.test:testArtifact", "com.foo:otherArtifact" };
-        assertFalse( new ExclusionsDependencyFilter( Arrays.asList( excludes ) ).accept( builder.build(), parents ) );
+        assertThat(new ExclusionsDependencyFilter( Arrays.asList( excludes ) ).accept( builder.build(), parents ) ).isFalse();
 
         excludes = new String[] { "testArtifact" };
-        assertFalse( new ExclusionsDependencyFilter( Arrays.asList( excludes ) ).accept( builder.build(), parents ) );
+        assertThat(new ExclusionsDependencyFilter( Arrays.asList( excludes ) ).accept( builder.build(), parents ) ).isFalse();
 
         excludes = new String[] { "otherArtifact" };
-        assertTrue( new ExclusionsDependencyFilter( Arrays.asList( excludes ) ).accept( builder.build(), parents ) );
+        assertThat(new ExclusionsDependencyFilter( Arrays.asList( excludes ) ).accept( builder.build(), parents ) ).isTrue();
 
-        assertTrue( new ExclusionsDependencyFilter( (Collection<String>) null ).accept( builder.build(), parents ) );
+        assertThat(new ExclusionsDependencyFilter( (Collection<String>) null ).accept( builder.build(), parents ) ).isTrue();
     }
 }

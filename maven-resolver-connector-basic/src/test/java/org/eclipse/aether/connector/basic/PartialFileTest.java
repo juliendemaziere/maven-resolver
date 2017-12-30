@@ -19,7 +19,7 @@ package org.eclipse.aether.connector.basic;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assume.*;
 
 import java.io.Closeable;
@@ -252,11 +252,11 @@ public class PartialFileTest
         throws Exception
     {
         PartialFile partialFile = newPartialFile( -1, 100 );
-        assertNotNull( partialFile );
-        assertNotNull( partialFile.getFile() );
-        assertTrue( partialFile.getFile().getAbsolutePath(), partialFile.getFile().isFile() );
+        assertThat( partialFile ).isNotNull();
+        assertThat( partialFile.getFile() ).isNotNull();
+        assertThat( partialFile.getFile().isFile() ).isTrue();
         partialFile.close();
-        assertFalse( partialFile.getFile().getAbsolutePath(), partialFile.getFile().exists() );
+        assertThat( partialFile.getFile().exists() ).isFalse();
     }
 
     @Test
@@ -264,25 +264,25 @@ public class PartialFileTest
         throws Exception
     {
         PartialFile partialFile = newPartialFile( 0, 100 );
-        assertNotNull( partialFile );
-        assertNotNull( partialFile.getFile() );
-        assertTrue( partialFile.getFile().getAbsolutePath(), partialFile.getFile().isFile() );
-        assertEquals( partFile, partialFile.getFile() );
-        assertTrue( lockFile.getAbsolutePath(), lockFile.isFile() );
+        assertThat( partialFile ).isNotNull();
+        assertThat( partialFile.getFile() ).isNotNull();
+        assertThat( partialFile.getFile().isFile() ).isTrue();
+        assertThat( partialFile.getFile() ).isEqualTo(partFile);
+        assertThat( lockFile.isFile() ).isTrue();
         partialFile.close();
-        assertTrue( partialFile.getFile().getAbsolutePath(), partialFile.getFile().isFile() );
-        assertFalse( lockFile.getAbsolutePath(), lockFile.exists() );
+        assertThat( partialFile.getFile().isFile() ).isTrue();
+        assertThat( lockFile.exists() ).isFalse();
     }
 
     @Test
     public void testResumableFileCreationError()
         throws Exception
     {
-        assertTrue( partFile.getAbsolutePath(), partFile.mkdirs() );
+        assertThat( partFile.mkdirs() ).isTrue();
         PartialFile partialFile = newPartialFile( 0, 100 );
-        assertNotNull( partialFile );
-        assertFalse( partialFile.isResume() );
-        assertFalse( lockFile.getAbsolutePath(), lockFile.exists() );
+        assertThat(partialFile ).isNotNull();
+        assertThat(partialFile.isResume() ).isFalse();
+        assertThat( lockFile.exists() ).isFalse();
     }
 
     @Test
@@ -290,12 +290,12 @@ public class PartialFileTest
         throws Exception
     {
         PartialFile partialFile = newPartialFile( 0, 100 );
-        assertNotNull( partialFile );
-        assertTrue( partialFile.isResume() );
+        assertThat(partialFile ).isNotNull();
+        assertThat(partialFile.isResume() ).isTrue();
         partialFile.close();
         partialFile = newPartialFile( 1, 100 );
-        assertNotNull( partialFile );
-        assertFalse( partialFile.isResume() );
+        assertThat(partialFile ).isNotNull();
+        assertThat(partialFile.isResume() ).isFalse();
         partialFile.close();
     }
 
@@ -312,7 +312,7 @@ public class PartialFileTest
         }
         catch ( Exception e )
         {
-            assertTrue( e.getMessage().contains( "Timeout" ) );
+            assertThat(e.getMessage().contains( "Timeout" ) ).isTrue();
         }
         writer.interrupt();
         writer.join();
@@ -323,12 +323,12 @@ public class PartialFileTest
         throws Exception
     {
         assumeTrue( PROPER_LOCK_SUPPORT );
-        assertTrue( dstFile.setLastModified( System.currentTimeMillis() - 60L * 1000L ) );
+        assertThat(dstFile.setLastModified( System.currentTimeMillis() - 60L * 1000L ) ).isTrue();
         ConcurrentWriter writer = new ConcurrentWriter( dstFile, 100, 10 );
-        assertNull( newPartialFile( 0, 500 ) );
+        assertThat(newPartialFile( 0, 500 ) ).isNull();
         writer.join();
-        assertNull( writer.error );
-        assertEquals( 1, remoteAccessChecker.invocations );
+        assertThat(writer.error ).isNull();
+        assertThat(remoteAccessChecker.invocations ).isEqualTo(1);
     }
 
     @Test( timeout = 10000L )
@@ -336,14 +336,14 @@ public class PartialFileTest
         throws Exception
     {
         assumeTrue( PROPER_LOCK_SUPPORT );
-        assertTrue( dstFile.setLastModified( System.currentTimeMillis() - 60L * 1000L ) );
+        assertThat(dstFile.setLastModified( System.currentTimeMillis() - 60L * 1000L ) ).isTrue();
         ConcurrentWriter writer = new ConcurrentWriter( dstFile, 100, -10 );
         PartialFile partialFile = newPartialFile( 0, 500 );
-        assertNotNull( partialFile );
-        assertTrue( partialFile.isResume() );
+        assertThat(partialFile ).isNotNull();
+        assertThat(partialFile.isResume() ).isTrue();
         writer.join();
-        assertNull( writer.error );
-        assertEquals( 1, remoteAccessChecker.invocations );
+        assertThat(writer.error ).isNull();
+        assertThat(remoteAccessChecker.invocations ).isEqualTo(1);
     }
 
     @Test( timeout = 10000L )
@@ -360,7 +360,7 @@ public class PartialFileTest
         }
         catch ( Exception e )
         {
-            assertSame( remoteAccessChecker.exception, e );
+            assertThat(e ).isSameAs(remoteAccessChecker.exception);
         }
         writer.interrupt();
         writer.join();

@@ -19,8 +19,6 @@ package org.eclipse.aether.util.graph.versions;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.Iterator;
 
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -36,6 +34,8 @@ import org.eclipse.aether.version.Version;
 import org.eclipse.aether.version.VersionScheme;
 import org.junit.After;
 import org.junit.Before;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public abstract class AbstractVersionFilterTest
 {
@@ -84,12 +84,12 @@ public abstract class AbstractVersionFilterTest
 
     protected void assertVersions( VersionFilter.VersionFilterContext context, String... versions )
     {
-        assertEquals( versions.length, context.getCount() );
+        assertThat( context.getCount() ).isEqualTo( versions.length );
         Iterator<Version> it = context.iterator();
         for ( String version : versions )
         {
-            assertTrue( it.hasNext() );
-            assertEquals( version, it.next().toString() );
+            assertThat( it.hasNext() ).isTrue();
+            assertThat( it.next().toString() ).isEqualTo( version );
         }
     }
 

@@ -19,7 +19,7 @@ package org.eclipse.aether.graph;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,12 +40,12 @@ public class DependencyTest
         Dependency d1 = new Dependency( new DefaultArtifact( "gid:aid:ver" ), "compile" );
 
         Dependency d2 = d1.setScope( null );
-        assertNotSame( d2, d1 );
-        assertEquals( "", d2.getScope() );
+        assertThat(d1 ).isNotSameAs(d2);
+        assertThat(d2.getScope() ).isEqualTo("");
 
         Dependency d3 = d1.setScope( "test" );
-        assertNotSame( d3, d1 );
-        assertEquals( "test", d3.getScope() );
+        assertThat(d1 ).isNotSameAs(d3);
+        assertThat(d3.getScope() ).isEqualTo("test");
     }
 
     @Test
@@ -56,18 +56,18 @@ public class DependencyTest
                             Collections.singleton( new Exclusion( "g", "a", "c", "e" ) ) );
 
         Dependency d2 = d1.setExclusions( null );
-        assertNotSame( d2, d1 );
-        assertEquals( 0, d2.getExclusions().size() );
+        assertThat( d1 ).isNotSameAs(d2);
+        assertThat( d2.getExclusions().size() ).isEqualTo(0);
 
-        assertSame( d2, d2.setExclusions( null ) );
-        assertSame( d2, d2.setExclusions( Collections.<Exclusion> emptyList() ) );
-        assertSame( d2, d2.setExclusions( Collections.<Exclusion> emptySet() ) );
-        assertSame( d1, d1.setExclusions( Arrays.asList( new Exclusion( "g", "a", "c", "e" ) ) ) );
+        assertThat( d2.setExclusions( null ) ).isSameAs(d2);
+        assertThat( d2.setExclusions( Collections.<Exclusion> emptyList() ) ).isSameAs(d2);
+        assertThat( d2.setExclusions( Collections.<Exclusion> emptySet() ) ).isSameAs(d2);
+        assertThat( d1.setExclusions( Arrays.asList( new Exclusion( "g", "a", "c", "e" ) ) )).isSameAs( d1 );
 
         Dependency d3 =
             d1.setExclusions( Arrays.asList( new Exclusion( "g", "a", "c", "e" ), new Exclusion( "g", "a", "c", "f" ) ) );
-        assertNotSame( d3, d1 );
-        assertEquals( 2, d3.getExclusions().size() );
+        assertThat( d1 ).isNotSameAs(d3);
+        assertThat( d3.getExclusions() ).hasSize( 2 );
     }
 
 }

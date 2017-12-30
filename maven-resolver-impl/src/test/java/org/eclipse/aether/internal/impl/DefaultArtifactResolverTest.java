@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -135,13 +135,13 @@ public class DefaultArtifactResolverTest
         ArtifactRequest request = new ArtifactRequest( artifact, null, "" );
         ArtifactResult result = resolver.resolveArtifact( session, request );
 
-        assertTrue( result.getExceptions().isEmpty() );
+        assertThat(result.getExceptions().isEmpty() ).isTrue();
 
         Artifact resolved = result.getArtifact();
-        assertNotNull( resolved.getFile() );
+        assertThat(resolved.getFile() ).isNotNull();
         resolved = resolved.setFile( null );
 
-        assertEquals( artifact, resolved );
+        assertThat(resolved ).isEqualTo(artifact);
     }
 
     @Test
@@ -164,18 +164,18 @@ public class DefaultArtifactResolverTest
         }
         catch ( ArtifactResolutionException e )
         {
-            assertNotNull( e.getResults() );
-            assertEquals( 1, e.getResults().size() );
+            assertThat(e.getResults() ).isNotNull();
+            assertThat(e.getResults().size() ).isEqualTo(1);
 
             ArtifactResult result = e.getResults().get( 0 );
 
-            assertSame( request, result.getRequest() );
+            assertThat(result.getRequest() ).isSameAs(request);
 
-            assertFalse( result.getExceptions().isEmpty() );
-            assertTrue( result.getExceptions().get( 0 ) instanceof ArtifactNotFoundException );
+            assertThat(result.getExceptions().isEmpty() ).isFalse();
+            assertThat(result.getExceptions().get( 0 ) instanceof ArtifactNotFoundException ).isTrue();
 
             Artifact resolved = result.getArtifact();
-            assertNull( resolved );
+            assertThat(resolved ).isNull();
         }
 
     }
@@ -191,13 +191,13 @@ public class DefaultArtifactResolverTest
 
         ArtifactResult result = resolver.resolveArtifact( session, request );
 
-        assertTrue( result.getExceptions().isEmpty() );
+        assertThat(result.getExceptions().isEmpty() ).isTrue();
 
         Artifact resolved = result.getArtifact();
-        assertNotNull( resolved.getFile() );
+        assertThat(resolved.getFile() ).isNotNull();
 
         resolved = resolved.setFile( null );
-        assertEquals( artifact, resolved );
+        assertThat(resolved ).isEqualTo(artifact);
 
         connector.assertSeenExpected();
     }
@@ -236,18 +236,18 @@ public class DefaultArtifactResolverTest
         catch ( ArtifactResolutionException e )
         {
             connector.assertSeenExpected();
-            assertNotNull( e.getResults() );
-            assertEquals( 1, e.getResults().size() );
+            assertThat(e.getResults() ).isNotNull();
+            assertThat(e.getResults().size() ).isEqualTo(1);
 
             ArtifactResult result = e.getResults().get( 0 );
 
-            assertSame( request, result.getRequest() );
+            assertThat(result.getRequest() ).isSameAs(request);
 
-            assertFalse( result.getExceptions().isEmpty() );
-            assertTrue( result.getExceptions().get( 0 ) instanceof ArtifactNotFoundException );
+            assertThat(result.getExceptions().isEmpty() ).isFalse();
+            assertThat(result.getExceptions().get( 0 ) instanceof ArtifactNotFoundException ).isTrue();
 
             Artifact resolved = result.getArtifact();
-            assertNull( resolved );
+            assertThat(resolved ).isNull();
         }
 
     }
@@ -316,8 +316,8 @@ public class DefaultArtifactResolverTest
             for ( ArtifactResult result : e.getResults() )
             {
                 Throwable t = result.getExceptions().get( 0 );
-                assertEquals( t.toString(), true, t instanceof ArtifactNotFoundException );
-                assertEquals( t.toString(), true, t.getMessage().contains( "cached" ) );
+                assertThat( t ).isInstanceOf( ArtifactNotFoundException.class );
+                assertThat( t ).hasMessage( "cached" );
             }
         }
     }
@@ -358,22 +358,22 @@ public class DefaultArtifactResolverTest
 
         ArtifactResult result = resolver.resolveArtifact( session, request );
 
-        assertTrue( result.getExceptions().isEmpty() );
+        assertThat(result.getExceptions().isEmpty() ).isTrue();
 
         Artifact resolved = result.getArtifact();
-        assertNotNull( resolved.getFile() );
+        assertThat(resolved.getFile() ).isNotNull();
 
-        assertEquals( resolved.toString(), TestFileUtils.readString( resolved.getFile() ) );
+        assertThat(TestFileUtils.readString( resolved.getFile() ) ).isEqualTo(resolved.toString());
 
         resolved = resolved.setFile( null );
-        assertEquals( artifact, resolved );
+        assertThat(resolved ).isEqualTo(artifact);
 
         connector.assertSeenExpected();
     }
 
     @Test
     public void testResolveFromWorkspaceFallbackToRepository()
-        throws IOException, ArtifactResolutionException
+        throws ArtifactResolutionException
     {
         WorkspaceReader workspace = new WorkspaceReader()
         {
@@ -403,13 +403,13 @@ public class DefaultArtifactResolverTest
 
         ArtifactResult result = resolver.resolveArtifact( session, request );
 
-        assertTrue( "exception on resolveArtifact", result.getExceptions().isEmpty() );
+        assertThat( result.getExceptions().isEmpty() ).isTrue();
 
         Artifact resolved = result.getArtifact();
-        assertNotNull( resolved.getFile() );
+        assertThat(resolved.getFile() ).isNotNull();
 
         resolved = resolved.setFile( null );
-        assertEquals( artifact, resolved );
+        assertThat(resolved ).isEqualTo(artifact);
 
         connector.assertSeenExpected();
     }
@@ -430,16 +430,16 @@ public class DefaultArtifactResolverTest
         resolver.resolveArtifact( session, request );
 
         List<RepositoryEvent> events = listener.getEvents();
-        assertEquals( 2, events.size() );
+        assertThat(events.size() ).isEqualTo(2);
         RepositoryEvent event = events.get( 0 );
-        assertEquals( EventType.ARTIFACT_RESOLVING, event.getType() );
-        assertNull( event.getException() );
-        assertEquals( artifact, event.getArtifact() );
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVING);
+        assertThat(event.getException() ).isNull();
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
 
         event = events.get( 1 );
-        assertEquals( EventType.ARTIFACT_RESOLVED, event.getType() );
-        assertNull( event.getException() );
-        assertEquals( artifact, event.getArtifact().setFile( null ) );
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVED);
+        assertThat(event.getException() ).isNull();
+        assertThat(event.getArtifact().setFile( null ) ).isEqualTo(artifact);
     }
 
     @Test
@@ -464,17 +464,17 @@ public class DefaultArtifactResolverTest
         }
 
         List<RepositoryEvent> events = listener.getEvents();
-        assertEquals( 2, events.size() );
+        assertThat(events.size() ).isEqualTo(2);
 
         RepositoryEvent event = events.get( 0 );
-        assertEquals( artifact, event.getArtifact() );
-        assertEquals( EventType.ARTIFACT_RESOLVING, event.getType() );
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVING);
 
         event = events.get( 1 );
-        assertEquals( artifact, event.getArtifact() );
-        assertEquals( EventType.ARTIFACT_RESOLVED, event.getType() );
-        assertNotNull( event.getException() );
-        assertEquals( 1, event.getExceptions().size() );
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVED);
+        assertThat(event.getException() ).isNotNull();
+        assertThat(event.getExceptions().size() ).isEqualTo(1);
 
     }
 
@@ -491,26 +491,26 @@ public class DefaultArtifactResolverTest
         resolver.resolveArtifact( session, request );
 
         List<RepositoryEvent> events = listener.getEvents();
-        assertEquals( events.toString(), 4, events.size() );
+        assertThat(events ).hasSize( 4 );
         RepositoryEvent event = events.get( 0 );
-        assertEquals( EventType.ARTIFACT_RESOLVING, event.getType() );
-        assertNull( event.getException() );
-        assertEquals( artifact, event.getArtifact() );
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVING);
+        assertThat(event.getException() ).isNull();
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
 
         event = events.get( 1 );
-        assertEquals( EventType.ARTIFACT_DOWNLOADING, event.getType() );
-        assertNull( event.getException() );
-        assertEquals( artifact, event.getArtifact().setFile( null ) );
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_DOWNLOADING);
+        assertThat(event.getException() ).isNull();
+        assertThat(event.getArtifact().setFile( null ) ).isEqualTo(artifact);
 
         event = events.get( 2 );
-        assertEquals( EventType.ARTIFACT_DOWNLOADED, event.getType() );
-        assertNull( event.getException() );
-        assertEquals( artifact, event.getArtifact().setFile( null ) );
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_DOWNLOADED);
+        assertThat(event.getException() ).isNull();
+        assertThat(event.getArtifact().setFile( null ) ).isEqualTo(artifact);
 
         event = events.get( 3 );
-        assertEquals( EventType.ARTIFACT_RESOLVED, event.getType() );
-        assertNull( event.getException() );
-        assertEquals( artifact, event.getArtifact().setFile( null ) );
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVED);
+        assertThat(event.getException() ).isNull();
+        assertThat(event.getArtifact().setFile( null ) ).isEqualTo(artifact);
     }
 
     @Test
@@ -550,27 +550,27 @@ public class DefaultArtifactResolverTest
         }
 
         List<RepositoryEvent> events = listener.getEvents();
-        assertEquals( events.toString(), 4, events.size() );
+        assertThat( events ).hasSize( 4 );
 
         RepositoryEvent event = events.get( 0 );
-        assertEquals( artifact, event.getArtifact() );
-        assertEquals( EventType.ARTIFACT_RESOLVING, event.getType() );
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVING);
 
         event = events.get( 1 );
-        assertEquals( artifact, event.getArtifact() );
-        assertEquals( EventType.ARTIFACT_DOWNLOADING, event.getType() );
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_DOWNLOADING);
 
         event = events.get( 2 );
-        assertEquals( artifact, event.getArtifact() );
-        assertEquals( EventType.ARTIFACT_DOWNLOADED, event.getType() );
-        assertNotNull( event.getException() );
-        assertEquals( 1, event.getExceptions().size() );
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_DOWNLOADED);
+        assertThat(event.getException() ).isNotNull();
+        assertThat(event.getExceptions().size() ).isEqualTo(1);
 
         event = events.get( 3 );
-        assertEquals( artifact, event.getArtifact() );
-        assertEquals( EventType.ARTIFACT_RESOLVED, event.getType() );
-        assertNotNull( event.getException() );
-        assertEquals( 1, event.getExceptions().size() );
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVED);
+        assertThat(event.getException() ).isNotNull();
+        assertThat(event.getExceptions().size() ).isEqualTo(1);
     }
 
     @Test
@@ -595,18 +595,18 @@ public class DefaultArtifactResolverTest
         catch ( ArtifactResolutionException e )
         {
             connector.assertSeenExpected();
-            assertNotNull( e.getResults() );
-            assertEquals( 1, e.getResults().size() );
+            assertThat(e.getResults() ).isNotNull();
+            assertThat(e.getResults().size() ).isEqualTo(1);
 
             ArtifactResult result = e.getResults().get( 0 );
 
-            assertSame( request, result.getRequest() );
+            assertThat(result.getRequest() ).isSameAs(request);
 
-            assertFalse( result.getExceptions().isEmpty() );
-            assertTrue( result.getExceptions().get( 0 ) instanceof VersionResolutionException );
+            assertThat(result.getExceptions().isEmpty() ).isFalse();
+            assertThat(result.getExceptions().get( 0 ) instanceof VersionResolutionException ).isTrue();
 
             Artifact resolved = result.getArtifact();
-            assertNull( resolved );
+            assertThat(resolved ).isNull();
         }
     }
 
@@ -637,17 +637,17 @@ public class DefaultArtifactResolverTest
         }
 
         List<RepositoryEvent> events = listener.getEvents();
-        assertEquals( 2, events.size() );
+        assertThat(events.size() ).isEqualTo(2);
 
         RepositoryEvent event = events.get( 0 );
-        assertEquals( artifact, event.getArtifact() );
-        assertEquals( EventType.ARTIFACT_RESOLVING, event.getType() );
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVING);
 
         event = events.get( 1 );
-        assertEquals( artifact, event.getArtifact() );
-        assertEquals( EventType.ARTIFACT_RESOLVED, event.getType() );
-        assertNotNull( event.getException() );
-        assertEquals( 1, event.getExceptions().size() );
+        assertThat(event.getArtifact() ).isEqualTo(artifact);
+        assertThat(event.getType() ).isEqualTo(EventType.ARTIFACT_RESOLVED);
+        assertThat(event.getException() ).isNotNull();
+        assertThat(event.getExceptions().size() ).isEqualTo(1);
     }
 
     @Test
@@ -726,13 +726,13 @@ public class DefaultArtifactResolverTest
 
         ArtifactResult result = resolver.resolveArtifact( session, request );
 
-        assertTrue( result.getExceptions().isEmpty() );
+        assertThat(result.getExceptions().isEmpty() ).isTrue();
 
         Artifact resolved = result.getArtifact();
-        assertNotNull( resolved.getFile() );
+        assertThat(resolved.getFile() ).isNotNull();
 
         resolved = resolved.setFile( null );
-        assertEquals( artifact, resolved );
+        assertThat(resolved ).isEqualTo(artifact);
 
     }
 
@@ -812,13 +812,13 @@ public class DefaultArtifactResolverTest
         } );
         ArtifactResult result = resolver.resolveArtifact( session, request );
 
-        assertTrue( result.getExceptions().isEmpty() );
+        assertThat(result.getExceptions().isEmpty() ).isTrue();
 
         Artifact resolved = result.getArtifact();
-        assertNotNull( resolved.getFile() );
+        assertThat(resolved.getFile() ).isNotNull();
 
         resolved = resolved.setFile( null );
-        assertEquals( artifact, resolved );
+        assertThat(resolved ).isEqualTo(artifact);
     }
 
     @Test
@@ -897,13 +897,13 @@ public class DefaultArtifactResolverTest
         } );
         ArtifactResult result = resolver.resolveArtifact( session, request );
 
-        assertTrue( result.getExceptions().isEmpty() );
+        assertThat(result.getExceptions().isEmpty() ).isTrue();
 
         Artifact resolved = result.getArtifact();
-        assertNotNull( resolved.getFile() );
+        assertThat(resolved.getFile() ).isNotNull();
 
         resolved = resolved.setFile( null );
-        assertEquals( artifact, resolved );
+        assertThat(resolved ).isEqualTo(artifact);
     }
 
 }

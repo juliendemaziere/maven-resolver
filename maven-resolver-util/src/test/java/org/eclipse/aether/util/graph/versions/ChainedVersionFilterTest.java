@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.versions;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.collection.DependencyCollectionContext;
 import org.eclipse.aether.collection.VersionFilter;
@@ -61,25 +61,25 @@ public class ChainedVersionFilterTest
         };
 
         VersionFilter filter = ChainedVersionFilter.newInstance( filter1 );
-        assertSame( filter, derive( filter, "g:a:1" ) );
+        assertThat( derive( filter, "g:a:1")).isSameAs( filter );
 
         filter = ChainedVersionFilter.newInstance( filter2 );
-        assertSame( null, derive( filter, "g:a:1" ) );
+        assertThat( derive( filter, "g:a:1")).isNull();
 
         filter = ChainedVersionFilter.newInstance( filter1, filter2 );
-        assertSame( filter1, derive( filter, "g:a:1" ) );
+        assertThat( derive( filter,"g:a:1")).isSameAs( filter1 );
 
         filter = ChainedVersionFilter.newInstance( filter2, filter1 );
-        assertSame( filter1, derive( filter, "g:a:1" ) );
+        assertThat(derive( filter,"g:a:1")).isSameAs( filter1 );
     }
 
     @Test
     public void testEquals()
     {
         VersionFilter filter = ChainedVersionFilter.newInstance( new HighestVersionFilter() );
-        assertFalse( filter.equals( null ) );
-        assertTrue( filter.equals( filter ) );
-        assertTrue( filter.equals( ChainedVersionFilter.newInstance( new HighestVersionFilter() ) ) );
+        assertThat(filter.equals( null ) ).isFalse();
+        assertThat(filter.equals( filter ) ).isTrue();
+        assertThat(filter.equals( ChainedVersionFilter.newInstance( new HighestVersionFilter() ) ) ).isTrue();
     }
 
 }

@@ -19,7 +19,7 @@ package org.eclipse.aether.util.repository;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystemSession;
@@ -62,8 +62,8 @@ public class ComponentAuthenticationTest
         Component comp = new Component();
         Authentication auth = new ComponentAuthentication( "key", comp );
         AuthenticationContext context = newContext( auth );
-        assertEquals( null, context.get( "another-key" ) );
-        assertSame( comp, context.get( "key", Component.class ) );
+        assertThat( context.get( "another-key" ) ).isNull();
+        assertThat( context.get( "key", Component.class )).isSameAs( comp );
     }
 
     @Test
@@ -73,15 +73,15 @@ public class ComponentAuthenticationTest
         Authentication auth2 = new ComponentAuthentication( "key", new Component() );
         String digest1 = newDigest( auth1 );
         String digest2 = newDigest( auth2 );
-        assertEquals( digest1, digest2 );
+        assertThat(digest2 ).isEqualTo(digest1);
 
         Authentication auth3 = new ComponentAuthentication( "key", new Object() );
         String digest3 = newDigest( auth3 );
-        assertFalse( digest3.equals( digest1 ) );
+        assertThat(digest3.equals( digest1 ) ).isFalse();
 
         Authentication auth4 = new ComponentAuthentication( "Key", new Component() );
         String digest4 = newDigest( auth4 );
-        assertFalse( digest4.equals( digest1 ) );
+        assertThat(digest4.equals( digest1 ) ).isFalse();
     }
 
     @Test
@@ -90,9 +90,9 @@ public class ComponentAuthenticationTest
         Authentication auth1 = new ComponentAuthentication( "key", new Component() );
         Authentication auth2 = new ComponentAuthentication( "key", new Component() );
         Authentication auth3 = new ComponentAuthentication( "key", new Object() );
-        assertEquals( auth1, auth2 );
-        assertFalse( auth1.equals( auth3 ) );
-        assertFalse( auth1.equals( null ) );
+        assertThat(auth2 ).isEqualTo(auth1);
+        assertThat(auth1.equals( auth3 ) ).isFalse();
+        assertThat(auth1.equals( null ) ).isFalse();
     }
 
     @Test
@@ -100,7 +100,7 @@ public class ComponentAuthenticationTest
     {
         Authentication auth1 = new ComponentAuthentication( "key", new Component() );
         Authentication auth2 = new ComponentAuthentication( "key", new Component() );
-        assertEquals( auth1.hashCode(), auth2.hashCode() );
+        assertThat(auth2.hashCode() ).isEqualTo(auth1.hashCode());
     }
 
 }

@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,18 +77,18 @@ public class DefaultRemoteRepositoryManagerTest
 
     private void assertEqual( RemoteRepository expected, RemoteRepository actual )
     {
-        assertEquals( "id", expected.getId(), actual.getId() );
-        assertEquals( "url", expected.getUrl(), actual.getUrl() );
-        assertEquals( "type", expected.getContentType(), actual.getContentType() );
+        assertThat( actual.getId() ).isEqualTo( expected.getId());
+        assertThat( actual.getUrl() ).isEqualTo( expected.getUrl());
+        assertThat( actual.getContentType() ).isEqualTo( expected.getContentType());
         assertEqual( expected.getPolicy( false ), actual.getPolicy( false ) );
         assertEqual( expected.getPolicy( true ), actual.getPolicy( true ) );
     }
 
     private void assertEqual( RepositoryPolicy expected, RepositoryPolicy actual )
     {
-        assertEquals( "enabled", expected.isEnabled(), actual.isEnabled() );
-        assertEquals( "checksums", expected.getChecksumPolicy(), actual.getChecksumPolicy() );
-        assertEquals( "updates", expected.getUpdatePolicy(), actual.getUpdatePolicy() );
+        assertThat( actual.isEnabled() ).isEqualTo( expected.isEnabled());
+        assertThat( actual.getChecksumPolicy() ).isEqualTo( expected.getChecksumPolicy());
+        assertThat( actual.getUpdatePolicy() ).isEqualTo( expected.getUpdatePolicy());
     }
 
     @Test
@@ -103,9 +103,9 @@ public class DefaultRemoteRepositoryManagerTest
         .setSnapshotPolicy( snapshotPolicy ).setReleasePolicy( releasePolicy ).build();
 
         RepositoryPolicy effectivePolicy = manager.getPolicy( session, repo, true, true );
-        assertEquals( true, effectivePolicy.isEnabled() );
-        assertEquals( RepositoryPolicy.CHECKSUM_POLICY_IGNORE, effectivePolicy.getChecksumPolicy() );
-        assertEquals( RepositoryPolicy.UPDATE_POLICY_ALWAYS, effectivePolicy.getUpdatePolicy() );
+        assertThat(effectivePolicy.isEnabled() ).isEqualTo(true);
+        assertThat(effectivePolicy.getChecksumPolicy() ).isEqualTo(RepositoryPolicy.CHECKSUM_POLICY_IGNORE);
+        assertThat(effectivePolicy.getUpdatePolicy() ).isEqualTo(RepositoryPolicy.UPDATE_POLICY_ALWAYS);
     }
 
     @Test
@@ -120,7 +120,7 @@ public class DefaultRemoteRepositoryManagerTest
             manager.aggregateRepositories( session, Arrays.asList( dominant1 ),
                                            Arrays.asList( recessive1, recessive2 ), false );
 
-        assertEquals( 2, result.size() );
+        assertThat(result.size() ).isEqualTo(2);
         assertEqual( dominant1, result.get( 0 ) );
         assertEqual( recessive2, result.get( 1 ) );
     }
@@ -139,7 +139,7 @@ public class DefaultRemoteRepositoryManagerTest
 
         result = manager.aggregateRepositories( session, result, Arrays.asList( recessive2 ), false );
 
-        assertEquals( 2, result.size() );
+        assertThat(result.size() ).isEqualTo(2);
         assertEqual( dominant, result.get( 0 ) );
         assertEqual( recessive1, result.get( 1 ) );
     }
@@ -159,10 +159,10 @@ public class DefaultRemoteRepositoryManagerTest
             manager.aggregateRepositories( session, Arrays.asList( dominantMirror1 ),
                                            Arrays.asList( recessiveMirror1 ), false );
 
-        assertEquals( 1, result.size() );
+        assertThat(result.size() ).isEqualTo(1);
         assertEqual( dominantMirror1, result.get( 0 ) );
-        assertEquals( 1, result.get( 0 ).getMirroredRepositories().size() );
-        assertEquals( dominant1, result.get( 0 ).getMirroredRepositories().get( 0 ) );
+        assertThat(result.get( 0 ).getMirroredRepositories().size() ).isEqualTo(1);
+        assertThat(result.get( 0 ).getMirroredRepositories().get( 0 ) ).isEqualTo(dominant1);
     }
 
     @Test
@@ -181,11 +181,11 @@ public class DefaultRemoteRepositoryManagerTest
             manager.aggregateRepositories( session, Arrays.asList( dominantMirror1 ),
                                            Arrays.asList( recessiveMirror1 ), false );
 
-        assertEquals( 1, result.size() );
+        assertThat(result.size() ).isEqualTo(1);
         assertEqual( newRepo( "x", "file://", true, "", "" ).build(), result.get( 0 ) );
-        assertEquals( 2, result.get( 0 ).getMirroredRepositories().size() );
-        assertEquals( dominant1, result.get( 0 ).getMirroredRepositories().get( 0 ) );
-        assertEquals( recessive2, result.get( 0 ).getMirroredRepositories().get( 1 ) );
+        assertThat(result.get( 0 ).getMirroredRepositories().size() ).isEqualTo(2);
+        assertThat(result.get( 0 ).getMirroredRepositories().get( 0 ) ).isEqualTo(dominant1);
+        assertThat(result.get( 0 ).getMirroredRepositories().get( 1 ) ).isEqualTo(recessive2);
     }
 
     @Test
@@ -206,8 +206,8 @@ public class DefaultRemoteRepositoryManagerTest
             manager.aggregateRepositories( session, Collections.<RemoteRepository> emptyList(), Arrays.asList( repo ),
                                            true );
 
-        assertEquals( 1, result.size() );
-        assertSame( mirror.getAuthentication(), result.get( 0 ).getAuthentication() );
+        assertThat(result.size() ).isEqualTo(1);
+        assertThat(result.get( 0 ).getAuthentication() ).isSameAs(mirror.getAuthentication());
     }
 
     @Test
@@ -228,10 +228,10 @@ public class DefaultRemoteRepositoryManagerTest
             manager.aggregateRepositories( session, Collections.<RemoteRepository> emptyList(), Arrays.asList( repo ),
                                            true );
 
-        assertEquals( 1, result.size() );
-        assertEquals( "http", result.get( 0 ).getProxy().getType() );
-        assertEquals( "host", result.get( 0 ).getProxy().getHost() );
-        assertEquals( 2011, result.get( 0 ).getProxy().getPort() );
+        assertThat(result.size() ).isEqualTo(1);
+        assertThat(result.get( 0 ).getProxy().getType() ).isEqualTo("http");
+        assertThat(result.get( 0 ).getProxy().getHost() ).isEqualTo("host");
+        assertThat(result.get( 0 ).getProxy().getPort() ).isEqualTo(2011);
     }
 
     @Test
@@ -258,10 +258,10 @@ public class DefaultRemoteRepositoryManagerTest
             manager.aggregateRepositories( session, Collections.<RemoteRepository> emptyList(), Arrays.asList( repo ),
                                            true );
 
-        assertEquals( 1, result.size() );
-        assertEquals( "http", result.get( 0 ).getProxy().getType() );
-        assertEquals( "host", result.get( 0 ).getProxy().getHost() );
-        assertEquals( 2011, result.get( 0 ).getProxy().getPort() );
+        assertThat(result.size() ).isEqualTo(1);
+        assertThat(result.get( 0 ).getProxy().getType() ).isEqualTo("http");
+        assertThat(result.get( 0 ).getProxy().getHost() ).isEqualTo("host");
+        assertThat(result.get( 0 ).getProxy().getPort() ).isEqualTo(2011);
     }
 
     private static class StubUpdatePolicyAnalyzer

@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.net.URI;
@@ -147,18 +147,18 @@ public class DefaultUpdateCheckManagerTest
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_ALWAYS );
         manager.checkMetadata( session, check );
-        assertNull( check.getException() );
-        assertTrue( check.isRequired() );
+        assertThat(check.getException() ).isNull();
+        assertThat(check.isRequired() ).isTrue();
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_DAILY );
         manager.checkMetadata( session, check );
-        assertNull( check.getException() );
-        assertTrue( check.isRequired() );
+        assertThat(check.getException() ).isNull();
+        assertThat(check.isRequired() ).isTrue();
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_INTERVAL + ":60" );
         manager.checkMetadata( session, check );
-        assertNull( check.getException() );
-        assertTrue( check.isRequired() );
+        assertThat(check.getException() ).isNull();
+        assertThat(check.isRequired() ).isTrue();
     }
 
     @Test
@@ -171,19 +171,19 @@ public class DefaultUpdateCheckManagerTest
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_NEVER );
         manager.checkMetadata( session, check );
-        assertFalse( check.isRequired() );
+        assertThat(check.isRequired() ).isFalse();
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_DAILY );
         manager.checkMetadata( session, check );
-        assertFalse( check.isRequired() );
+        assertThat(check.isRequired() ).isFalse();
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_INTERVAL + ":61" );
         manager.checkMetadata( session, check );
-        assertFalse( check.isRequired() );
+        assertThat(check.isRequired() ).isFalse();
 
         check.setPolicy( "no particular policy" );
         manager.checkMetadata( session, check );
-        assertFalse( check.isRequired() );
+        assertThat(check.isRequired() ).isFalse();
     }
 
     @Test
@@ -195,7 +195,7 @@ public class DefaultUpdateCheckManagerTest
 
         // existing file, never checked before
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         // just checked
         manager.touchMetadata( session, check );
@@ -205,12 +205,12 @@ public class DefaultUpdateCheckManagerTest
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_INTERVAL + ":60" );
 
         manager.checkMetadata( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
 
         // no local file
         check.getFile().delete();
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
         // (! file.exists && ! repoKey) -> no timestamp
     }
 
@@ -228,7 +228,7 @@ public class DefaultUpdateCheckManagerTest
         // ! file.exists && updateRequired -> check in remote repo
         check.setLocalLastUpdated( lastUpdate );
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -247,9 +247,9 @@ public class DefaultUpdateCheckManagerTest
         // ! file.exists && ! updateRequired -> artifact not found in remote repo
         check = newMetadataCheck().setPolicy( RepositoryPolicy.UPDATE_POLICY_DAILY );
         manager.checkMetadata( session, check );
-        assertEquals( false, check.isRequired() );
-        assertTrue( check.getException() instanceof MetadataNotFoundException );
-        assertTrue( check.getException().isFromCache() );
+        assertThat(check.isRequired() ).isEqualTo(false);
+        assertThat(check.getException() instanceof MetadataNotFoundException ).isTrue();
+        assertThat(check.getException().isFromCache() ).isTrue();
     }
 
     @Test
@@ -268,8 +268,8 @@ public class DefaultUpdateCheckManagerTest
         // ! file.exists && updateRequired -> check in remote repo
         check = newMetadataCheck().setPolicy( RepositoryPolicy.UPDATE_POLICY_DAILY );
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
-        assertNull( check.getException() );
+        assertThat(check.isRequired() ).isEqualTo(true);
+        assertThat(check.getException() ).isNull();
     }
 
     @Test
@@ -289,10 +289,10 @@ public class DefaultUpdateCheckManagerTest
         check = newMetadataCheck();
         session.setResolutionErrorPolicy( new SimpleResolutionErrorPolicy( false, true ) );
         manager.checkMetadata( session, check );
-        assertEquals( false, check.isRequired() );
-        assertTrue( check.getException() instanceof MetadataTransferException );
-        assertTrue( String.valueOf( check.getException() ), check.getException().getMessage().contains( "some error" ) );
-        assertTrue( check.getException().isFromCache() );
+        assertThat(check.isRequired() ).isEqualTo(false);
+        assertThat(check.getException() instanceof MetadataTransferException ).isTrue();
+        assertThat(check.getException().getMessage().contains( "some error" ) ).isTrue();
+        assertThat(check.getException().isFromCache() ).isTrue();
     }
 
     @Test
@@ -312,8 +312,8 @@ public class DefaultUpdateCheckManagerTest
         check = newMetadataCheck();
         session.setResolutionErrorPolicy( new SimpleResolutionErrorPolicy( false, false ) );
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
-        assertNull( check.getException() );
+        assertThat(check.isRequired() ).isEqualTo(true);
+        assertThat(check.getException() ).isNull();
     }
 
     @Test
@@ -325,13 +325,13 @@ public class DefaultUpdateCheckManagerTest
 
         // first check
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         manager.touchMetadata( session, check );
 
         // second check in same session
         manager.checkMetadata( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
     }
 
     @Test
@@ -344,18 +344,18 @@ public class DefaultUpdateCheckManagerTest
 
         session.setConfigProperty( DefaultUpdateCheckManager.CONFIG_PROP_SESSION_STATE, "bypass" );
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         resetSessionData( session );
         manager.touchMetadata( session, check );
 
         session.setConfigProperty( DefaultUpdateCheckManager.CONFIG_PROP_SESSION_STATE, "true" );
         manager.checkMetadata( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
 
         session.setConfigProperty( DefaultUpdateCheckManager.CONFIG_PROP_SESSION_STATE, "false" );
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -368,14 +368,14 @@ public class DefaultUpdateCheckManagerTest
 
         // first check
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         // first touch, without exception
         manager.touchMetadata( session, check );
 
         // another check in same session
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         // another touch, with exception
         check.setException( new MetadataNotFoundException( check.getItem(), check.getRepository() ) );
@@ -383,7 +383,7 @@ public class DefaultUpdateCheckManagerTest
 
         // another check in same session
         manager.checkMetadata( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
     }
 
     @Test
@@ -396,14 +396,14 @@ public class DefaultUpdateCheckManagerTest
 
         // first check
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         manager.touchMetadata( session, check );
 
         // second check in same session but for repo with different id
         check.setRepository( new RemoteRepository.Builder( check.getRepository() ).setId( "check" ).build() );
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -414,16 +414,15 @@ public class DefaultUpdateCheckManagerTest
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_NEVER );
         session.setResolutionErrorPolicy( new SimpleResolutionErrorPolicy( true, false ) );
 
-        check.getFile().delete();
-        assertEquals( check.getFile().getAbsolutePath(), false, check.getFile().exists() );
+        assertThat( check.getFile().delete() ).isTrue();
+        assertThat( check.getFile() ).doesNotExist();
 
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat( check.isRequired() ).isTrue();
     }
 
     @Test
     public void testCheckMetadataWhenLocallyPresentButInvalidEvenIfUpdatePolicyIsNever()
-        throws Exception
     {
         UpdateCheck<Metadata, MetadataTransferException> check = newMetadataCheck();
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_NEVER );
@@ -435,7 +434,7 @@ public class DefaultUpdateCheckManagerTest
         check.setFileValid( false );
 
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -449,10 +448,10 @@ public class DefaultUpdateCheckManagerTest
         resetSessionData( session );
 
         check.getFile().delete();
-        assertEquals( check.getFile().getAbsolutePath(), false, check.getFile().exists() );
+        assertThat( check.getFile() ).doesNotExist();
 
         manager.checkMetadata( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -464,7 +463,7 @@ public class DefaultUpdateCheckManagerTest
         session.setResolutionErrorPolicy( new SimpleResolutionErrorPolicy( true, false ) );
 
         manager.checkMetadata( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
     }
 
     @Test( expected = NullPointerException.class )
@@ -476,7 +475,7 @@ public class DefaultUpdateCheckManagerTest
         check.setFile( null );
 
         manager.checkArtifact( session, check );
-        assertNotNull( check.getException() );
+        assertThat(check.getException() ).isNotNull();
     }
 
     @Test
@@ -495,18 +494,18 @@ public class DefaultUpdateCheckManagerTest
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_ALWAYS );
         manager.checkArtifact( session, check );
-        assertNull( check.getException() );
-        assertTrue( check.isRequired() );
+        assertThat(check.getException() ).isNull();
+        assertThat(check.isRequired() ).isTrue();
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_DAILY );
         manager.checkArtifact( session, check );
-        assertNull( check.getException() );
-        assertTrue( check.isRequired() );
+        assertThat(check.getException() ).isNull();
+        assertThat(check.isRequired() ).isTrue();
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_INTERVAL + ":60" );
         manager.checkArtifact( session, check );
-        assertNull( check.getException() );
-        assertTrue( check.isRequired() );
+        assertThat(check.getException() ).isNull();
+        assertThat(check.isRequired() ).isTrue();
     }
 
     @Test
@@ -523,19 +522,19 @@ public class DefaultUpdateCheckManagerTest
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_NEVER );
         manager.checkArtifact( session, check );
-        assertFalse( check.isRequired() );
+        assertThat(check.isRequired() ).isFalse();
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_DAILY );
         manager.checkArtifact( session, check );
-        assertFalse( check.isRequired() );
+        assertThat(check.isRequired() ).isFalse();
 
         check.setPolicy( RepositoryPolicy.UPDATE_POLICY_INTERVAL + ":61" );
         manager.checkArtifact( session, check );
-        assertFalse( check.isRequired() );
+        assertThat(check.isRequired() ).isFalse();
 
         check.setPolicy( "no particular policy" );
         manager.checkArtifact( session, check );
-        assertFalse( check.isRequired() );
+        assertThat(check.isRequired() ).isFalse();
     }
 
     @Test
@@ -550,7 +549,7 @@ public class DefaultUpdateCheckManagerTest
 
         // never checked before
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         // just checked
         check.setLocalLastUpdated( 0L );
@@ -559,13 +558,13 @@ public class DefaultUpdateCheckManagerTest
         lastUpdate = check.getFile().lastModified();
 
         manager.checkArtifact( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
 
         // no local file, no repo timestamp
         check.setLocalLastUpdated( 0L );
         check.getFile().delete();
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -580,7 +579,7 @@ public class DefaultUpdateCheckManagerTest
         // ! file.exists && updateRequired -> check in remote repo
         check.setLocalLastUpdated( lastUpdate );
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -598,9 +597,9 @@ public class DefaultUpdateCheckManagerTest
         // ! file.exists && ! updateRequired -> artifact not found in remote repo
         check = newArtifactCheck().setPolicy( RepositoryPolicy.UPDATE_POLICY_DAILY );
         manager.checkArtifact( session, check );
-        assertEquals( false, check.isRequired() );
-        assertTrue( check.getException() instanceof ArtifactNotFoundException );
-        assertTrue( check.getException().isFromCache() );
+        assertThat(check.isRequired() ).isEqualTo(false);
+        assertThat(check.getException() instanceof ArtifactNotFoundException ).isTrue();
+        assertThat(check.getException().isFromCache() ).isTrue();
     }
 
     @Test
@@ -618,8 +617,8 @@ public class DefaultUpdateCheckManagerTest
         // ! file.exists && updateRequired -> check in remote repo
         check = newArtifactCheck().setPolicy( RepositoryPolicy.UPDATE_POLICY_DAILY );
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
-        assertNull( check.getException() );
+        assertThat(check.isRequired() ).isEqualTo(true);
+        assertThat(check.getException() ).isNull();
     }
 
     @Test
@@ -638,9 +637,9 @@ public class DefaultUpdateCheckManagerTest
         check = newArtifactCheck();
         session.setResolutionErrorPolicy( new SimpleResolutionErrorPolicy( false, true ) );
         manager.checkArtifact( session, check );
-        assertEquals( false, check.isRequired() );
-        assertTrue( check.getException() instanceof ArtifactTransferException );
-        assertTrue( check.getException().isFromCache() );
+        assertThat(check.isRequired() ).isEqualTo(false);
+        assertThat(check.getException() instanceof ArtifactTransferException ).isTrue();
+        assertThat(check.getException().isFromCache() ).isTrue();
     }
 
     @Test
@@ -659,8 +658,8 @@ public class DefaultUpdateCheckManagerTest
         check = newArtifactCheck();
         session.setResolutionErrorPolicy( new SimpleResolutionErrorPolicy( false, false ) );
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
-        assertNull( check.getException() );
+        assertThat(check.isRequired() ).isEqualTo(true);
+        assertThat(check.getException() ).isNull();
     }
 
     @Test
@@ -672,13 +671,13 @@ public class DefaultUpdateCheckManagerTest
 
         // first check
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         manager.touchArtifact( session, check );
 
         // second check in same session
         manager.checkArtifact( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
     }
 
     @Test
@@ -691,18 +690,18 @@ public class DefaultUpdateCheckManagerTest
 
         session.setConfigProperty( DefaultUpdateCheckManager.CONFIG_PROP_SESSION_STATE, "bypass" );
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         resetSessionData( session );
         manager.touchArtifact( session, check );
 
         session.setConfigProperty( DefaultUpdateCheckManager.CONFIG_PROP_SESSION_STATE, "true" );
         manager.checkArtifact( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
 
         session.setConfigProperty( DefaultUpdateCheckManager.CONFIG_PROP_SESSION_STATE, "false" );
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -715,14 +714,14 @@ public class DefaultUpdateCheckManagerTest
 
         // first check
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         // first touch, without exception
         manager.touchArtifact( session, check );
 
         // another check in same session
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         // another touch, with exception
         check.setException( new ArtifactNotFoundException( check.getItem(), check.getRepository() ) );
@@ -730,7 +729,7 @@ public class DefaultUpdateCheckManagerTest
 
         // another check in same session
         manager.checkArtifact( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
     }
 
     @Test
@@ -742,14 +741,14 @@ public class DefaultUpdateCheckManagerTest
 
         // first check
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
 
         manager.touchArtifact( session, check );
 
         // second check in same session but for repo with different id
         check.setRepository( new RemoteRepository.Builder( check.getRepository() ).setId( "check" ).build() );
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -761,10 +760,10 @@ public class DefaultUpdateCheckManagerTest
         session.setResolutionErrorPolicy( new SimpleResolutionErrorPolicy( true, false ) );
 
         check.getFile().delete();
-        assertEquals( check.getFile().getAbsolutePath(), false, check.getFile().exists() );
+        assertThat( check.getFile() ).doesNotExist();
 
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat( check.isRequired() ).isTrue();
     }
 
     @Test
@@ -781,12 +780,11 @@ public class DefaultUpdateCheckManagerTest
         check.setFileValid( false );
 
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
     public void testCheckArtifactWhenLocallyDeletedEvenIfTimestampUpToDate()
-        throws Exception
     {
         UpdateCheck<Artifact, ArtifactTransferException> check = newArtifactCheck();
         session.setResolutionErrorPolicy( new SimpleResolutionErrorPolicy( true, false ) );
@@ -795,10 +793,10 @@ public class DefaultUpdateCheckManagerTest
         resetSessionData( session );
 
         check.getFile().delete();
-        assertEquals( check.getFile().getAbsolutePath(), false, check.getFile().exists() );
+        assertThat( check.getFile() ).doesNotExist();
 
         manager.checkArtifact( session, check );
-        assertEquals( true, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(true);
     }
 
     @Test
@@ -810,7 +808,7 @@ public class DefaultUpdateCheckManagerTest
         session.setResolutionErrorPolicy( new SimpleResolutionErrorPolicy( true, false ) );
 
         manager.checkArtifact( session, check );
-        assertEquals( false, check.isRequired() );
+        assertThat(check.isRequired() ).isEqualTo(false);
     }
 
 }

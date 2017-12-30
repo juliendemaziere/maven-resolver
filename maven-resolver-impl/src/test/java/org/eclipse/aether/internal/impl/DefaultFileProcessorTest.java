@@ -19,7 +19,7 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class DefaultFileProcessorTest
 
         fileProcessor.copy( file, target );
 
-        assertEquals( data, TestFileUtils.readString( file ) );
+        assertThat(TestFileUtils.readString( file ) ).isEqualTo(data);
 
         file.delete();
     }
@@ -84,7 +84,7 @@ public class DefaultFileProcessorTest
         {
             File target = new File( targetDir, "testCopy.txt" );
             fileProcessor.copy( file, target );
-            assertEquals( data, TestFileUtils.readString( file ) );
+            assertThat(TestFileUtils.readString( file ) ).isEqualTo(data);
         }
 
         file.delete();
@@ -98,7 +98,7 @@ public class DefaultFileProcessorTest
         File target = new File( targetDir, "testCopyEmptyFile" );
         target.delete();
         fileProcessor.copy( file, target );
-        assertTrue( "empty file was not copied", target.exists() && target.length() == 0L );
+        assertThat( target.exists() && target.length() == 0L ).isTrue();
         target.delete();
     }
 
@@ -119,9 +119,9 @@ public class DefaultFileProcessorTest
             }
         };
         fileProcessor.copy( file, target, listener );
-        assertTrue( "file was not created", target.isFile() );
-        assertEquals( "file was not fully copied", 4L, target.length() );
-        assertEquals( "listener not called", 4, progressed.intValue() );
+        assertThat( target.isFile() ).isTrue();
+        assertThat( target.length() ).as("file was not fully copied").isEqualTo( 4L);
+        assertThat( progressed.intValue() ).as("listener not called").isEqualTo( 4);
         target.delete();
     }
 

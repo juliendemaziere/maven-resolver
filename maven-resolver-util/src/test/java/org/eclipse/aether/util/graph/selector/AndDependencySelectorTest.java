@@ -19,7 +19,7 @@ package org.eclipse.aether.util.graph.selector;
  * under the License.
  */
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.DependencyCollectionContext;
@@ -70,12 +70,12 @@ public class AndDependencySelectorTest
     @Test
     public void testNewInstance()
     {
-        assertNull( AndDependencySelector.newInstance( null, null ) );
+        assertThat( AndDependencySelector.newInstance( null, null ) ).isNull();
         DependencySelector selector = new DummyDependencySelector();
-        assertSame( selector, AndDependencySelector.newInstance( selector, null ) );
-        assertSame( selector, AndDependencySelector.newInstance( null, selector ) );
-        assertSame( selector, AndDependencySelector.newInstance( selector, selector ) );
-        assertNotNull( AndDependencySelector.newInstance( selector, new DummyDependencySelector() ) );
+        assertThat( AndDependencySelector.newInstance( selector, null)).isSameAs( selector );
+        assertThat( AndDependencySelector.newInstance( null, selector)).isSameAs( selector );
+        assertThat( AndDependencySelector.newInstance( selector, selector)).isSameAs( selector );
+        assertThat( AndDependencySelector.newInstance( selector, new DummyDependencySelector() ) ).isNotNull();
     }
 
     @Test
@@ -84,18 +84,18 @@ public class AndDependencySelectorTest
         Dependency dependency = new Dependency( new DefaultArtifact( "g:a:v:1" ), "runtime" );
 
         DependencySelector selector = new AndDependencySelector();
-        assertTrue( selector.selectDependency( dependency ) );
+        assertThat( selector.selectDependency( dependency ) ).isTrue();
 
         selector =
             new AndDependencySelector( new DummyDependencySelector( false ), new DummyDependencySelector( false ) );
-        assertFalse( selector.selectDependency( dependency ) );
+        assertThat( selector.selectDependency( dependency ) ).isFalse();
 
         selector =
             new AndDependencySelector( new DummyDependencySelector( true ), new DummyDependencySelector( false ) );
-        assertFalse( selector.selectDependency( dependency ) );
+        assertThat( selector.selectDependency( dependency ) ).isFalse();
 
         selector = new AndDependencySelector( new DummyDependencySelector( true ), new DummyDependencySelector( true ) );
-        assertTrue( selector.selectDependency( dependency ) );
+        assertThat( selector.selectDependency( dependency ) ).isTrue();
     }
 
     @Test
@@ -104,7 +104,7 @@ public class AndDependencySelectorTest
         DependencySelector other1 = new DummyDependencySelector( true );
         DependencySelector other2 = new DummyDependencySelector( false );
         DependencySelector selector = new AndDependencySelector( other1, other2 );
-        assertSame( selector, selector.deriveChildSelector( null ) );
+        assertThat( selector.deriveChildSelector( null ) ).isSameAs(selector);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class AndDependencySelectorTest
         DependencySelector other1 = new DummyDependencySelector( true );
         DependencySelector other2 = new DummyDependencySelector( false, null );
         DependencySelector selector = new AndDependencySelector( other1, other2 );
-        assertSame( other1, selector.deriveChildSelector( null ) );
+        assertThat( selector.deriveChildSelector( null ) ).isSameAs(other1);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class AndDependencySelectorTest
         DependencySelector other1 = new DummyDependencySelector( true, null );
         DependencySelector other2 = new DummyDependencySelector( false, null );
         DependencySelector selector = new AndDependencySelector( other1, other2 );
-        assertNull( selector.deriveChildSelector( null ) );
+        assertThat( selector.deriveChildSelector( null ) ).isNull();
     }
 
     @Test
@@ -133,11 +133,11 @@ public class AndDependencySelectorTest
         DependencySelector selector1 = new AndDependencySelector( other1, other2 );
         DependencySelector selector2 = new AndDependencySelector( other2, other1 );
         DependencySelector selector3 = new AndDependencySelector( other1 );
-        assertEquals( selector1, selector1 );
-        assertEquals( selector1, selector2 );
-        assertNotEquals( selector1, selector3 );
-        assertNotEquals( selector1, this );
-        assertNotEquals( selector1, null );
+        assertThat( selector1 ).isEqualTo(selector1);
+        assertThat( selector2 ).isEqualTo(selector1);
+        assertThat( selector1 ).isNotEqualTo( selector3 );
+        assertThat( selector1 ).isNotEqualTo( this );
+        assertThat( selector1 ).isNotEqualTo( null );
     }
 
     @Test
@@ -147,7 +147,7 @@ public class AndDependencySelectorTest
         DependencySelector other2 = new DummyDependencySelector( false );
         DependencySelector selector1 = new AndDependencySelector( other1, other2 );
         DependencySelector selector2 = new AndDependencySelector( other2, other1 );
-        assertEquals( selector1.hashCode(), selector2.hashCode() );
+        assertThat( selector2.hashCode() ).isEqualTo( selector1.hashCode() );
     }
 
 }

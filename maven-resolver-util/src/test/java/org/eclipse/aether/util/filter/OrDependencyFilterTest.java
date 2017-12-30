@@ -19,8 +19,6 @@ package org.eclipse.aether.util.filter;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,9 +26,9 @@ import java.util.List;
 import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.internal.test.util.NodeBuilder;
-import org.eclipse.aether.util.filter.AndDependencyFilter;
-import org.eclipse.aether.util.filter.OrDependencyFilter;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrDependencyFilterTest
     extends AbstractDependencyFilterTest
@@ -41,47 +39,47 @@ public class OrDependencyFilterTest
     {
         NodeBuilder builder = new NodeBuilder();
         builder.artifactId( "test" );
-        List<DependencyNode> parents = new LinkedList<DependencyNode>();
+        List<DependencyNode> parents = new LinkedList<>();
         // Empty OR
-        assertFalse( new OrDependencyFilter().accept( builder.build(), parents ) );
+        assertThat( new OrDependencyFilter().accept( builder.build(), parents ) ).isFalse();
 
         // Basic Boolean Input
-        assertTrue( new OrDependencyFilter( getAcceptFilter() ).accept( builder.build(), parents ) );
-        assertFalse( new OrDependencyFilter( getDenyFilter() ).accept( builder.build(), parents ) );
+        assertThat( new OrDependencyFilter( getAcceptFilter() ).accept( builder.build(), parents ) ).isTrue();
+        assertThat( new OrDependencyFilter( getDenyFilter() ).accept( builder.build(), parents ) ).isFalse();
 
-        assertFalse( new OrDependencyFilter( getDenyFilter(), getDenyFilter() ).accept( builder.build(), parents ) );
-        assertTrue( new OrDependencyFilter( getDenyFilter(), getAcceptFilter() ).accept( builder.build(), parents ) );
-        assertTrue( new OrDependencyFilter( getAcceptFilter(), getDenyFilter() ).accept( builder.build(), parents ) );
-        assertTrue( new OrDependencyFilter( getAcceptFilter(), getAcceptFilter() ).accept( builder.build(), parents ) );
+        assertThat( new OrDependencyFilter( getDenyFilter(), getDenyFilter() ).accept( builder.build(), parents ) ).isFalse();
+        assertThat( new OrDependencyFilter( getDenyFilter(), getAcceptFilter() ).accept( builder.build(), parents ) ).isTrue();
+        assertThat( new OrDependencyFilter( getAcceptFilter(), getDenyFilter() ).accept( builder.build(), parents ) ).isTrue();
+        assertThat( new OrDependencyFilter( getAcceptFilter(), getAcceptFilter() ).accept( builder.build(), parents ) ).isTrue();
 
-        assertFalse( new OrDependencyFilter( getDenyFilter(), getDenyFilter(), getDenyFilter() ).accept( builder.build(),
-                                                                                                         parents ) );
-        assertTrue( new OrDependencyFilter( getAcceptFilter(), getDenyFilter(), getDenyFilter() ).accept( builder.build(),
-                                                                                                          parents ) );
-        assertTrue( new OrDependencyFilter( getAcceptFilter(), getAcceptFilter(), getDenyFilter() ).accept( builder.build(),
-                                                                                                            parents ) );
-        assertTrue( new OrDependencyFilter( getAcceptFilter(), getAcceptFilter(), getAcceptFilter() ).accept( builder.build(),
-                                                                                                              parents ) );
+        assertThat( new OrDependencyFilter( getDenyFilter(), getDenyFilter(), getDenyFilter() ).accept( builder.build(),
+                                                                                                         parents ) ).isFalse();
+        assertThat( new OrDependencyFilter( getAcceptFilter(), getDenyFilter(), getDenyFilter() ).accept( builder.build(),
+                                                                                                          parents ) ).isTrue();
+        assertThat( new OrDependencyFilter( getAcceptFilter(), getAcceptFilter(), getDenyFilter() ).accept( builder.build(),
+                                                                                                            parents ) ).isTrue();
+        assertThat( new OrDependencyFilter( getAcceptFilter(), getAcceptFilter(), getAcceptFilter() ).accept( builder.build(),
+                                                                                                              parents ) ).isTrue();
 
         // User another constructor
-        Collection<DependencyFilter> filters = new LinkedList<DependencyFilter>();
+        Collection<DependencyFilter> filters = new LinkedList<>();
         filters.add( getDenyFilter() );
         filters.add( getAcceptFilter() );
-        assertTrue( new OrDependencyFilter( filters ).accept( builder.build(), parents ) );
+        assertThat( new OrDependencyFilter( filters ).accept( builder.build(), parents ) ).isTrue();
 
-        filters = new LinkedList<DependencyFilter>();
+        filters = new LinkedList<>();
         filters.add( getDenyFilter() );
         filters.add( getDenyFilter() );
-        assertFalse( new OrDependencyFilter( filters ).accept( builder.build(), parents ) );
+        assertThat( new OrDependencyFilter( filters ).accept( builder.build(), parents ) ).isFalse();
 
         // newInstance
-        assertTrue( AndDependencyFilter.newInstance( getAcceptFilter(), getAcceptFilter() ).accept( builder.build(),
-                                                                                                    parents ) );
-        assertFalse( AndDependencyFilter.newInstance( getAcceptFilter(), getDenyFilter() ).accept( builder.build(),
-                                                                                                   parents ) );
-        assertTrue( AndDependencyFilter.newInstance( getAcceptFilter(), null ).accept( builder.build(), parents ) );
-        assertFalse( AndDependencyFilter.newInstance( getDenyFilter(), null ).accept( builder.build(), parents ) );
-        assertNull( AndDependencyFilter.newInstance( null, null ) );
+        assertThat( AndDependencyFilter.newInstance( getAcceptFilter(), getAcceptFilter() ).accept( builder.build(),
+                                                                                                    parents ) ).isTrue();
+        assertThat( AndDependencyFilter.newInstance( getAcceptFilter(), getDenyFilter() ).accept( builder.build(),
+                                                                                                   parents ) ).isFalse();
+        assertThat( AndDependencyFilter.newInstance( getAcceptFilter(), null ).accept( builder.build(), parents ) ).isTrue();
+        assertThat( AndDependencyFilter.newInstance( getDenyFilter(), null ).accept( builder.build(), parents ) ).isFalse();
+        assertThat( AndDependencyFilter.newInstance( null, null ) ).isNull();
     }
 
 }

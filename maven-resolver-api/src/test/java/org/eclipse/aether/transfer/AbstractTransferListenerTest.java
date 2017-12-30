@@ -19,28 +19,24 @@ package org.eclipse.aether.transfer;
  * under the License.
  */
 
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Method;
 
-import org.eclipse.aether.transfer.AbstractTransferListener;
-import org.eclipse.aether.transfer.TransferListener;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
 public class AbstractTransferListenerTest
 {
-
     @Test
     public void testAllEventTypesHandled()
         throws Exception
     {
         for ( Method method : TransferListener.class.getMethods() )
         {
-            assertNotNull( AbstractTransferListener.class.getDeclaredMethod( method.getName(),
-                                                                             method.getParameterTypes() ) );
+            assertThat( AbstractTransferListener.class.getDeclaredMethod(
+                    method.getName(), method.getParameterTypes() ) ).isNotNull();
         }
     }
-
 }
