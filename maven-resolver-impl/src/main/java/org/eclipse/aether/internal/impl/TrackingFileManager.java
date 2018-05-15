@@ -43,7 +43,7 @@ class TrackingFileManager
 
     private static final Logger LOGGER = LoggerFactory.getLogger( TrackingFileManager.class );
 
-    public Properties read( File file )
+    Properties read( File file )
     {
         synchronized ( getLock( file ) )
         {
@@ -210,7 +210,7 @@ class TrackingFileManager
             {
                 if ( attempts <= 0 )
                 {
-                    throw (IOException) new IOException().initCause( e );
+                    throw  new IOException( e );
                 }
                 try
                 {

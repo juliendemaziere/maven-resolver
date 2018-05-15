@@ -35,7 +35,7 @@ class SafeTransferListener
 
     private final TransferListener listener;
 
-    public static TransferListener wrap( RepositorySystemSession session )
+    static TransferListener wrap( RepositorySystemSession session )
     {
         TransferListener listener = session.getTransferListener();
         if ( listener == null )

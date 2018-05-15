@@ -20,12 +20,15 @@ package org.eclipse.aether.graph;
  */
 
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import static java.util.Objects.requireNonNull;
+
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.aether.artifact.Artifact;
@@ -69,12 +72,12 @@ public final class Dependency
     }
 
     /**
-     * Creates a dependency on the specified artifact with the given scope and exclusions.
+     * Creates a dependency on the specified artifact with the given scope and exclusionList.
      * 
      * @param artifact The artifact being depended on, must not be {@code null}.
      * @param scope The scope of the dependency, may be {@code null}.
      * @param optional A flag whether the dependency is optional or mandatory, may be {@code null}.
-     * @param exclusions The exclusions that apply to transitive dependencies, may be {@code null} if none.
+     * @param exclusions The exclusionList that apply to transitive dependencies, may be {@code null} if none.
      */
     public Dependency( Artifact artifact, String scope, Boolean optional, Collection<Exclusion> exclusions )
     {
@@ -178,10 +181,10 @@ public final class Dependency
     }
 
     /**
-     * Gets the exclusions for this dependency. Exclusions can be used to remove transitive dependencies during
+     * Gets the exclusionList for this dependency. Exclusions can be used to remove transitive dependencies during
      * resolution.
      * 
-     * @return The (read-only) exclusions, never {@code null}.
+     * @return The (read-only) exclusionList, never {@code null}.
      */
     public Collection<Exclusion> getExclusions()
     {
@@ -189,9 +192,9 @@ public final class Dependency
     }
 
     /**
-     * Sets the exclusions for the dependency.
+     * Sets the exclusionList for the dependency.
      * 
-     * @param exclusions The exclusions, may be {@code null}.
+     * @param exclusions The exclusionList, may be {@code null}.
      * @return The new dependency, never {@code null}.
      */
     public Dependency setExclusions( Collection<Exclusion> exclusions )
@@ -223,45 +226,37 @@ public final class Dependency
         return String.valueOf( getArtifact() ) + " (" + getScope() + ( isOptional() ? "?" : "" ) + ")";
     }
 
-    @Override
-    public boolean equals( Object obj )
-    {
-        if ( obj == this )
-        {
-            return true;
-        }
-        else if ( obj == null || !getClass().equals( obj.getClass() ) )
-        {
-            return false;
-        }
-
-        Dependency that = (Dependency) obj;
-
-        return artifact.equals( that.artifact ) && scope.equals( that.scope ) && eq( optional, that.optional )
-            && exclusions.equals( that.exclusions );
-    }
-
     private static <T> boolean eq( T o1, T o2 )
     {
         return ( o1 != null ) ? o1.equals( o2 ) : o2 == null;
     }
 
     @Override
-    public int hashCode()
-    {
-        int hash = 17;
-        hash = hash * 31 + artifact.hashCode();
-        hash = hash * 31 + scope.hashCode();
-        hash = hash * 31 + ( optional != null ? optional.hashCode() : 0 );
-        hash = hash * 31 + exclusions.size();
-        return hash;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        Dependency that = (Dependency) o;
+        return Objects.equals( getArtifact(), that.getArtifact() ) &&
+                Objects.equals( getScope(), that.getScope() ) &&
+                Objects.equals( isOptional(), that.isOptional() ) &&
+                Objects.equals( getExclusions(), that.getExclusions() );
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash( getArtifact(), getScope(), isOptional(), getExclusions() );
     }
 
     private static class Exclusions
         extends AbstractSet<Exclusion>
     {
 
-        private final Exclusion[] exclusions;
+        private final Exclusion[] exclusionList;
 
         public static Set<Exclusion> copy( Collection<Exclusion> exclusions )
         {
@@ -276,9 +271,9 @@ public final class Dependency
         {
             if ( exclusions.size() > 1 && !( exclusions instanceof Set ) )
             {
-                exclusions = new LinkedHashSet<Exclusion>( exclusions );
+                exclusions = new LinkedHashSet<>( exclusions );
             }
-            this.exclusions = exclusions.toArray( new Exclusion[exclusions.size()] );
+            this.exclusionList = exclusions.toArray( new Exclusion[ 0 ] );
         }
 
         @Override
@@ -291,14 +286,14 @@ public final class Dependency
 
                 public boolean hasNext()
                 {
-                    return cursor < exclusions.length;
+                    return cursor < exclusionList.length;
                 }
 
                 public Exclusion next()
                 {
                     try
                     {
-                        Exclusion exclusion = exclusions[cursor];
+                        Exclusion exclusion = exclusionList[cursor];
                         cursor++;
                         return exclusion;
                     }
@@ -308,6 +303,7 @@ public final class Dependency
                     }
                 }
 
+                @Override
                 public void remove()
                 {
                     throw new UnsupportedOperationException();
@@ -319,9 +315,30 @@ public final class Dependency
         @Override
         public int size()
         {
-            return exclusions.length;
+            return exclusionList.length;
         }
 
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) {
+                return true;
+            }
+            if ( o == null || getClass() != o.getClass() ) {
+                return false;
+            }
+            if ( !super.equals( o ) ) {
+                return false;
+            }
+            Exclusions that = (Exclusions) o;
+            return Arrays.equals( exclusionList, that.exclusionList );
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + Arrays.hashCode( exclusionList );
+            return result;
+        }
     }
 
 }

@@ -69,7 +69,7 @@ class SimpleDigest
         }
     }
 
-    public String digest()
+    String digest()
     {
         if ( digest != null )
         {

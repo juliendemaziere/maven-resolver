@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A skeleton class for metadata.
@@ -110,28 +111,24 @@ public abstract class AbstractMetadata
      *         type, nature, properties and file, {@code false} otherwise.
      */
     @Override
-    public boolean equals( Object obj )
-    {
-        if ( obj == this )
-        {
+    public boolean equals( Object o ) {
+        if ( this == o ) {
             return true;
         }
-        else if ( !( obj instanceof Metadata ) )
-        {
+        if ( o == null || getClass() != o.getClass() ) {
             return false;
         }
-
-        Metadata that = (Metadata) obj;
-
-        return getArtifactId().equals( that.getArtifactId() ) && getGroupId().equals( that.getGroupId() )
-            && getVersion().equals( that.getVersion() ) && getType().equals( that.getType() )
-            && getNature().equals( that.getNature() ) && eq( getFile(), that.getFile() )
-            && eq( getProperties(), that.getProperties() );
-    }
-
-    private static <T> boolean eq( T s1, T s2 )
-    {
-        return s1 != null ? s1.equals( s2 ) : s2 == null;
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+        DefaultMetadata that = (DefaultMetadata) o;
+        return Objects.equals( getGroupId(), that.getGroupId() ) &&
+                Objects.equals( getArtifactId(), that.getArtifactId() ) &&
+                Objects.equals( getVersion(), that.getVersion() ) &&
+                Objects.equals( getType(), that.getType() ) &&
+                getNature() == that.getNature() &&
+                Objects.equals( getFile(), that.getFile() ) &&
+                Objects.equals( getProperties(), that.getProperties() );
     }
 
     /**
@@ -140,21 +137,7 @@ public abstract class AbstractMetadata
      * @return A hash code for the metadata.
      */
     @Override
-    public int hashCode()
-    {
-        int hash = 17;
-        hash = hash * 31 + getGroupId().hashCode();
-        hash = hash * 31 + getArtifactId().hashCode();
-        hash = hash * 31 + getType().hashCode();
-        hash = hash * 31 + getNature().hashCode();
-        hash = hash * 31 + getVersion().hashCode();
-        hash = hash * 31 + hash( getFile() );
-        return hash;
+    public int hashCode() {
+        return Objects.hash( super.hashCode(), getGroupId(), getArtifactId(), getVersion(), getType(), getNature(), getFile(), getProperties() );
     }
-
-    private static int hash( Object obj )
-    {
-        return ( obj != null ) ? obj.hashCode() : 0;
-    }
-
 }

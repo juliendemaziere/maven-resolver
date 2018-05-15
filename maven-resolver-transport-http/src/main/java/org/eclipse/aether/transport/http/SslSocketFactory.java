@@ -36,7 +36,7 @@ import org.apache.http.conn.ssl.X509HostnameVerifier;
  *      Reference Guide, Customization</a>
  */
 final class SslSocketFactory
-    extends org.apache.http.conn.ssl.SSLSocketFactory
+    extends org.apache.http.conn.ssl.SSLConnectionSocketFactory
 {
 
     private final String[] cipherSuites;
@@ -57,7 +57,7 @@ final class SslSocketFactory
     private static X509HostnameVerifier getHostnameVerifier( HostnameVerifier verifier )
     {
         return ( verifier != null ) ? X509HostnameVerifierAdapter.adapt( verifier )
-                        : org.apache.http.conn.ssl.SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
+                        : org.apache.http.conn.ssl.SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER;
     }
 
     private SslSocketFactory( SSLSocketFactory socketfactory, X509HostnameVerifier hostnameVerifier,

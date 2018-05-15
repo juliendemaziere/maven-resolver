@@ -80,7 +80,7 @@ public final class Maven2RepositoryLayoutFactory
         implements RepositoryLayout
     {
 
-        public static final RepositoryLayout INSTANCE = new Maven2RepositoryLayout();
+        static final RepositoryLayout INSTANCE = new Maven2RepositoryLayout();
 
         private URI toUri( String path )
         {
@@ -164,7 +164,7 @@ public final class Maven2RepositoryLayoutFactory
         extends Maven2RepositoryLayout
     {
 
-        public static final RepositoryLayout INSTANCE = new Maven2RepositoryLayoutEx();
+        static final RepositoryLayout INSTANCE = new Maven2RepositoryLayoutEx();
 
         @Override
         public List<Checksum> getChecksums( Artifact artifact, boolean upload, URI location )

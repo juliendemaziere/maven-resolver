@@ -76,7 +76,7 @@ public class DefaultLocalRepositoryProvider
     {
         if ( factories == null )
         {
-            managerFactories = new ArrayList<LocalRepositoryManagerFactory>( 2 );
+            managerFactories = new ArrayList<>( 2 );
         }
         else
         {

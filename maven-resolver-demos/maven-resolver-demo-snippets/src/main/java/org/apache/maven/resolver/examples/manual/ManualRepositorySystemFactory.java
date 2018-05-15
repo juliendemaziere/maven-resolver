@@ -38,6 +38,9 @@ public class ManualRepositorySystemFactory
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( ManualRepositorySystemFactory.class );
 
+    private ManualRepositorySystemFactory() {
+    }
+
     public static RepositorySystem newRepositorySystem()
     {
         /*

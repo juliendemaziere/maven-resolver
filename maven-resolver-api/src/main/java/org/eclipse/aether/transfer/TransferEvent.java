@@ -290,6 +290,7 @@ public final class TransferEvent
                 case INITIATED:
                 case STARTED:
                     transferredBytes = 0L;
+                    break;
                 default:
             }
             return this;

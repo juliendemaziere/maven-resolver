@@ -21,6 +21,8 @@ package org.eclipse.aether.metadata;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Objects;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -186,4 +188,29 @@ public final class DefaultMetadata
         return properties;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+        DefaultMetadata that = (DefaultMetadata) o;
+        return Objects.equals( getGroupId(), that.getGroupId() ) &&
+                Objects.equals( getArtifactId(), that.getArtifactId() ) &&
+                Objects.equals( getVersion(), that.getVersion() ) &&
+                Objects.equals( getType(), that.getType() ) &&
+                getNature() == that.getNature() &&
+                Objects.equals( getFile(), that.getFile() ) &&
+                Objects.equals( getProperties(), that.getProperties() );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash( super.hashCode(), getGroupId(), getArtifactId(), getVersion(), getType(), getNature(), getFile(), getProperties() );
+    }
 }

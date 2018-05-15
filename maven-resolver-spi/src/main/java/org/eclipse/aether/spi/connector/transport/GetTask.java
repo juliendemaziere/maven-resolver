@@ -201,6 +201,7 @@ public final class GetTask
      * @param listener The listener to notify of progress, may be {@code null}.
      * @return This task for chaining, never {@code null}.
      */
+    @Override
     public GetTask setListener( TransportListener listener )
     {
         super.setListener( listener );

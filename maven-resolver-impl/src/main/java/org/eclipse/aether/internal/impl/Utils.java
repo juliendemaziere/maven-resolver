@@ -40,6 +40,9 @@ import org.eclipse.aether.transfer.RepositoryOfflineException;
 final class Utils
 {
 
+    private Utils() {
+    }
+
     public static PrioritizedComponents<MetadataGeneratorFactory> sortMetadataGeneratorFactories( RepositorySystemSession session,
                                                                                                   Collection<? extends MetadataGeneratorFactory> factories )
     {
@@ -80,7 +83,7 @@ final class Utils
 
     public static <T> List<T> combine( Collection<? extends T> first, Collection<? extends T> second )
     {
-        List<T> result = new ArrayList<T>( first.size() + second.size() );
+        List<T> result = new ArrayList<>( first.size() + second.size() );
         result.addAll( first );
         result.addAll( second );
         return result;

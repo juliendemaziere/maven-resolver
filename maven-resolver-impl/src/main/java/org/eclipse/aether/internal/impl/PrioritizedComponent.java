@@ -19,6 +19,10 @@ package org.eclipse.aether.internal.impl;
  * under the License.
  */
 
+import java.util.Objects;
+
+import static java.lang.String.valueOf;
+
 final class PrioritizedComponent<T>
     implements Comparable<PrioritizedComponent<?>>
 {
@@ -59,6 +63,27 @@ final class PrioritizedComponent<T>
         return Float.isNaN( priority );
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        PrioritizedComponent<?> that = (PrioritizedComponent<?>) o;
+        return Float.compare( that.getPriority(), getPriority() ) == 0 &&
+                index == that.index &&
+                Objects.equals( getComponent(), that.getComponent() ) &&
+                Objects.equals( getType(), that.getType() );
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash( getComponent(), getType(), getPriority(), index );
+    }
+
     public int compareTo( PrioritizedComponent<?> o )
     {
         int rel = ( isDisabled() ? 1 : 0 ) - ( o.isDisabled() ? 1 : 0 );
@@ -76,7 +101,7 @@ final class PrioritizedComponent<T>
     @Override
     public String toString()
     {
-        return priority + " (#" + index + "): " + String.valueOf( component );
+        return priority + " (#" + index + "): " + valueOf( component );
     }
 
 }
