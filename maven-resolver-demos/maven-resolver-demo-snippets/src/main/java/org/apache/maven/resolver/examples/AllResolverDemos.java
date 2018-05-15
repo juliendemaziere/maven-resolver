@@ -24,11 +24,6 @@ package org.apache.maven.resolver.examples;
  */
 public class AllResolverDemos
 {
-    /**
-     * Main 
-     * @param args
-     * @throws Exception
-     */
     public static void main( String[] args )
         throws Exception
     {

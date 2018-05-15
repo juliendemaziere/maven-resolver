@@ -43,6 +43,7 @@ public class ConsoleRepositoryListener
         this.out = ( out != null ) ? out : System.out;
     }
 
+    @Override
     public void artifactDeployed( RepositoryEvent event )
     {
         out.println( "Deployed " + event.getArtifact() + " to " + event.getRepository() );

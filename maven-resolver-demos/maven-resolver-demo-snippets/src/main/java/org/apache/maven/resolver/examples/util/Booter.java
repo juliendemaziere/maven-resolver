@@ -35,6 +35,8 @@ import org.eclipse.aether.repository.RemoteRepository;
  */
 public class Booter
 {
+    private Booter() {
+    }
 
     public static RepositorySystem newRepositorySystem()
     {

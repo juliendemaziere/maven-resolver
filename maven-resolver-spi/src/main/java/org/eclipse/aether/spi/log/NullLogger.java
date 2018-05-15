@@ -33,10 +33,12 @@ final class NullLogger
 
     public void debug( String msg )
     {
+        // Do nothing
     }
 
     public void debug( String msg, Throwable error )
     {
+        // Do nothing
     }
 
     public boolean isWarnEnabled()
@@ -46,10 +48,12 @@ final class NullLogger
 
     public void warn( String msg )
     {
+        // Do nothing
     }
 
     public void warn( String msg, Throwable error )
     {
+        // Do nothing
     }
 
 }

@@ -20,7 +20,9 @@ package org.eclipse.aether.util.graph.visitor;
  */
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.RandomAccess;
 
 /**
@@ -83,4 +85,27 @@ class Stack<E>
         return size;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+        Stack<?> stack = (Stack<?>) o;
+        return size == stack.size &&
+                Arrays.equals( elements, stack.elements );
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = Objects.hash( super.hashCode(), size );
+        result = 31 * result + Arrays.hashCode( elements );
+        return result;
+    }
 }

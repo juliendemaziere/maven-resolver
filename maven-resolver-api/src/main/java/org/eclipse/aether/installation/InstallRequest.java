@@ -44,13 +44,6 @@ public final class InstallRequest
     private RequestTrace trace;
 
     /**
-     * Creates an uninitialized request.
-     */
-    public InstallRequest()
-    {
-    }
-
-    /**
      * Gets the artifact to install.
      * 
      * @return The artifacts to install, never {@code null}.
@@ -91,7 +84,7 @@ public final class InstallRequest
         {
             if ( artifacts.isEmpty() )
             {
-                artifacts = new ArrayList<Artifact>();
+                artifacts = new ArrayList<>();
             }
             artifacts.add( artifact );
         }
@@ -139,7 +132,7 @@ public final class InstallRequest
         {
             if ( this.metadata.isEmpty() )
             {
-                this.metadata = new ArrayList<Metadata>();
+                this.metadata = new ArrayList<>();
             }
             this.metadata.add( metadata );
         }

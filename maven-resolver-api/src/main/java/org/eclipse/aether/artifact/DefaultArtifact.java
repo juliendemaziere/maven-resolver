@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -191,7 +192,7 @@ public final class DefaultArtifact
         }
         else
         {
-            properties = new HashMap<String, String>();
+            properties = new HashMap<>();
             if ( recessive != null )
             {
                 properties.putAll( recessive );
@@ -283,4 +284,30 @@ public final class DefaultArtifact
         return properties;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+        DefaultArtifact that = (DefaultArtifact) o;
+        return Objects.equals( getGroupId(), that.getGroupId() ) &&
+                Objects.equals( getArtifactId(), that.getArtifactId() ) &&
+                Objects.equals( getVersion(), that.getVersion() ) &&
+                Objects.equals( getClassifier(), that.getClassifier() ) &&
+                Objects.equals( getExtension(), that.getExtension() ) &&
+                Objects.equals( getFile(), that.getFile() ) &&
+                Objects.equals( getProperties(), that.getProperties() );
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash( super.hashCode(), getGroupId(), getArtifactId(), getVersion(), getClassifier(), getExtension(), getFile(), getProperties() );
+    }
 }

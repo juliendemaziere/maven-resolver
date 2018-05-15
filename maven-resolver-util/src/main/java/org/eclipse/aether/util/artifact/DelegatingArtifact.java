@@ -70,6 +70,7 @@ public abstract class DelegatingArtifact
         return delegate.getVersion();
     }
 
+    @Override
     public Artifact setVersion( String version )
     {
         Artifact artifact = delegate.setVersion( version );
@@ -80,11 +81,13 @@ public abstract class DelegatingArtifact
         return this;
     }
 
+    @Override
     public String getBaseVersion()
     {
         return delegate.getBaseVersion();
     }
 
+    @Override
     public boolean isSnapshot()
     {
         return delegate.isSnapshot();

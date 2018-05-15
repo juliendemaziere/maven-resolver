@@ -54,13 +54,6 @@ public final class UpdateCheck<T, E extends RepositoryException>
     private E exception;
 
     /**
-     * Creates an uninitialized update check request.
-     */
-    public UpdateCheck()
-    {
-    }
-
-    /**
      * Gets the last-modified timestamp of the corresponding item produced by a local installation. If non-zero, a
      * remote update will be surpressed if the local item is up-to-date, even if the remote item has not been cached
      * locally.

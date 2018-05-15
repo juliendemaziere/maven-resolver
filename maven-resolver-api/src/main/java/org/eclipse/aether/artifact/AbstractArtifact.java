@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -180,28 +181,24 @@ public abstract class AbstractArtifact
      *         properties and file, {@code false} otherwise.
      */
     @Override
-    public boolean equals( Object obj )
-    {
-        if ( obj == this )
-        {
+    public boolean equals( Object o ) {
+        if ( this == o ) {
             return true;
         }
-        else if ( !( obj instanceof Artifact ) )
-        {
+        if ( o == null || getClass() != o.getClass() ) {
             return false;
         }
-
-        Artifact that = (Artifact) obj;
-
-        return getArtifactId().equals( that.getArtifactId() ) && getGroupId().equals( that.getGroupId() )
-            && getVersion().equals( that.getVersion() ) && getExtension().equals( that.getExtension() )
-            && getClassifier().equals( that.getClassifier() ) && eq( getFile(), that.getFile() )
-            && getProperties().equals( that.getProperties() );
-    }
-
-    private static <T> boolean eq( T s1, T s2 )
-    {
-        return s1 != null ? s1.equals( s2 ) : s2 == null;
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+        DefaultArtifact that = (DefaultArtifact) o;
+        return Objects.equals( getGroupId(), that.getGroupId() ) &&
+                Objects.equals( getArtifactId(), that.getArtifactId() ) &&
+                Objects.equals( getVersion(), that.getVersion() ) &&
+                Objects.equals( getClassifier(), that.getClassifier() ) &&
+                Objects.equals( getExtension(), that.getExtension() ) &&
+                Objects.equals( getFile(), that.getFile() ) &&
+                Objects.equals( getProperties(), that.getProperties() );
     }
 
     /**
@@ -210,21 +207,8 @@ public abstract class AbstractArtifact
      * @return A hash code for the artifact.
      */
     @Override
-    public int hashCode()
-    {
-        int hash = 17;
-        hash = hash * 31 + getGroupId().hashCode();
-        hash = hash * 31 + getArtifactId().hashCode();
-        hash = hash * 31 + getExtension().hashCode();
-        hash = hash * 31 + getClassifier().hashCode();
-        hash = hash * 31 + getVersion().hashCode();
-        hash = hash * 31 + hash( getFile() );
-        return hash;
-    }
+    public int hashCode() {
 
-    private static int hash( Object obj )
-    {
-        return ( obj != null ) ? obj.hashCode() : 0;
+        return Objects.hash( super.hashCode(), getGroupId(), getArtifactId(), getVersion(), getClassifier(), getExtension(), getFile(), getProperties() );
     }
-
 }

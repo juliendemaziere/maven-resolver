@@ -42,6 +42,7 @@ public final class DefaultArtifactTypeRegistry
      * @param type The artifact type to add, must not be {@code null}.
      * @return This registry for chaining, never {@code null}.
      */
+    @Override
     public DefaultArtifactTypeRegistry add( ArtifactType type )
     {
         super.add( type );

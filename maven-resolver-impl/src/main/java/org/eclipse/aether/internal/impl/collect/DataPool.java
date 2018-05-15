@@ -63,11 +63,11 @@ final class DataPool
 
     private ObjectPool<Dependency> dependencies;
 
-    private Map<Object, Descriptor> descriptors;
+    private Map<Object, Descriptor> descriptorMap;
 
-    private Map<Object, Constraint> constraints = new HashMap<Object, Constraint>();
+    private Map<Object, Constraint> constraints = new HashMap<>();
 
-    private Map<Object, List<DependencyNode>> nodes = new HashMap<Object, List<DependencyNode>>( 256 );
+    private Map<Object, List<DependencyNode>> nodes = new HashMap<>( 256 );
 
     @SuppressWarnings( "unchecked" )
     DataPool( RepositorySystemSession session )
@@ -78,12 +78,12 @@ final class DataPool
         {
             artifacts = (ObjectPool<Artifact>) cache.get( session, ARTIFACT_POOL );
             dependencies = (ObjectPool<Dependency>) cache.get( session, DEPENDENCY_POOL );
-            descriptors = (Map<Object, Descriptor>) cache.get( session, DESCRIPTORS );
+            descriptorMap = (Map<Object, Descriptor>) cache.get( session, DESCRIPTORS );
         }
 
         if ( artifacts == null )
         {
-            artifacts = new ObjectPool<Artifact>();
+            artifacts = new ObjectPool<>();
             if ( cache != null )
             {
                 cache.put( session, ARTIFACT_POOL, artifacts );
@@ -92,19 +92,19 @@ final class DataPool
 
         if ( dependencies == null )
         {
-            dependencies = new ObjectPool<Dependency>();
+            dependencies = new ObjectPool<>();
             if ( cache != null )
             {
                 cache.put( session, DEPENDENCY_POOL, dependencies );
             }
         }
 
-        if ( descriptors == null )
+        if ( descriptorMap == null )
         {
-            descriptors = Collections.synchronizedMap( new WeakHashMap<Object, Descriptor>( 256 ) );
+            descriptorMap = Collections.synchronizedMap( new WeakHashMap<Object, Descriptor>( 256 ) );
             if ( cache != null )
             {
-                cache.put( session, DESCRIPTORS, descriptors );
+                cache.put( session, DESCRIPTORS, descriptorMap );
             }
         }
     }
@@ -126,7 +126,7 @@ final class DataPool
 
     public ArtifactDescriptorResult getDescriptor( Object key, ArtifactDescriptorRequest request )
     {
-        Descriptor descriptor = descriptors.get( key );
+        Descriptor descriptor = descriptorMap.get( key );
         if ( descriptor != null )
         {
             return descriptor.toResult( request );
@@ -136,12 +136,12 @@ final class DataPool
 
     public void putDescriptor( Object key, ArtifactDescriptorResult result )
     {
-        descriptors.put( key, new GoodDescriptor( result ) );
+        descriptorMap.put( key, new GoodDescriptor( result ) );
     }
 
     public void putDescriptor( Object key, ArtifactDescriptorException e )
     {
-        descriptors.put( key, BadDescriptor.INSTANCE );
+        descriptorMap.put( key, BadDescriptor.INSTANCE );
     }
 
     public Object toKey( VersionRangeRequest request )

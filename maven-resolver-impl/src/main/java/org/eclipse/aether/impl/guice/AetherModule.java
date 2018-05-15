@@ -88,15 +88,6 @@ import com.google.inject.name.Names;
 public class AetherModule
     extends AbstractModule
 {
-
-    /**
-     * Creates a new instance of this Guice module, typically for invoking
-     * {@link com.google.inject.Binder#install(com.google.inject.Module)}.
-     */
-    public AetherModule()
-    {
-    }
-
     /**
      * Configures Guice with bindings for Aether components provided by this library.
      */

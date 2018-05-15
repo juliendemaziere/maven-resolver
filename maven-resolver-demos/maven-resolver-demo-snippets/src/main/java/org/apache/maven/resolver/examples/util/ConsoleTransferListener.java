@@ -40,7 +40,7 @@ public class ConsoleTransferListener
 
     private PrintStream out;
 
-    private Map<TransferResource, Long> downloads = new ConcurrentHashMap<TransferResource, Long>();
+    private Map<TransferResource, Long> downloads = new ConcurrentHashMap<>();
 
     private int lastLength;
 
@@ -165,6 +165,7 @@ public class ConsoleTransferListener
         out.print( buffer );
     }
 
+    @Override
     public void transferCorrupted( TransferEvent event )
     {
         event.getException().printStackTrace( out );

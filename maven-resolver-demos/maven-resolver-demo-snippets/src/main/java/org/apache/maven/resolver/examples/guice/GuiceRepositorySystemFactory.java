@@ -29,6 +29,9 @@ import com.google.inject.Guice;
 public class GuiceRepositorySystemFactory
 {
 
+    private GuiceRepositorySystemFactory() {
+    }
+
     public static RepositorySystem newRepositorySystem()
     {
         return Guice.createInjector( new DemoResolverModule() ).getInstance( RepositorySystem.class );
