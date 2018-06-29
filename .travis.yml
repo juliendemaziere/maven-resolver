@@ -1,27 +1,31 @@
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "Q8fEtbZB3qqfBCTv54Ha5JKsKZdDT+Z9h0UXMUrqD23VFVaft9LzbzjWYRgGnNf91dWPg24A0zABp+x59BY5of2awgNLSrkmAwuN580YT4EtWnbZbnecAz0YnMH7RBh4tEtiyMQiI8TQdzOa7TC3+WGAAGmCrPSQlYmoZ5OwY1IMgJWm5979eUKRLL66LRbzQMgwcqlPdHaxKY3EhuFwzkPZAvoushdEcwp2twIJDa7dP18Aig+dIvDgrrNDyMrXUCgSxqBRCSyLP/cqcDb0C7wNPU2oYh0mIg0Ufn+Qghvmhj8p2irSjq4MarpXqt6HhkLeHavko71pxnmwle9ckUSyNQYyr6Ktslrs89vuAvw+rfxfJySgd9Kj05RpAbqtg9NScVtnDb867+sljocMhcpRs/oaNfCUqALcb6BB8LaXEuit4YlbC16pL/PDxo++g2GCI12cCtFrUHZ+63UC68031+AFtAl27oecorNawTaNFT4f4Ut3Zdn/W+0/ZGS3JH4QtknTuLVM1CepszMJmfI/f/iiu3A5pYqHshUeFB1/8te7LQ1BPuHnBg8At3M3VJJukCJ0iaaDwNV7NMM5vmoriMZ9GAHCtjkXqdEi8HGcLcHX2y4Bt8I9DeDNhFMdbrQLXds4/g4ikA9S23DaAao8K/msxCLGdn8LPH3ixSM="
+
 language: java
-
 sudo: false
-dist: trusty
 
-matrix:
-  include:
-    - os: linux
-      jdk: openjdk7
-    - os: linux
-      jdk: openjdk8
-    - os: linux
-      jdk: openjdk10
-
-before_install:
-# https://github.com/travis-ci/travis-ci/issues/8408
-  - unset _JAVA_OPTIONS
-
-install: mvn clean dependency:go-offline -V
+script: true
 
 before_script: true
 
-script:
-  - mvn verify
+before_install:
+  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+
+after_success:
+  - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
+  - bash <(curl -s https://codecov.io/bash)
+  
+addons:
+  coverity_scan:
+    project:
+      name: "slachiewicz/maven-resolver"
+      description: "<Your project description here>"
+    notification_email: slachiewicz@gmail.com
+    build_command: "mvn clean verify -Drat.skip=true -Denforcer.skip=true -X"
+    branch_pattern: master
 
 cache:
   directories:
