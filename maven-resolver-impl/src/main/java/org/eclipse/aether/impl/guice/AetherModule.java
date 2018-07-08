@@ -70,6 +70,7 @@ import org.eclipse.aether.spi.connector.transport.TransporterProvider;
 import org.eclipse.aether.spi.io.FileProcessor;
 import org.eclipse.aether.spi.localrepo.LocalRepositoryManagerFactory;
 import org.eclipse.aether.spi.log.LoggerFactory;
+import org.eclipse.aether.spi.log.NullLoggerFactory;
 import org.slf4j.ILoggerFactory;
 
 import com.google.inject.AbstractModule;
@@ -145,8 +146,14 @@ public class AetherModule
         .to( SimpleLocalRepositoryManagerFactory.class ).in( Singleton.class );
         bind( LocalRepositoryManagerFactory.class ).annotatedWith( Names.named( "enhanced" ) ) //
         .to( EnhancedLocalRepositoryManagerFactory.class ).in( Singleton.class );
-
-        install( new Slf4jModule() );
+        if ( Slf4jLoggerFactory.isSlf4jAvailable() )
+        {
+            install( new Slf4jModule() );
+        }
+        else
+        {
+            bind( LoggerFactory.class ).toInstance( NullLoggerFactory.INSTANCE );
+        }
 
     }
 

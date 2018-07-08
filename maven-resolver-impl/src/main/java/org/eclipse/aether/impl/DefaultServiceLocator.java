@@ -62,6 +62,7 @@ import org.eclipse.aether.spi.localrepo.LocalRepositoryManagerFactory;
 import org.eclipse.aether.spi.locator.Service;
 import org.eclipse.aether.spi.locator.ServiceLocator;
 import org.eclipse.aether.spi.log.LoggerFactory;
+import org.eclipse.aether.spi.log.NullLoggerFactory;
 
 /**
  * A simple service locator that is already setup with all components from this library. To acquire a complete
@@ -215,7 +216,14 @@ public final class DefaultServiceLocator
         addService( LocalRepositoryProvider.class, DefaultLocalRepositoryProvider.class );
         addService( LocalRepositoryManagerFactory.class, SimpleLocalRepositoryManagerFactory.class );
         addService( LocalRepositoryManagerFactory.class, EnhancedLocalRepositoryManagerFactory.class );
-        addService( LoggerFactory.class, Slf4jLoggerFactory.class );
+        if ( Slf4jLoggerFactory.isSlf4jAvailable() )
+        {
+            addService( LoggerFactory.class, Slf4jLoggerFactory.class );
+        }
+        else
+        {
+            addService( LoggerFactory.class, NullLoggerFactory.class );
+        }
     }
 
     private <T> Entry<T> getEntry( Class<T> type, boolean create )
