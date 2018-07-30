@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScheme;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.transport.http.GlobalState.CompoundKey;
@@ -40,7 +41,7 @@ final class LocalState
 
     private final GlobalState global;
 
-    private final ClientConnectionManager connMgr;
+    private final HttpClientConnectionManager connMgr;
 
     private final CompoundKey userTokenKey;
 
@@ -63,7 +64,7 @@ final class LocalState
             connMgr = GlobalState.newConnectionManager( sslConfig );
             userTokenKey = null;
             expectContinueKey = null;
-            authSchemePools = new ConcurrentHashMap<HttpHost, AuthSchemePool>();
+            authSchemePools = new ConcurrentHashMap<>();
         }
         else
         {
@@ -74,7 +75,7 @@ final class LocalState
         }
     }
 
-    public ClientConnectionManager getConnectionManager()
+    public HttpClientConnectionManager getConnectionManager()
     {
         return connMgr;
     }
