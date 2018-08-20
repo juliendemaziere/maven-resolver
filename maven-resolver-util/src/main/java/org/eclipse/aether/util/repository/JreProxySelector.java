@@ -55,33 +55,48 @@ public final class JreProxySelector
     {
     }
 
-    public Proxy getProxy( RemoteRepository repository )
-    {
-        List<java.net.Proxy> proxies = null;
-        try
-        {
-            URI uri = new URI( repository.getUrl() ).parseServerAuthority();
-            proxies = java.net.ProxySelector.getDefault().select( uri );
+    @Override
+    public Proxy getProxy(RemoteRepository repository) {
+        return getProxy(repository.getUrl());
+    }
+
+    public Proxy getProxy(final String url) {
+        try {
+            final java.net.ProxySelector systemSelector = java.net.ProxySelector.getDefault();
+            if (systemSelector == null) {
+                return null;
+            }
+            URI uri = new URI( url ).parseServerAuthority();
+            final List<java.net.Proxy> selected = systemSelector.select(uri);
+            if (selected == null || selected.isEmpty()) {
+                return null;
+            }
+            for (java.net.Proxy proxy : selected) {
+                if (proxy.type() == java.net.Proxy.Type.HTTP && isValid(proxy.address())) {
+                    final String proxyType = chooseProxyType(uri.getScheme());
+                    if (proxyType != null) {
+                        final InetSocketAddress addr = (InetSocketAddress)proxy.address();
+                        return new Proxy(proxyType, addr.getHostName(), addr.getPort(), JreProxyAuthentication.INSTANCE);
+                    }
+                }
+            }
         }
         catch ( Exception e )
         {
             // URL invalid or not accepted by selector or no selector at all, simply use no proxy
         }
-        if ( proxies != null )
+        return null;
+    }
+
+    private static String chooseProxyType(final String protocol)
+    {
+        if (Proxy.TYPE_HTTP.equals(protocol))
         {
-            for ( java.net.Proxy proxy : proxies )
-            {
-                if ( java.net.Proxy.Type.DIRECT.equals( proxy.type() ) )
-                {
-                    break;
-                }
-                if ( java.net.Proxy.Type.HTTP.equals( proxy.type() ) && isValid( proxy.address() ) )
-                {
-                    InetSocketAddress addr = (InetSocketAddress) proxy.address();
-                    return new Proxy( Proxy.TYPE_HTTP, addr.getHostName(), addr.getPort(),
-                                      JreProxyAuthentication.INSTANCE );
-                }
-            }
+            return Proxy.TYPE_HTTP;
+        }
+        if (Proxy.TYPE_HTTPS.equals(protocol))
+        {
+            return Proxy.TYPE_HTTPS;
         }
         return null;
     }
@@ -129,9 +144,11 @@ public final class JreProxySelector
             try
             {
                 URL url;
-                try
-                {
-                    url = new URL( context.getRepository().getUrl() );
+                String protocol = "http";
+               try
+               {
+                    url = new URL(context.getRepository().getUrl());
+                    protocol = url.getProtocol();
                 }
                 catch ( Exception e )
                 {
@@ -139,18 +156,17 @@ public final class JreProxySelector
                 }
 
                 PasswordAuthentication auth =
-                    Authenticator.requestPasswordAuthentication( proxy.getHost(), null, proxy.getPort(), "http",
-                                                                 "Credentials for proxy " + proxy, null, url,
-                                                                 Authenticator.RequestorType.PROXY );
-                if ( auth != null )
+                    Authenticator.requestPasswordAuthentication( proxy.getHost(), null, proxy.getPort(), protocol,
+                            "Credentials for proxy " + proxy, null, url, Authenticator.RequestorType.PROXY );
+                if (auth != null)
                 {
                     context.put( AuthenticationContext.USERNAME, auth.getUserName() );
                     context.put( AuthenticationContext.PASSWORD, auth.getPassword() );
                 }
                 else
                 {
-                    context.put( AuthenticationContext.USERNAME, System.getProperty( "http.proxyUser" ) );
-                    context.put( AuthenticationContext.PASSWORD, System.getProperty( "http.proxyPassword" ) );
+                    context.put(AuthenticationContext.USERNAME, System.getProperty(protocol + ".proxyUser"));
+                    context.put(AuthenticationContext.PASSWORD, System.getProperty(protocol + ".proxyPassword"));
                 }
             }
             catch ( SecurityException e )
